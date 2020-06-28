@@ -3,7 +3,7 @@
 export {
   expandGlob,
   walk,
-  readJson,
+  readJsonSync,
 } from "https://deno.land/std@0.58.0/fs/mod.ts";
 export { join } from "https://deno.land/std@0.58.0/path/mod.ts";
 export { S3Client } from "https://raw.githubusercontent.com/lucacasonato/deno_s3/5d80dc7d60abd114b0d900fb7f03857faa942258/mod.ts";
