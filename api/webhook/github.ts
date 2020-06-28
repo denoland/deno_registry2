@@ -28,6 +28,12 @@ const VALID_NAME = /[A-Za-z0-9_]{1,40}/;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
+interface DirectoryListingFile {
+  path: string;
+  size: number | undefined;
+  type: "dir" | "file";
+}
+
 export async function handler(
   event: APIGatewayProxyEvent,
   context: Context,
