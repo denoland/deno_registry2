@@ -8,6 +8,7 @@ export async function clone(url: string, tag: string): Promise<string> {
       "clone",
       "--depth",
       "1",
+      "--recursive",
       "-b",
       tag,
       url,
