@@ -1,3 +1,5 @@
+// Copyright 2020 the Deno authors. All rights reserved. MIT license.
+
 import {
   walk,
   join,
@@ -18,14 +20,13 @@ import {
   uploadVersionRaw,
   getMeta,
 } from "../../utils/storage.ts";
-import { Webhooks } from "../../utils/webhooks.d.ts";
+import { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
 
 const MAX_FILE_SIZE = 100_000;
 const VALID_NAME = /[A-Za-z0-9_]{1,40}/;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
-
 
 export async function handler(
   event: APIGatewayProxyEvent,
@@ -78,7 +79,7 @@ export async function handler(
       }),
     });
   }
-  const webhook = JSON.parse(event.body) as Webhooks.WebhookPayloadCreate;
+  const webhook = JSON.parse(event.body) as WebhookPayloadCreate;
   const { ref } = webhook;
   const repository = webhook.repository.full_name;
   if (webhook.ref_type !== "tag") {

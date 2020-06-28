@@ -52,19 +52,27 @@ const wh = (ref: string) => ({
     "branches_url":
       "https://api.github.com/repos/luca-rand/testing/branches{/branch}",
     "tags_url": "https://api.github.com/repos/luca-rand/testing/tags",
-    "blobs_url": "https://api.github.com/repos/luca-rand/testing/git/blobs{/sha}",
-    "git_tags_url": "https://api.github.com/repos/luca-rand/testing/git/tags{/sha}",
-    "git_refs_url": "https://api.github.com/repos/luca-rand/testing/git/refs{/sha}",
-    "trees_url": "https://api.github.com/repos/luca-rand/testing/git/trees{/sha}",
-    "statuses_url": "https://api.github.com/repos/luca-rand/testing/statuses/{sha}",
+    "blobs_url":
+      "https://api.github.com/repos/luca-rand/testing/git/blobs{/sha}",
+    "git_tags_url":
+      "https://api.github.com/repos/luca-rand/testing/git/tags{/sha}",
+    "git_refs_url":
+      "https://api.github.com/repos/luca-rand/testing/git/refs{/sha}",
+    "trees_url":
+      "https://api.github.com/repos/luca-rand/testing/git/trees{/sha}",
+    "statuses_url":
+      "https://api.github.com/repos/luca-rand/testing/statuses/{sha}",
     "languages_url": "https://api.github.com/repos/luca-rand/testing/languages",
-    "stargazers_url": "https://api.github.com/repos/luca-rand/testing/stargazers",
+    "stargazers_url":
+      "https://api.github.com/repos/luca-rand/testing/stargazers",
     "contributors_url":
       "https://api.github.com/repos/luca-rand/testing/contributors",
-    "subscribers_url": "https://api.github.com/repos/luca-rand/testing/subscribers",
+    "subscribers_url":
+      "https://api.github.com/repos/luca-rand/testing/subscribers",
     "subscription_url":
       "https://api.github.com/repos/luca-rand/testing/subscription",
-    "commits_url": "https://api.github.com/repos/luca-rand/testing/commits{/sha}",
+    "commits_url":
+      "https://api.github.com/repos/luca-rand/testing/commits{/sha}",
     "git_commits_url":
       "https://api.github.com/repos/luca-rand/testing/git/commits{/sha}",
     "comments_url":
@@ -79,15 +87,20 @@ const wh = (ref: string) => ({
     "archive_url":
       "https://api.github.com/repos/luca-rand/testing/{archive_format}{/ref}",
     "downloads_url": "https://api.github.com/repos/luca-rand/testing/downloads",
-    "issues_url": "https://api.github.com/repos/luca-rand/testing/issues{/number}",
-    "pulls_url": "https://api.github.com/repos/luca-rand/testing/pulls{/number}",
+    "issues_url":
+      "https://api.github.com/repos/luca-rand/testing/issues{/number}",
+    "pulls_url":
+      "https://api.github.com/repos/luca-rand/testing/pulls{/number}",
     "milestones_url":
       "https://api.github.com/repos/luca-rand/testing/milestones{/number}",
     "notifications_url":
       "https://api.github.com/repos/luca-rand/testing/notifications{?since,all,participating}",
-    "labels_url": "https://api.github.com/repos/luca-rand/testing/labels{/name}",
-    "releases_url": "https://api.github.com/repos/luca-rand/testing/releases{/id}",
-    "deployments_url": "https://api.github.com/repos/luca-rand/testing/deployments",
+    "labels_url":
+      "https://api.github.com/repos/luca-rand/testing/labels{/name}",
+    "releases_url":
+      "https://api.github.com/repos/luca-rand/testing/releases{/id}",
+    "deployments_url":
+      "https://api.github.com/repos/luca-rand/testing/deployments",
     "created_at": "2020-06-25T14:37:46Z",
     "updated_at": "2020-06-25T14:37:51Z",
     "pushed_at": "2020-06-25T15:22:00Z",

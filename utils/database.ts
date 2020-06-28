@@ -1,3 +1,5 @@
+// Copyright 2020 the Deno authors. All rights reserved. MIT license.
+
 import { createClient } from "../deps.ts";
 
 const dynamodb = createClient({ region: Deno.env.get("AWS_REGION")! });

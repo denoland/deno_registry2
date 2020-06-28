@@ -1,3 +1,5 @@
+// Copyright 2020 the Deno authors. All rights reserved. MIT license.
+
 export async function clone(url: string, tag: string): Promise<string> {
   const tmp = await Deno.makeTempDir();
   const clone = Deno.run({
