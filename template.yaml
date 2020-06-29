@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: deno_registry2
+
+Resources:
+  Deno:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location:
+        ApplicationId: arn:aws:serverlessrepo:us-east-1:390065572566:applications/deno
+        SemanticVersion: 1.1.1
+
+  WebhookGithubFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      MemorySize: 512
+      Handler: bundle.handler
+      Runtime: provided
+      Layers:
+        - !GetAtt Deno.Outputs.LayerArn
+        - arn:aws:lambda:us-east-2:553035198032:layer:git-lambda2:6
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ModuleEntriesTable
+        - S3CrudPolicy:
+            BucketName: !Ref StorageBucket
+      Environment:
+        Variables:
+          DENO_UNSTABLE: 1
+          HANDLER_EXT: js
+          MODULE_ENTRIES_TABLE: !Ref ModuleEntriesTable
+          STORAGE_BUCKET: !Ref StorageBucket
+      Timeout: 60
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            Path: /webhook/gh/{name}
+            Method: POST
+    Metadata:
+      BuildMethod: makefile
+
+  ModuleEntriesTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: name
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  StorageBucket:
+    Type: AWS::S3::Bucket
+
+Outputs:
+  ApiEndpoint:
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
+  S3Bucket:
+    Value: !Ref StorageBucket
