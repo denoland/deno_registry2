@@ -28,6 +28,11 @@ const VALID_NAME = /[A-Za-z0-9_]{1,40}/;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
+interface VersionInfo {
+  latest: string;
+  versions: string[];
+}
+
 interface DirectoryListingFile {
   path: string;
   size: number | undefined;
@@ -119,7 +124,20 @@ export async function handler(
     });
   }
 
-  // TODO: check that ref doesn't already exist
+  // Check that ref doesn't already exist
+  const versionInfoBody = await getMeta(moduleName, "versions.json");
+  const versionInfo: VersionInfo = versionInfoBody
+    ? JSON.parse(decoder.decode(versionInfoBody))
+    : { versions: [], latest: "" };
+  if (versionInfo.versions.includes(ref)) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "version already exists",
+      }),
+    });
+  }
 
   // Clone the repository from GitHub
   const cloneURL = `https://github.com/${repository}`;

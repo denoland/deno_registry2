@@ -3,7 +3,7 @@
 import { readJsonSync } from "./deps.ts";
 
 const webhook = readJsonSync("./testdata/create_webhook.json") as object;
-const refs = ["v5.0.0", "v5.1.0", "v5.1.1", "v5.2.0", "v5.3.0", "v5.3.1"];
+const refs = ["0.0.1", "0.0.2", "0.0.3", "0.0.4"];
 for (const ref of refs) {
   const req = await fetch(
     "https://eg1bas7v2c.execute-api.us-east-2.amazonaws.com/webhook/gh/ltest",

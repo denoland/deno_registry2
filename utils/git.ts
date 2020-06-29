@@ -17,6 +17,7 @@ export async function clone(url: string, tag: string): Promise<string> {
     stdout: "piped",
     stderr: "piped",
   });
+  // TODO: better error handling
   const cloneRes = await clone.status();
   if (!cloneRes.success) {
     throw new Error(`Failed to clone git repository ${url} at tag ${tag}`);
