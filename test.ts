@@ -6,7 +6,7 @@ const webhook = readJsonSync("./testdata/create_webhook.json") as object;
 const refs = ["0.0.1", "0.0.2", "0.0.3", "0.0.4"];
 for (const ref of refs) {
   const req = await fetch(
-    "https://r7syvcjpxa.execute-api.us-east-2.amazonaws.com/webhook/gh/ltest",
+    "https://eg1bas7v2c.execute-api.us-east-2.amazonaws.com/webhook/gh/ltest",
     {
       headers: {
         "Content-Type": "application/json",

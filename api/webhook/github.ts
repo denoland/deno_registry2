@@ -125,12 +125,10 @@ export async function handler(
   }
 
   // Check that ref doesn't already exist
-  const versionInfo: VersionInfo = await getMeta(moduleName, "versions.json")
-    .then((body) => {
-      return body
-        ? JSON.parse(decoder.decode(body))
-        : { versions: [], latest: "" };
-    });
+  const versionInfoBody = await getMeta(moduleName, "versions.json");
+  const versionInfo: VersionInfo = versionInfoBody
+    ? JSON.parse(decoder.decode(versionInfoBody))
+    : { versions: [], latest: "" };
   if (versionInfo.versions.includes(ref)) {
     return respondJSON({
       statusCode: 400,
