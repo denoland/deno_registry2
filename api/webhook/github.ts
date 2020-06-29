@@ -59,7 +59,6 @@ export async function handler(
   const headers = new Headers(event.headers);
 
   // Check that event is a GitHub `create` event.
-  console.log(headers);
   const ghEvent = headers.get("x-github-event");
   if (ghEvent !== "create") {
     return respondJSON({
@@ -105,8 +104,8 @@ export async function handler(
 
   const entry = await getEntry(moduleName);
   if (entry) {
-    // check that entry matches repo
-    if (entry.type !== "github" || entry.repository !== repository) {
+    // Check that entry matches repo
+    if (!(entry.type === "github" && entry.repository === repository)) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
@@ -115,14 +114,21 @@ export async function handler(
         }),
       });
     }
-  } else {
-    // register module to repo
-    await saveEntry({
-      name: moduleName,
-      type: "github",
-      repository,
-    });
   }
+
+  // Construct meta information
+  const meta = {
+    type: "github",
+    repository,
+    description: webhook.repository.description,
+    star_count: webhook.repository.stargazers_count,
+  };
+
+  // Update meta information in DynamoDB (registers module if not present yet)
+  await saveEntry({
+    name: moduleName,
+    ...meta,
+  });
 
   // Check that ref doesn't already exist
   const versionInfoBody = await getMeta(moduleName, "versions.json");
@@ -187,12 +193,6 @@ export async function handler(
   }
 
   // Upload meta information to S3
-  const meta = {
-    type: "github",
-    repository,
-    description: webhook.repository.description,
-    star_count: webhook.repository.stargazers_count,
-  };
   pendingUploads.push(
     uploadMeta(
       moduleName,

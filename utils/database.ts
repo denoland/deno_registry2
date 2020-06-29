@@ -8,8 +8,10 @@ const MODULE_ENTRIES_TABLE = Deno.env.get("MODULE_ENTRIES_TABLE");
 
 export interface DatabaseEntry {
   name: string;
-  type: "github";
+  type: string;
   repository: string;
+  description: string;
+  star_count: number;
 }
 
 export async function getEntry(
