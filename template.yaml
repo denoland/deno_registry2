@@ -42,20 +42,37 @@ Resources:
       BuildMethod: makefile
 
   ModuleEntriesTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: name
-        Type: String
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+      AttributeDefinitions:
+        - AttributeName: name
+          AttributeType: S
+        - AttributeName: star_count
+          AttributeType: "N"
+      KeySchema:
+        - AttributeName: name
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      GlobalSecondaryIndexes:
+        - IndexName: by_star_count
+          KeySchema:
+            - AttributeName: name
+              KeyType: HASH
+            - AttributeName: star_count
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
 
   StorageBucket:
     Type: AWS::S3::Bucket
+    Properties:
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods: [GET]
+            AllowedOrigins: ["*"]
 
 Outputs:
   ApiEndpoint:
     Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
   S3Bucket:
-    Value: !Ref StorageBucket
+    Value: !Sub "${StorageBucket}.s3.${AWS::Region}.amazonaws.com"
