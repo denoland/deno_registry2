@@ -1,10 +1,12 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { createClient } from "../deps.ts";
+import { MongoClient } from "../deps.ts";
 
-const dynamodb = createClient({ region: Deno.env.get("AWS_REGION")! });
+const mongo = new MongoClient();
+mongo.connectWithUri(Deno.env.get("MONGO_URI")!);
 
-const MODULE_ENTRIES_TABLE = Deno.env.get("MODULE_ENTRIES_TABLE");
+const db = mongo.database("staging");
+const modules = db.collection("modules");
 
 export interface DatabaseEntry {
   name: string;
@@ -15,18 +17,11 @@ export interface DatabaseEntry {
 }
 
 export async function getEntry(
-  name: string,
+  name: string
 ): Promise<DatabaseEntry | undefined> {
-  const doc = await dynamodb.getItem({
-    Key: { name },
-    TableName: MODULE_ENTRIES_TABLE,
-  });
-  return doc.Item;
+  return modules.findOne({ name: name.toString() });
 }
 
 export async function saveEntry(entry: DatabaseEntry): Promise<void> {
-  await dynamodb.putItem({
-    Item: entry,
-    TableName: MODULE_ENTRIES_TABLE,
-  });
+  await modules.insertOne(entry);
 }
