@@ -10,10 +10,7 @@ import {
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { clone } from "../../utils/git.ts";
-import {
-  getEntry,
-  saveEntry,
-} from "../../utils/database.ts";
+import { getEntry, saveEntry } from "../../utils/database.ts";
 import {
   uploadMeta,
   uploadVersionMeta,
@@ -155,7 +152,10 @@ export async function handler(
   const directory: DirectoryListingFile[] = [];
   let totalBytes = 0;
   for await (
-    const entry of walk(path, { includeFiles: true, includeDirs: true })
+    const entry of walk(path, {
+      includeFiles: true,
+      includeDirs: true,
+    })
   ) {
     if (entry.path.startsWith(join(path, ".git"))) continue;
     const filename = entry.path.substring(path.length);
@@ -168,9 +168,7 @@ export async function handler(
               skippedFiles.push(filename);
               return;
             }
-            directory.push(
-              { path: filename, size: body.length, type: "file" },
-            );
+            directory.push({ path: filename, size: body.length, type: "file" });
             const { etag } = await uploadVersionRaw(
               moduleName,
               ref,
@@ -186,9 +184,7 @@ export async function handler(
         }),
       );
     } else {
-      directory.push(
-        { path: filename, size: undefined, type: "dir" },
-      );
+      directory.push({ path: filename, size: undefined, type: "dir" });
     }
   }
 
@@ -203,22 +199,20 @@ export async function handler(
 
   // Upload latest version to S3
   pendingUploads.push(
-    getMeta(moduleName, "versions.json").then(
-      async (body) => {
-        const versions = body
-          ? JSON.parse(decoder.decode(body))
-          : { versions: [] };
-        await uploadMeta(
-          moduleName,
-          "versions.json",
-          encoder.encode(
-            JSON.stringify(
-              { latest: ref, versions: [ref, ...versions.versions] },
-            ),
+    getMeta(moduleName, "versions.json").then(async (body) => {
+      const versions = body
+        ? JSON.parse(decoder.decode(body))
+        : { versions: [] };
+      await uploadMeta(
+        moduleName,
+        "versions.json",
+        encoder.encode(
+          JSON.stringify(
+            { latest: ref, versions: [ref, ...versions.versions] },
           ),
-        );
-      },
-    ),
+        ),
+      );
+    }),
   );
 
   // Wait for all uploads to S3 to complete
@@ -230,8 +224,8 @@ export async function handler(
     if (entry.type === "dir") {
       entry.size = 0;
       for (
-        const f of directory.filter((f) =>
-          f.type === "file" && f.path.startsWith(entry.path)
+        const f of directory.filter(
+          (f) => f.type === "file" && f.path.startsWith(entry.path),
         )
       ) {
         entry.size += f.size ?? 0;
@@ -247,12 +241,7 @@ export async function handler(
     encoder.encode(JSON.stringify(directory)),
   );
 
-  console.log(
-    moduleName,
-    ref,
-    "total bytes uploaded",
-    prettyBytes(totalBytes),
-  );
+  console.log(moduleName, ref, "total bytes uploaded", prettyBytes(totalBytes));
   console.log(moduleName, ref, "skipped due to size", skippedFiles);
 
   return respondJSON({

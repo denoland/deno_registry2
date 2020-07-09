@@ -19,17 +19,15 @@ Resources:
       Runtime: provided
       Layers:
         - !GetAtt Deno.Outputs.LayerArn
-        - arn:aws:lambda:us-east-2:553035198032:layer:git-lambda2:6
+        - !Sub "arn:aws:lambda:${AWS::Region}:553035198032:layer:git-lambda2:6"
       Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ModuleEntriesTable
         - S3CrudPolicy:
             BucketName: !Ref StorageBucket
       Environment:
         Variables:
           DENO_UNSTABLE: 1
           HANDLER_EXT: js
-          MODULE_ENTRIES_TABLE: !Ref ModuleEntriesTable
+          MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/uri:SecretString:Production}}"
           STORAGE_BUCKET: !Ref StorageBucket
       Timeout: 60
       Events:
@@ -40,28 +38,6 @@ Resources:
             Method: POST
     Metadata:
       BuildMethod: makefile
-
-  ModuleEntriesTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      AttributeDefinitions:
-        - AttributeName: name
-          AttributeType: S
-        - AttributeName: star_count
-          AttributeType: "N"
-      KeySchema:
-        - AttributeName: name
-          KeyType: HASH
-      BillingMode: PAY_PER_REQUEST
-      GlobalSecondaryIndexes:
-        - IndexName: by_star_count
-          KeySchema:
-            - AttributeName: name
-              KeyType: HASH
-            - AttributeName: star_count
-              KeyType: RANGE
-          Projection:
-            ProjectionType: ALL
 
   StorageBucket:
     Type: AWS::S3::Bucket
