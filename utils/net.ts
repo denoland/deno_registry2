@@ -1,3 +1,5 @@
+// Copyright 2020 the Deno authors. All rights reserved. MIT license.
+
 export function ip4ToInt(ip: string) {
   const octs_ = ip.split(".");
   if (octs_.length !== 4) throw new Error(`Invalid IP address ${ip}`);
