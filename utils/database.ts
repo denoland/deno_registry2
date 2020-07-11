@@ -18,6 +18,7 @@ export interface Module {
 
 export async function getEntry(name: string): Promise<Module | null> {
   // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+  // deno-lint-ignore no-explicit-any
   const entry = await modules.findOne({ _id: name.toString() } as any);
   if (entry === null) return null;
   return {
@@ -33,16 +34,18 @@ export async function saveEntry(module: Module): Promise<void> {
   await modules.updateOne(
     {
       // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+      // deno-lint-ignore no-explicit-any
       _id: module.name as any,
     },
     {
       // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+      // deno-lint-ignore no-explicit-any
       _id: module.name as any,
       type: module.type,
       repository: module.repository,
       description: module.description,
       star_count: module.star_count,
     },
-    { upsert: true }
+    { upsert: true },
   );
 }
