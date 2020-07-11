@@ -27,7 +27,7 @@ Resources:
         Variables:
           DENO_UNSTABLE: 1
           HANDLER_EXT: js
-          MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/uri:SecretString:Production}}"
+          MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/deno_registry2:SecretString:MongoURI}}"
           STORAGE_BUCKET: !Ref StorageBucket
       Timeout: 60
       Events:

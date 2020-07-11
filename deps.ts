@@ -14,4 +14,4 @@ export {
   APIGatewayProxyResult,
   Context,
 } from "https://deno.land/x/lambda/mod.ts";
-export { MongoClient } from "https://raw.githubusercontent.com/lucacasonato/deno_mongo_lambda/v0.8.0/mod.ts";
+export { MongoClient } from "https://raw.githubusercontent.com/lucacasonato/deno_mongo_lambda/v0.9.0-dev1/mod.ts";
