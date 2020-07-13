@@ -15,7 +15,7 @@ jobs:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v1.3.0
         with:
-          deno-version: v1.1.1
+          deno-version: v1.2.0
 
       - uses: actions/checkout@v2
 
@@ -29,14 +29,14 @@ jobs:
 
       - name: Compile api/webhook/github.ts
         run: deno cache --unstable ./api/webhook/github.ts
-      
+
       - name: Build
         run: sam build
         if: github.ref == 'refs/heads/main'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      
+
       - name: Deploy (production)
         run: sam deploy --stack-name deno-registry-prod --s3-bucket deno-cloudformation-deploy --s3-prefix deno-registry-prod --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM --no-confirm-changeset --no-fail-on-empty-changeset
         if: github.ref == 'refs/heads/main'
