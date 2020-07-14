@@ -21,6 +21,7 @@ import {
   getMeta,
 } from "../../utils/storage.ts";
 import { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
+import { isIp4InCidrs } from "../../utils/net.ts";
 
 const MAX_FILE_SIZE = 100_000;
 const VALID_NAME = /[A-Za-z0-9_]{1,40}/;
@@ -43,7 +44,16 @@ export async function handler(
   event: APIGatewayProxyEvent,
   context: Context,
 ): Promise<APIGatewayProxyResult> {
-  // TOOD: Check that request is actually coming from the Cloudflare Worker.
+  const ip = event.requestContext.identity.sourceIp;
+  if (!isGitHubHooksIP(ip)) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "request does not come from GitHub",
+      }),
+    });
+  }
 
   const moduleName = event.pathParameters?.name;
   if (!moduleName || !VALID_NAME.test(moduleName)) {
@@ -268,4 +278,15 @@ export async function handler(
       },
     }),
   });
+}
+
+// From https://api.github.com/meta
+const GITHUB_HOOKS_CIDRS = [
+  "192.30.252.0/22",
+  "185.199.108.0/22",
+  "140.82.112.0/20",
+];
+
+export function isGitHubHooksIP(ip: string): boolean {
+  return isIp4InCidrs(ip, GITHUB_HOOKS_CIDRS);
 }

@@ -25,7 +25,8 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
-      # TODO: deno test
+      - name: Test
+        run: deno test
 
       - name: Compile api/webhook/github.ts
         run: deno cache --unstable ./api/webhook/github.ts
