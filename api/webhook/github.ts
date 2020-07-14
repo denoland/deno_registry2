@@ -4,9 +4,9 @@ import {
   walk,
   join,
   prettyBytes,
-  APIGatewayProxyEvent,
+  APIGatewayProxyEventV2,
   Context,
-  APIGatewayProxyResult,
+  APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { clone } from "../../utils/git.ts";
@@ -38,10 +38,10 @@ interface DirectoryListingFile {
 }
 
 export async function handler(
-  event: APIGatewayProxyEvent,
+  event: APIGatewayProxyEventV2,
   context: Context,
-): Promise<APIGatewayProxyResult> {
-  const ip = event.requestContext.identity.sourceIp;
+): Promise<APIGatewayProxyResultV2> {
+  const ip = event.requestContext.http.sourceIp;
   if (!isGitHubHooksIP(ip)) {
     return respondJSON({
       statusCode: 400,
