@@ -1,10 +1,10 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { APIGatewayProxyResult } from "../deps.ts";
+import { APIGatewayProxyResultV2, APIGatewayProxyStructuredResultV2 } from "../deps.ts";
 
 export function respondJSON(
-  result: APIGatewayProxyResult,
-): APIGatewayProxyResult {
+  result: APIGatewayProxyStructuredResultV2,
+): APIGatewayProxyResultV2 {
   return {
     ...result,
     headers: {
