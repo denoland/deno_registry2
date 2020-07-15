@@ -109,6 +109,29 @@ export async function handler(
     });
   }
 
+  const subdir =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+  if (subdir !== null) {
+    if (subdir.startsWith("/")) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          info: "provided sub directory is not valid as it starts with a /",
+        }),
+      });
+    } else if (!subdir.endsWith("/")) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          info:
+            "provided sub directory is not valid as it does not end with a /",
+        }),
+      });
+    }
+  }
+
   const entry = await getEntry(moduleName);
   if (entry) {
     // Check that entry matches repo
@@ -131,7 +154,7 @@ export async function handler(
     star_count: webhook.repository.stargazers_count,
   };
 
-  // Update meta information in DynamoDB (registers module if not present yet)
+  // Update meta information in MongoDB (registers module if not present yet)
   await saveEntry({
     name: moduleName,
     ...meta,
@@ -154,20 +177,30 @@ export async function handler(
 
   // Clone the repository from GitHub
   const cloneURL = `https://github.com/${repository}`;
-  const path = await clone(cloneURL, ref);
+  const clonePath = await clone(cloneURL, ref);
 
   // Upload files to S3
   const skippedFiles: string[] = [];
   const pendingUploads: Promise<void>[] = [];
   const directory: DirectoryListingFile[] = [];
+
+  // Create path that has possible subdir prefix
+  const path = (subdir === null ? clonePath : join(clonePath, subdir)).replace(
+    /\/$/,
+    "",
+  );
+
   let totalBytes = 0;
+
+  // Walk all files in the repository (that start with the subdir if present)
   for await (
     const entry of walk(path, {
       includeFiles: true,
       includeDirs: true,
     })
   ) {
-    if (entry.path.startsWith(join(path, ".git"))) continue;
+    // If this is a .git file, then ignore
+    if (entry.path.startsWith(join(path, ".git/"))) continue;
     const filename = entry.path.substring(path.length);
     if (entry.isFile) {
       pendingUploads.push(
@@ -197,15 +230,6 @@ export async function handler(
       directory.push({ path: filename, size: undefined, type: "dir" });
     }
   }
-
-  // Upload meta information to S3
-  pendingUploads.push(
-    uploadMeta(
-      moduleName,
-      "meta.json",
-      encoder.encode(JSON.stringify(meta)),
-    ).then(() => {}),
-  );
 
   // Upload latest version to S3
   pendingUploads.push(
@@ -247,8 +271,16 @@ export async function handler(
   await uploadVersionMeta(
     moduleName,
     ref,
-    "directory_listing.json",
-    encoder.encode(JSON.stringify(directory)),
+    "meta.json",
+    encoder.encode(JSON.stringify({
+      uploaded_at: new Date().toISOString(),
+      directory_listing: directory,
+      upload_options: {
+        type: "github",
+        repository,
+        subdir,
+      },
+    })),
   );
 
   console.log(moduleName, ref, "total bytes uploaded", prettyBytes(totalBytes));
