@@ -109,7 +109,8 @@ export async function handler(
     });
   }
 
-  const subdir = decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+  const subdir =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
   if (subdir !== null) {
     if (subdir.startsWith("/")) {
       return respondJSON({
@@ -184,7 +185,10 @@ export async function handler(
   const directory: DirectoryListingFile[] = [];
 
   // Create path that has possible subdir prefix
-  const path = subdir === null ? clonePath : join(clonePath, subdir);
+  const path = (subdir === null ? clonePath : join(clonePath, subdir)).replace(
+    /\/$/,
+    "",
+  );
 
   let totalBytes = 0;
 
