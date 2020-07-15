@@ -1,0 +1,15 @@
+{
+  "mappings": {
+    "dynamic": false,
+    "fields": {
+      "_id": {
+        "analyzer": "lucene.simple",
+        "type": "string"
+      },
+      "description": {
+        "analyzer": "lucene.standard",
+        "type": "string"
+      }
+    }
+  }
+}
