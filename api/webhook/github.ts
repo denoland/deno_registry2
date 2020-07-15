@@ -109,23 +109,23 @@ export async function handler(
     });
   }
 
-  const subdir = event.queryStringParameters?.subdir ?? null;
+  const subdir = decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
   if (subdir !== null) {
-    if (!subdir.startsWith("/")) {
+    if (subdir.startsWith("/")) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          info: "provided sub directory is not valid as it starts with a /",
+        }),
+      });
+    } else if (!subdir.endsWith("/")) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
           success: false,
           info:
-            "provided sub directory is not valid as it does not start with a /",
-        }),
-      });
-    } else if (subdir.endsWith("/")) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          info: "provided sub directory is not valid as it ends with a /",
+            "provided sub directory is not valid as it does not end with a /",
         }),
       });
     }
@@ -196,7 +196,7 @@ export async function handler(
     })
   ) {
     // If this is a .git file, then ignore
-    if (entry.path.startsWith(join(path, ".git"))) continue;
+    if (entry.path.startsWith(join(path, ".git/"))) continue;
     const filename = entry.path.substring(path.length);
     if (entry.isFile) {
       pendingUploads.push(
