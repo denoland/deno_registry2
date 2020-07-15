@@ -54,14 +54,14 @@ export async function saveEntry(module: Module): Promise<void> {
       description: module.description,
       star_count: module.star_count,
     },
-    { upsert: true }
+    { upsert: true },
   );
 }
 
 export async function listEntries(
   limit: number,
   page: number,
-  query?: string
+  query?: string,
 ): Promise<(Module & { search_score: number })[]> {
   if (typeof limit !== "number") {
     throw new Error("limit must be a number");
@@ -79,35 +79,35 @@ export async function listEntries(
   // If search is present, add a search step to the aggregation pipeline
   const searchAggregation = query
     ? [
-        {
-          $search: {
-            text: {
-              query: query,
-              path: ["_id", "description"],
-              fuzzy: {},
-            },
+      {
+        $search: {
+          text: {
+            query: query,
+            path: ["_id", "description"],
+            fuzzy: {},
           },
         },
-        {
-          $addFields: {
-            search_score: {
-              $meta: "searchScore",
-            },
+      },
+      {
+        $addFields: {
+          search_score: {
+            $meta: "searchScore",
           },
         },
-        {
-          $sort: {
-            search_score: -1,
-          },
+      },
+      {
+        $sort: {
+          search_score: -1,
         },
-      ]
+      },
+    ]
     : [
-        {
-          $sort: {
-            star_count: -1,
-          },
+      {
+        $sort: {
+          star_count: -1,
         },
-      ];
+      },
+    ];
 
   //  Query the database
   const docs = (await modules.aggregate([

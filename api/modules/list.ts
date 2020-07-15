@@ -10,7 +10,7 @@ import { listEntries, countEntries } from "../../utils/database.ts";
 
 export async function handler(
   event: APIGatewayProxyEventV2,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   // TODO(lucacasonato): gracefully handle errors
 
