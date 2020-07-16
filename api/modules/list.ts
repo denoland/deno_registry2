@@ -18,6 +18,26 @@ export async function handler(
   const page = parseInt(event.queryStringParameters?.page || "1");
   const query = event.queryStringParameters?.query || undefined;
 
+  if (limit > 100 || limit < 1) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "the limit may not be larger than 100 or smaller than 1",
+      }),
+    });
+  }
+
+  if (page < 1) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "the page number must not be lower than 1",
+      }),
+    });
+  }
+
   const [results, count] = await Promise.all([
     listEntries(limit, page, query),
     countEntries(),
