@@ -10,6 +10,13 @@ Resources:
         ApplicationId: arn:aws:serverlessrepo:us-east-1:390065572566:applications/deno
         SemanticVersion: 1.2.0
 
+  DenoHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+
   WebhookGithubFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -34,8 +41,34 @@ Resources:
         ApiEvent:
           Type: HttpApi
           Properties:
+            ApiId: !Ref DenoHttpApi
             Path: /webhook/gh/{name}
             Method: POST
+    Metadata:
+      BuildMethod: makefile
+
+  ModulesListFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      MemorySize: 128
+      Handler: bundle.handler
+      Runtime: provided
+      Layers:
+        - !GetAtt Deno.Outputs.LayerArn
+      Environment:
+        Variables:
+          DENO_UNSTABLE: 1
+          HANDLER_EXT: js
+          MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/deno_registry2:SecretString:MongoURI}}"
+      Timeout: 5
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref DenoHttpApi
+            Path: /modules
+            Method: GET
     Metadata:
       BuildMethod: makefile
 
@@ -49,6 +82,6 @@ Resources:
 
 Outputs:
   ApiEndpoint:
-    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
+    Value: !Sub "https://${DenoHttpApi}.execute-api.${AWS::Region}.amazonaws.com/"
   S3Bucket:
     Value: !Sub "${StorageBucket}.s3.${AWS::Region}.amazonaws.com"
