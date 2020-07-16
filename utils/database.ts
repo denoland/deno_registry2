@@ -16,6 +16,13 @@ export interface DBModule {
   star_count: number;
 }
 
+export interface SearchResult {
+  name: string;
+  description: string;
+  star_count: number;
+  search_score: number;
+}
+
 export interface Module {
   name: string;
   type: string;
@@ -62,7 +69,7 @@ export async function listEntries(
   limit: number,
   page: number,
   query?: string,
-): Promise<(Module & { search_score: number })[]> {
+): Promise<SearchResult[]> {
   if (typeof limit !== "number") {
     throw new Error("limit must be a number");
   }
@@ -123,8 +130,6 @@ export async function listEntries(
   // Transform the results
   return docs.map((doc) => ({
     name: doc._id,
-    type: doc.type,
-    repository: doc.repository,
     description: doc.description,
     star_count: doc.star_count,
     search_score: doc.search_score,

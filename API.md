@@ -36,6 +36,58 @@ The contents and headers should be a GitHub `create` webhook event. More informa
 ```json
 {
   "success": false,
-  "error": "module name is not valid"
+  "info": "module name is not valid"
+}
+```
+
+## GET /modules
+
+This API endpoint can be used to get a list of all the modules in the registry.
+
+### Request
+
+There are some query parameters that change the request:
+
+- `limit` is the amount of results to display per page of the response (default 20)
+- `page` is the page to display (default 1)
+- `query` is a query to use for filtering the list (not set by default)
+
+### Response
+
+#### Headers
+
+`content-type`: `application/json`
+
+#### Body
+
+##### 200 OK
+
+```json
+{
+  "success": true,
+  "data": {
+    "total_count": 763,
+    "results": [
+      {
+        "name": "oak",
+        "description": "A middleware framework for Deno's http server, including a router middleware.",
+        "star_count": 400
+      },
+      {
+        "name": "oak_middleware",
+        "description": "A collection of middleware for the oak middleware framework.",
+        "star_count": 30
+      }
+    ]
+  }
+}
+```
+
+##### 400 Bad Request
+
+```json
+{
+  "success": false,
+  "info": "internal server error"
 }
 ```
