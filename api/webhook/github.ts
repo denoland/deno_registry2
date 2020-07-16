@@ -17,7 +17,7 @@ import {
   uploadVersionRaw,
   getMeta,
 } from "../../utils/storage.ts";
-import { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
+import type { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
 
 const MAX_FILE_SIZE = 100_000;
@@ -77,7 +77,7 @@ export async function handler(
     });
   }
 
-  // Get ref, ref type, and repository from event
+  // Get version, version type, and repository from event
   if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
     return respondJSON({
       statusCode: 400,
@@ -108,6 +108,24 @@ export async function handler(
       }),
     });
   }
+
+  const versionPrefix =
+    decodeURIComponent(event.queryStringParameters?.version_prefix ?? "") ||
+    null;
+
+  if (!ref.startsWith(versionPrefix)) {
+    return respondJSON({
+      statusCode: 200,
+      body: JSON.stringify({
+        success: false,
+        info: "ignoring event as the version does not match the version prefix",
+      }),
+    });
+  }
+
+  const version = versionPrefix === null
+    ? ref
+    : ref.substring(versionPrefix.length);
 
   const subdir =
     decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
@@ -160,12 +178,12 @@ export async function handler(
     ...meta,
   });
 
-  // Check that ref doesn't already exist
+  // Check that version doesn't already exist
   const versionInfoBody = await getMeta(moduleName, "versions.json");
   const versionInfo: VersionInfo = versionInfoBody
     ? JSON.parse(decoder.decode(versionInfoBody))
     : { versions: [], latest: "" };
-  if (versionInfo.versions.includes(ref)) {
+  if (versionInfo.versions.includes(version)) {
     return respondJSON({
       statusCode: 400,
       body: JSON.stringify({
@@ -212,20 +230,23 @@ export async function handler(
               return;
             }
             directory.push({ path: filename, size: body.length, type: "file" });
-            const { etag } = await uploadVersionRaw(
+            await uploadVersionRaw(
               moduleName,
-              ref,
+              version,
               filename,
               body,
             );
             totalBytes += body.length;
           } catch (err) {
-            console.log("err", err);
+            console.log("err", filename, err);
           } finally {
             file.close();
           }
         }),
       );
+      // TODO(lucacasonato): remove this. This is currently necessary because Deno does
+      // not cache DNS, and the DNS resolver has a rate limit.
+      await new Promise((resolve) => setTimeout(resolve, 100));
     } else {
       directory.push({ path: filename, size: undefined, type: "dir" });
     }
@@ -242,7 +263,7 @@ export async function handler(
         "versions.json",
         encoder.encode(
           JSON.stringify(
-            { latest: ref, versions: [ref, ...versions.versions] },
+            { latest: version, versions: [version, ...versions.versions] },
           ),
         ),
       );
@@ -251,6 +272,8 @@ export async function handler(
 
   // Wait for all uploads to S3 to complete
   await Promise.all(pendingUploads);
+
+  await Deno.remove(clonePath, { recursive: true });
 
   // Calculate directory sizes
   // TODO: make more efficient
@@ -270,7 +293,7 @@ export async function handler(
   // Upload directory listing to S3
   await uploadVersionMeta(
     moduleName,
-    ref,
+    version,
     "meta.json",
     encoder.encode(JSON.stringify({
       uploaded_at: new Date().toISOString(),
@@ -279,12 +302,18 @@ export async function handler(
         type: "github",
         repository,
         subdir,
+        ref,
       },
     })),
   );
 
-  console.log(moduleName, ref, "total bytes uploaded", prettyBytes(totalBytes));
-  console.log(moduleName, ref, "skipped due to size", skippedFiles);
+  console.log(
+    moduleName,
+    version,
+    "total bytes uploaded",
+    prettyBytes(totalBytes),
+  );
+  console.log(moduleName, version, "skipped due to size", skippedFiles);
 
   return respondJSON({
     statusCode: 200,
@@ -292,7 +321,7 @@ export async function handler(
       success: true,
       data: {
         module: moduleName,
-        version: ref,
+        version,
         repository: repository,
         total_bytes_uploaded: totalBytes,
         skipped_due_to_size: skippedFiles,

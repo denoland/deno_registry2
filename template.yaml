@@ -21,7 +21,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
-      MemorySize: 512
+      MemorySize: 1024
       Handler: bundle.handler
       Runtime: provided
       Layers:
