@@ -1,12 +1,19 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
+/**
+ * This function is responsible for listing the modules stored in the
+ * database. It can be filtered with a search query and is paginated.
+ * The function is triggered by a HTTP GET call to /modules. More
+ * information in API.md. 
+ */
+
 import {
   APIGatewayProxyEventV2,
   Context,
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { listEntries, countEntries } from "../../utils/database.ts";
+import { listModules, countModules } from "../../utils/database.ts";
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -39,8 +46,8 @@ export async function handler(
   }
 
   const [results, count] = await Promise.all([
-    listEntries(limit, page, query),
-    countEntries(),
+    listModules(limit, page, query),
+    countModules(),
   ]);
 
   return respondJSON({

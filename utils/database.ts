@@ -1,15 +1,19 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { MongoClient } from "../deps.ts";
+import { MongoClient, ObjectId } from "../deps.ts";
 
 const mongo = new MongoClient();
 mongo.connectWithUri(Deno.env.get("MONGO_URI")!);
 
 const db = mongo.database("production");
-const modules = db.collection<DBModule>("modules");
+const modules = db.collection<DBModule>(
+  "modules",
+);
 
-export interface DBModule {
-  _id: string;
+type DBModule = Omit<Module, "id"> & { _id: string };
+
+export interface Module {
+  name: string;
   type: string;
   repository: string;
   description: string;
@@ -23,15 +27,7 @@ export interface SearchResult {
   search_score: number;
 }
 
-export interface Module {
-  name: string;
-  type: string;
-  repository: string;
-  description: string;
-  star_count: number;
-}
-
-export async function getEntry(name: string): Promise<Module | null> {
+export async function getModule(name: string): Promise<Module | null> {
   // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
   // deno-lint-ignore no-explicit-any
   const entry = await modules.findOne({ _id: name.toString() } as any);
@@ -45,7 +41,7 @@ export async function getEntry(name: string): Promise<Module | null> {
   };
 }
 
-export async function saveEntry(module: Module): Promise<void> {
+export async function saveModule(module: Module): Promise<void> {
   await modules.updateOne(
     {
       // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
@@ -65,7 +61,7 @@ export async function saveEntry(module: Module): Promise<void> {
   );
 }
 
-export async function listEntries(
+export async function listModules(
   limit: number,
   page: number,
   query?: string,
@@ -136,6 +132,80 @@ export async function listEntries(
   }));
 }
 
-export async function countEntries(): Promise<number> {
+export async function countModules(): Promise<number> {
   return modules.count();
+}
+
+const builds = db.collection<Omit<Build, "id"> & { _id: ObjectId }>("builds");
+
+export interface Build {
+  id: string;
+  options: {
+    moduleName: string;
+    type: string;
+    repository: string;
+    ref: string;
+    version: string;
+    subdir?: string;
+  };
+  status: string;
+  message?: string;
+}
+
+export async function getBuild(id: string): Promise<Build | null> {
+  const build = await builds.findOne({ _id: ObjectId(id) });
+  if (build === null) return null;
+  return {
+    id: build._id.$oid,
+    options: {
+      moduleName: build.options.moduleName,
+      type: build.options.type,
+      repository: build.options.repository,
+      ref: build.options.ref,
+      version: build.options.version,
+      subdir: build.options.subdir,
+    },
+    status: build.status,
+    message: build.message,
+  };
+}
+
+export async function createBuild(build: Omit<Build, "id">): Promise<string> {
+  const id = await builds.insertOne(
+    {
+      options: {
+        moduleName: build.options.moduleName,
+        type: build.options.type,
+        repository: build.options.repository,
+        ref: build.options.ref,
+        version: build.options.version,
+        subdir: build.options.subdir,
+      },
+      status: build.status,
+      message: build.message,
+    },
+  );
+  return id.$oid;
+}
+
+export async function saveBuild(build: Build): Promise<void> {
+  await builds.updateOne(
+    {
+      _id: ObjectId(build.id),
+    },
+    {
+      _id: ObjectId(build.id),
+      options: {
+        moduleName: build.options.moduleName,
+        type: build.options.type,
+        repository: build.options.repository,
+        ref: build.options.ref,
+        version: build.options.version,
+        subdir: build.options.subdir,
+      },
+      status: build.status,
+      message: build.message,
+    },
+    { upsert: true },
+  );
 }
