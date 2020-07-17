@@ -171,6 +171,8 @@ async function publishGithub(
     ...build,
     status: "success",
     message:
-      `Uploaded ${pendingUploads.length} files. Skipped file ${skippedFiles} due to size.`,
+      `Uploaded ${pendingUploads.length} files. Skipped files due to size: ${
+        JSON.stringify(skippedFiles)
+      }`,
   });
 }
