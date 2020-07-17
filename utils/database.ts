@@ -6,10 +6,14 @@ const mongo = new MongoClient();
 mongo.connectWithUri(Deno.env.get("MONGO_URI")!);
 
 const db = mongo.database("production");
-const modules = db.collection<DBModule>("modules");
+const modules = db.collection<DBModule>(
+  "modules",
+);
 
-export interface DBModule {
-  _id: string;
+type DBModule = Omit<Module, "id"> & { _id: string };
+
+export interface Module {
+  name: string;
   type: string;
   repository: string;
   description: string;
@@ -21,14 +25,6 @@ export interface SearchResult {
   description: string;
   star_count: number;
   search_score: number;
-}
-
-export interface Module {
-  name: string;
-  type: string;
-  repository: string;
-  description: string;
-  star_count: number;
 }
 
 export async function getModule(name: string): Promise<Module | null> {
@@ -140,20 +136,7 @@ export async function countModules(): Promise<number> {
   return modules.count();
 }
 
-const builds = db.collection<DBBuild>("builds");
-
-export interface DBBuild {
-  _id: ObjectId;
-  options: {
-    moduleName: string;
-    type: string;
-    repository: string;
-    ref: string;
-    version: string;
-    subdir?: string;
-  };
-  status: string;
-}
+const builds = db.collection<Omit<Build, "id"> & { _id: ObjectId }>("builds");
 
 export interface Build {
   id: string;
@@ -166,6 +149,7 @@ export interface Build {
     subdir?: string;
   };
   status: string;
+  message?: string;
 }
 
 export async function getBuild(id: string): Promise<Build | null> {
@@ -182,6 +166,7 @@ export async function getBuild(id: string): Promise<Build | null> {
       subdir: build.options.subdir,
     },
     status: build.status,
+    message: build.message,
   };
 }
 
@@ -197,6 +182,7 @@ export async function createBuild(build: Omit<Build, "id">): Promise<string> {
         subdir: build.options.subdir,
       },
       status: build.status,
+      message: build.message,
     },
   );
   return id.$oid;
@@ -218,6 +204,7 @@ export async function saveBuild(build: Build): Promise<void> {
         subdir: build.options.subdir,
       },
       status: build.status,
+      message: build.message,
     },
     { upsert: true },
   );

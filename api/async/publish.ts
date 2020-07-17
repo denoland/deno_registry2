@@ -33,6 +33,7 @@ export async function handler(
           await saveBuild({
             ...build,
             status: "error",
+            message: err.message,
           });
         }
         break;
@@ -47,7 +48,7 @@ async function publishGithub(
 ) {
   await saveBuild({
     ...build,
-    status: "building",
+    status: "publishing",
   });
 
   const { options: { moduleName, repository, ref, version, subdir } } = build;
@@ -75,7 +76,7 @@ async function publishGithub(
       includeDirs: true,
     })
   ) {
-    // If this is a .git file, then ignore
+    // If this is a file in the .git folder, ignore it
     if (entry.path.startsWith(join(path, ".git/"))) continue;
     const filename = entry.path.substring(path.length);
     if (entry.isFile) {
@@ -105,7 +106,7 @@ async function publishGithub(
       );
       // TODO(lucacasonato): remove this. This is currently necessary because Deno does
       // not cache DNS, and the DNS resolver has a rate limit.
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 150));
     } else {
       directory.push({ path: filename, size: undefined, type: "dir" });
     }
@@ -169,5 +170,7 @@ async function publishGithub(
   await saveBuild({
     ...build,
     status: "success",
+    message:
+      `Uploaded ${pendingUploads.length} files. Skipped file ${skippedFiles} due to size.`,
   });
 }
