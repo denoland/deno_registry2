@@ -54,10 +54,7 @@ export async function handler(
     statusCode: 200,
     body: JSON.stringify({
       success: true,
-      data: {
-        total_count: count,
-        results,
-      },
+      data: { total_count: count, results },
     }),
   });
 }
