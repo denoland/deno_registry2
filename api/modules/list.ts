@@ -6,7 +6,7 @@ import {
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { listEntries, countEntries } from "../../utils/database.ts";
+import { listModules, countModules } from "../../utils/database.ts";
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -39,8 +39,8 @@ export async function handler(
   }
 
   const [results, count] = await Promise.all([
-    listEntries(limit, page, query),
-    countEntries(),
+    listModules(limit, page, query),
+    countModules(),
   ]);
 
   return respondJSON({

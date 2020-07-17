@@ -21,6 +21,38 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .
+      MemorySize: 128
+      Handler: bundle.handler
+      Runtime: provided
+      Layers:
+        - !GetAtt Deno.Outputs.LayerArn
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref StorageBucket
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt BuildQueue.QueueName
+      Environment:
+        Variables:
+          DENO_UNSTABLE: 1
+          HANDLER_EXT: js
+          MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/deno_registry2:SecretString:MongoURI}}"
+          STORAGE_BUCKET: !Ref StorageBucket
+          BUILD_QUEUE: !Ref BuildQueue
+      Timeout: 10
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref DenoHttpApi
+            Path: /webhook/gh/{name}
+            Method: POST
+    Metadata:
+      BuildMethod: makefile
+
+  AsyncPublishFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
       MemorySize: 1024
       Handler: bundle.handler
       Runtime: provided
@@ -36,14 +68,13 @@ Resources:
           HANDLER_EXT: js
           MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/deno_registry2:SecretString:MongoURI}}"
           STORAGE_BUCKET: !Ref StorageBucket
-      Timeout: 60
+      Timeout: 120
       Events:
-        ApiEvent:
-          Type: HttpApi
+        BuildQueueTrigger:
+          Type: SQS
           Properties:
-            ApiId: !Ref DenoHttpApi
-            Path: /webhook/gh/{name}
-            Method: POST
+            Queue: !GetAtt BuildQueue.Arn
+            BatchSize: 1
     Metadata:
       BuildMethod: makefile
 
@@ -79,6 +110,11 @@ Resources:
         CorsRules:
           - AllowedMethods: [GET]
             AllowedOrigins: ["*"]
+
+  BuildQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 121
 
 Outputs:
   ApiEndpoint:

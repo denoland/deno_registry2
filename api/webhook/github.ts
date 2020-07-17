@@ -1,41 +1,21 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
 import {
-  walk,
-  join,
-  prettyBytes,
   APIGatewayProxyEventV2,
   Context,
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { clone } from "../../utils/git.ts";
-import { getEntry, saveEntry } from "../../utils/database.ts";
-import {
-  uploadMeta,
-  uploadVersionMeta,
-  uploadVersionRaw,
-  getMeta,
-} from "../../utils/storage.ts";
+import { getModule, saveModule, createBuild } from "../../utils/database.ts";
+import { getMeta } from "../../utils/storage.ts";
 import type { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
+import { queueBuild } from "../../utils/queue.ts";
+import type { VersionInfo } from "../../utils/types.ts";
 
-const MAX_FILE_SIZE = 100_000;
 const VALID_NAME = /[A-Za-z0-9_]{1,40}/;
 
-const encoder = new TextEncoder();
 const decoder = new TextDecoder();
-
-interface VersionInfo {
-  latest: string;
-  versions: string[];
-}
-
-interface DirectoryListingFile {
-  path: string;
-  size: number | undefined;
-  type: "dir" | "file";
-}
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -150,7 +130,7 @@ export async function handler(
     }
   }
 
-  const entry = await getEntry(moduleName);
+  const entry = await getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
     if (!(entry.type === "github" && entry.repository === repository)) {
@@ -164,18 +144,13 @@ export async function handler(
     }
   }
 
-  // Construct meta information
-  const meta = {
+  // Update meta information in MongoDB (registers module if not present yet)
+  await saveModule({
+    name: moduleName,
     type: "github",
     repository,
     description: webhook.repository.description,
     star_count: webhook.repository.stargazers_count,
-  };
-
-  // Update meta information in MongoDB (registers module if not present yet)
-  await saveEntry({
-    name: moduleName,
-    ...meta,
   });
 
   // Check that version doesn't already exist
@@ -193,127 +168,21 @@ export async function handler(
     });
   }
 
-  // Clone the repository from GitHub
-  const cloneURL = `https://github.com/${repository}`;
-  const clonePath = await clone(cloneURL, ref);
+  // Check that a build has not already been queued
 
-  // Upload files to S3
-  const skippedFiles: string[] = [];
-  const pendingUploads: Promise<void>[] = [];
-  const directory: DirectoryListingFile[] = [];
+  const buildID = await createBuild({
+    options: {
+      type: "github",
+      moduleName,
+      repository,
+      ref,
+      version,
+      subdir: subdir ?? undefined,
+    },
+    status: "queued",
+  });
 
-  // Create path that has possible subdir prefix
-  const path = (subdir === null ? clonePath : join(clonePath, subdir)).replace(
-    /\/$/,
-    "",
-  );
-
-  let totalBytes = 0;
-
-  // Walk all files in the repository (that start with the subdir if present)
-  for await (
-    const entry of walk(path, {
-      includeFiles: true,
-      includeDirs: true,
-    })
-  ) {
-    // If this is a .git file, then ignore
-    if (entry.path.startsWith(join(path, ".git/"))) continue;
-    const filename = entry.path.substring(path.length);
-    if (entry.isFile) {
-      pendingUploads.push(
-        Deno.open(entry.path).then(async (file) => {
-          try {
-            const body = await Deno.readAll(file);
-            if (body.length > MAX_FILE_SIZE) {
-              skippedFiles.push(filename);
-              return;
-            }
-            directory.push({ path: filename, size: body.length, type: "file" });
-            await uploadVersionRaw(
-              moduleName,
-              version,
-              filename,
-              body,
-            );
-            totalBytes += body.length;
-          } catch (err) {
-            console.log("err", filename, err);
-          } finally {
-            file.close();
-          }
-        }),
-      );
-      // TODO(lucacasonato): remove this. This is currently necessary because Deno does
-      // not cache DNS, and the DNS resolver has a rate limit.
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    } else {
-      directory.push({ path: filename, size: undefined, type: "dir" });
-    }
-  }
-
-  // Upload latest version to S3
-  pendingUploads.push(
-    getMeta(moduleName, "versions.json").then(async (body) => {
-      const versions = body
-        ? JSON.parse(decoder.decode(body))
-        : { versions: [] };
-      await uploadMeta(
-        moduleName,
-        "versions.json",
-        encoder.encode(
-          JSON.stringify(
-            { latest: version, versions: [version, ...versions.versions] },
-          ),
-        ),
-      );
-    }),
-  );
-
-  // Wait for all uploads to S3 to complete
-  await Promise.all(pendingUploads);
-
-  await Deno.remove(clonePath, { recursive: true });
-
-  // Calculate directory sizes
-  // TODO: make more efficient
-  for (const entry of directory) {
-    if (entry.type === "dir") {
-      entry.size = 0;
-      for (
-        const f of directory.filter(
-          (f) => f.type === "file" && f.path.startsWith(entry.path),
-        )
-      ) {
-        entry.size += f.size ?? 0;
-      }
-    }
-  }
-
-  // Upload directory listing to S3
-  await uploadVersionMeta(
-    moduleName,
-    version,
-    "meta.json",
-    encoder.encode(JSON.stringify({
-      uploaded_at: new Date().toISOString(),
-      directory_listing: directory,
-      upload_options: {
-        type: "github",
-        repository,
-        subdir,
-        ref,
-      },
-    })),
-  );
-
-  console.log(
-    moduleName,
-    version,
-    "total bytes uploaded",
-    prettyBytes(totalBytes),
-  );
-  console.log(moduleName, version, "skipped due to size", skippedFiles);
+  await queueBuild(buildID);
 
   return respondJSON({
     statusCode: 200,
@@ -323,8 +192,7 @@ export async function handler(
         module: moduleName,
         version,
         repository: repository,
-        total_bytes_uploaded: totalBytes,
-        skipped_due_to_size: skippedFiles,
+        status_url: `https://deno.land/x/-/status/${buildID}`,
       },
     }),
   });
