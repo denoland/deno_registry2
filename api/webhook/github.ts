@@ -1,5 +1,13 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
+/**
+ * This function receives webhook events from GitHub. When an event is received
+ * the service checks if it comes from GitHub, if the module name and repository
+ * ID match up, and if this version of the module has been uploaded already. If
+ * all of these checks pass a build is created in MongoDB and the ID of this
+ * build is added to the AWS SQS build queue to be processed asynchronously.
+ */
+
 import {
   APIGatewayProxyEventV2,
   Context,

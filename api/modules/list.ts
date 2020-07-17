@@ -1,5 +1,12 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
+/**
+ * This function is responsible for listing the modules stored in the
+ * database. It can be filtered with a search query and is paginated.
+ * The function is triggered by a HTTP GET call to /modules. More
+ * information in API.md. 
+ */
+
 import {
   APIGatewayProxyEventV2,
   Context,
