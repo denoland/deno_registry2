@@ -168,7 +168,7 @@ export async function handler(
     });
   }
 
-  // Check that a build has not already been queued
+  // TODO(lucacasonato): Check that a build has not already been queued
 
   const buildID = await createBuild({
     options: {
