@@ -25,6 +25,11 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
+      - name: Start mongoDB
+        uses: wbari/start-mongoDB@v0.2
+        with:
+          mongoDBVersion: 4.2
+
       - name: Test
         run: deno test
 

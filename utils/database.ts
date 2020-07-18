@@ -35,11 +35,11 @@ export interface Build {
 
 export class Database {
   private mongo = new MongoClient();
-  private db = this.mongo.database("production");
-  private modules = this.db.collection<DBModule>(
+  protected db = this.mongo.database("production");
+  _modules = this.db.collection<DBModule>(
     "modules",
   );
-  private builds = this.db.collection<Omit<Build, "id"> & { _id: ObjectId }>(
+  _builds = this.db.collection<Omit<Build, "id"> & { _id: ObjectId }>(
     "builds",
   );
 
@@ -50,7 +50,7 @@ export class Database {
   async getModule(name: string): Promise<Module | null> {
     // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
     // deno-lint-ignore no-explicit-any
-    const entry = await this.modules.findOne({ _id: name.toString() } as any);
+    const entry = await this._modules.findOne({ _id: name.toString() } as any);
     if (entry === null) return null;
     return {
       name: entry._id,
@@ -62,7 +62,7 @@ export class Database {
   }
 
   async saveModule(module: Module): Promise<void> {
-    await this.modules.updateOne(
+    await this._modules.updateOne(
       {
         // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
         // deno-lint-ignore no-explicit-any
@@ -133,7 +133,7 @@ export class Database {
       ];
 
     //  Query the database
-    const docs = (await this.modules.aggregate([
+    const docs = (await this._modules.aggregate([
       ...searchAggregation,
       {
         $skip: (page - 1) * limit,
@@ -153,11 +153,11 @@ export class Database {
   }
 
   async countModules(): Promise<number> {
-    return this.modules.count();
+    return this._modules.count();
   }
 
   async getBuild(id: string): Promise<Build | null> {
-    const build = await this.builds.findOne({ _id: ObjectId(id) });
+    const build = await this._builds.findOne({ _id: ObjectId(id) });
     if (build === null) return null;
     return {
       id: build._id.$oid,
@@ -175,7 +175,7 @@ export class Database {
   }
 
   async createBuild(build: Omit<Build, "id">): Promise<string> {
-    const id = await this.builds.insertOne(
+    const id = await this._builds.insertOne(
       {
         options: {
           moduleName: build.options.moduleName,
@@ -193,7 +193,7 @@ export class Database {
   }
 
   async saveBuild(build: Build): Promise<void> {
-    await this.builds.updateOne(
+    await this._builds.updateOne(
       {
         _id: ObjectId(build.id),
       },
