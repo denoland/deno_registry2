@@ -14,7 +14,7 @@ import {
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { getModule, saveModule, createBuild } from "../../utils/database.ts";
+import { Database } from "../../utils/database.ts";
 import { getMeta } from "../../utils/storage.ts";
 import type { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
@@ -24,6 +24,8 @@ import type { VersionInfo } from "../../utils/types.ts";
 const VALID_NAME = /[A-Za-z0-9_]{1,40}/;
 
 const decoder = new TextDecoder();
+
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -138,7 +140,7 @@ export async function handler(
     }
   }
 
-  const entry = await getModule(moduleName);
+  const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
     if (!(entry.type === "github" && entry.repository === repository)) {
@@ -153,7 +155,7 @@ export async function handler(
   }
 
   // Update meta information in MongoDB (registers module if not present yet)
-  await saveModule({
+  await database.saveModule({
     name: moduleName,
     type: "github",
     repository,
@@ -178,7 +180,7 @@ export async function handler(
 
   // TODO(lucacasonato): Check that a build has not already been queued
 
-  const buildID = await createBuild({
+  const buildID = await database.createBuild({
     options: {
       type: "github",
       moduleName,
