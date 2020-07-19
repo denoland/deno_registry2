@@ -31,10 +31,14 @@ jobs:
           mongoDBVersion: 4.2
 
       - name: Test
-        run: deno test
+        run: deno test --unstable
 
-      - name: Compile api/webhook/github.ts
-        run: deno cache --unstable ./api/webhook/github.ts
+      - name: Compile API endpoints
+        run: |
+          deno cache --unstable ./api/async/publish.ts
+          deno cache --unstable ./api/builds/get.ts
+          deno cache --unstable ./api/modules/list.ts
+          deno cache --unstable ./api/webhook/github.ts
 
       - name: Build
         run: sam build
