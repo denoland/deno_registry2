@@ -1,6 +1,6 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { assert, assertEquals, assertThrows } from "../test_deps.ts";
+import { assertEquals } from "../test_deps.ts";
 import { Database, Module, Build } from "./database.ts";
 
 const database = new Database("mongodb://localhost:27017");
