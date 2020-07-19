@@ -45,6 +45,18 @@ export class Database {
 
   constructor(mongoUri: string) {
     this.mongo.connectWithUri(mongoUri);
+    this._modules.createIndexes(
+      [
+        {
+          keys: { star_count: 1 },
+          options: { name: "by_star_count", background: true },
+        },
+        {
+          keys: { repository: 1 },
+          options: { name: "by_repository", background: true },
+        },
+      ],
+    );
   }
 
   async getModule(name: string): Promise<Module | null> {
@@ -154,6 +166,11 @@ export class Database {
 
   async countModules(): Promise<number> {
     return this._modules.count();
+  }
+
+  async countModulesForRepository(repository: string): Promise<number> {
+    const modules = await this._modules.find({ repository });
+    return modules.length;
   }
 
   async getBuild(id: string): Promise<Build | null> {
