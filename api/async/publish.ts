@@ -10,7 +10,7 @@
  */
 
 import { join, walk, SQSEvent, Context } from "../../deps.ts";
-import { getBuild, Build, saveBuild } from "../../utils/database.ts";
+import { Build, Database } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
   uploadVersionMeta,
@@ -19,6 +19,8 @@ import {
   getMeta,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
+
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const MAX_FILE_SIZE = 100_000;
 
@@ -31,7 +33,7 @@ export async function handler(
 ): Promise<void> {
   for (const record of event.Records) {
     const { buildID } = JSON.parse(record.body);
-    const build = await getBuild(buildID);
+    const build = await database.getBuild(buildID);
     if (build === null) {
       throw new Error("Build does not exist!");
     }
@@ -41,7 +43,7 @@ export async function handler(
           await publishGithub(build);
         } catch (err) {
           console.log("error", err);
-          await saveBuild({
+          await database.saveBuild({
             ...build,
             status: "error",
             message: err.message,
@@ -57,7 +59,7 @@ export async function handler(
 async function publishGithub(
   build: Build,
 ) {
-  await saveBuild({
+  await database.saveBuild({
     ...build,
     status: "publishing",
   });
@@ -178,7 +180,7 @@ async function publishGithub(
     })),
   );
 
-  await saveBuild({
+  await database.saveBuild({
     ...build,
     status: "success",
     message:

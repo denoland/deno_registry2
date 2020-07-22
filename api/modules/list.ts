@@ -13,7 +13,9 @@ import {
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { listModules, countModules } from "../../utils/database.ts";
+import { Database } from "../../utils/database.ts";
+
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -46,8 +48,8 @@ export async function handler(
   }
 
   const [results, count] = await Promise.all([
-    listModules(limit, page, query),
-    countModules(),
+    database.listModules(limit, page, query),
+    database.countModules(),
   ]);
 
   return respondJSON({

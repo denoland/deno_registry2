@@ -11,7 +11,9 @@ import {
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { getBuild } from "../../utils/database.ts";
+import { Database } from "../../utils/database.ts";
+
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -26,7 +28,7 @@ export async function handler(
     });
   }
 
-  const build = await getBuild(id);
+  const build = await database.getBuild(id);
 
   if (build === null) {
     return respondJSON({

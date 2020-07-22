@@ -25,11 +25,20 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
-      - name: Test
-        run: deno test
+      - name: Start mongoDB
+        uses: wbari/start-mongoDB@v0.2
+        with:
+          mongoDBVersion: 4.2
 
-      - name: Compile api/webhook/github.ts
-        run: deno cache --unstable ./api/webhook/github.ts
+      - name: Test
+        run: deno test -A --unstable
+
+      - name: Compile API endpoints
+        run: |
+          deno cache --unstable ./api/async/publish.ts
+          deno cache --unstable ./api/builds/get.ts
+          deno cache --unstable ./api/modules/list.ts
+          deno cache --unstable ./api/webhook/github.ts
 
       - name: Build
         run: sam build
