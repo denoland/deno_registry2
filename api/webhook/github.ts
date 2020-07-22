@@ -219,7 +219,7 @@ export async function handler(
         module: moduleName,
         version,
         repository: repository,
-        status_url: `https://deno.land/x/-/status/${buildID}`,
+        status_url: `https://deno.land/status/${buildID}`,
       },
     }),
   });
