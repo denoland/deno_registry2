@@ -100,9 +100,9 @@ export async function handler(
     });
   }
 
-  const versionPrefix =
-    decodeURIComponent(event.queryStringParameters?.version_prefix ?? "") ||
-    null;
+  const versionPrefix = decodeURIComponent(
+    event.queryStringParameters?.version_prefix ?? "",
+  );
 
   if (!ref.startsWith(versionPrefix)) {
     return respondJSON({
@@ -114,9 +114,7 @@ export async function handler(
     });
   }
 
-  const version = versionPrefix === null
-    ? ref
-    : ref.substring(versionPrefix.length);
+  const version = ref.substring(versionPrefix.length);
 
   const subdir =
     decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
