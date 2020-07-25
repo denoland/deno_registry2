@@ -156,6 +156,11 @@ export class Database {
     return this._modules.count();
   }
 
+  async countModulesForRepository(repository: string): Promise<number> {
+    const modules = await this._modules.find({ repository });
+    return modules.length;
+  }
+
   async getBuild(id: string): Promise<Build | null> {
     const build = await this._builds.findOne({ _id: ObjectId(id) });
     if (build === null) return null;

@@ -15,7 +15,9 @@ This is the backend for the deno.land/x service.
 4. Save this connection string in AWS Secrets Manager with the name `mongodb/atlas/deno_registry2` and the value key `MongoURI`.
 5. Create a database called `production` in your cluster.
 6. In this database create a collection called `modules`.
-7. In this collection create a new Atlas Search index with the name `default` and the mapping defined in `atlas_search_index_mapping.json`
+7. In this collection create a new Atlas Search index with the name `default` and the mapping defined in `indexes/atlas_search_index_mapping.json`
+8. In this collection create a new index with the name `by_repository` like it is defined in `indexes/by_repository.json`
+9. In this collection create a new index with the name `by_star_count` like it is defined in `indexes/by_star_count.json`
 
 ## Deploy
 

@@ -22,6 +22,7 @@ import { queueBuild } from "../../utils/queue.ts";
 import type { VersionInfo } from "../../utils/types.ts";
 
 const VALID_NAME = /[A-Za-z0-9_]{1,40}/;
+const MAX_MODULES_PER_REPOSITORY = 3;
 
 const decoder = new TextDecoder();
 
@@ -99,9 +100,9 @@ export async function handler(
     });
   }
 
-  const versionPrefix =
-    decodeURIComponent(event.queryStringParameters?.version_prefix ?? "") ||
-    null;
+  const versionPrefix = decodeURIComponent(
+    event.queryStringParameters?.version_prefix ?? "",
+  );
 
   if (!ref.startsWith(versionPrefix)) {
     return respondJSON({
@@ -113,9 +114,7 @@ export async function handler(
     });
   }
 
-  const version = versionPrefix === null
-    ? ref
-    : ref.substring(versionPrefix.length);
+  const version = ref.substring(versionPrefix.length);
 
   const subdir =
     decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
@@ -149,6 +148,22 @@ export async function handler(
         body: JSON.stringify({
           success: false,
           error: "module name is registered to a different repository",
+        }),
+      });
+    }
+  } else {
+    // If this entry doesn't exist yet check how many modules this repo
+    // already has.
+    if (
+      await database.countModulesForRepository(repository) >=
+        MAX_MODULES_PER_REPOSITORY
+    ) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error:
+            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
         }),
       });
     }
@@ -202,7 +217,7 @@ export async function handler(
         module: moduleName,
         version,
         repository: repository,
-        status_url: `https://deno.land/x/-/status/${buildID}`,
+        status_url: `https://deno.land/status/${buildID}`,
       },
     }),
   });
