@@ -90,7 +90,12 @@ async function publishGithub(
     })
   ) {
     // If this is a file in the .git folder, ignore it
-    if (entry.path.startsWith(join(path, ".git/"))) continue;
+    if (
+      entry.path.startsWith(join(path, ".git/")) ||
+      entry.path === join(path, ".git")
+    ) {
+      continue;
+    }
     const filename = entry.path.substring(path.length);
     if (entry.isFile) {
       pendingUploads.push(
