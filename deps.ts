@@ -6,7 +6,7 @@ export {
   readJsonSync,
 } from "https://deno.land/std@v0.61.0/fs/mod.ts";
 export { join } from "https://deno.land/std@v0.61.0/path/mod.ts";
-export { S3Client } from "https://raw.githubusercontent.com/lucacasonato/deno_s3/9e6d432a26c6ffb4dbc22e585ead2503ebca3025/mod.ts";
+export { S3Bucket } from "https://raw.githubusercontent.com/lucacasonato/deno_s3/c95333785085800615060a65c97a97df33ba7b43/mod.ts";
 export { prettyBytes } from "https://raw.githubusercontent.com/brunnerlivio/deno-pretty-bytes/master/mod.ts";
 export * as YAML from "https://deno.land/std@v0.61.0/encoding/yaml.ts";
 export type {

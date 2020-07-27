@@ -1,8 +1,8 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { S3Client, join } from "../deps.ts";
+import { S3Bucket, join } from "../deps.ts";
 
-const s3 = new S3Client(
+const s3 = new S3Bucket(
   {
     bucket: Deno.env.get("STORAGE_BUCKET")!,
     region: Deno.env.get("AWS_REGION")!,
@@ -15,10 +15,11 @@ export async function getMeta(
   module: string,
   file: string,
 ): Promise<Uint8Array | undefined> {
-  return s3.getObject(
+  const resp = await s3.getObject(
     join(module, "meta", file),
     {},
   );
+  return resp.body;
 }
 
 export async function uploadMeta(
