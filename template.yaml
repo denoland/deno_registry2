@@ -68,7 +68,7 @@ Resources:
           HANDLER_EXT: js
           MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/deno_registry2:SecretString:MongoURI}}"
           STORAGE_BUCKET: !Ref StorageBucket
-      Timeout: 120
+      Timeout: 300
       Events:
         BuildQueueTrigger:
           Type: SQS
@@ -140,7 +140,7 @@ Resources:
   BuildQueue:
     Type: AWS::SQS::Queue
     Properties:
-      VisibilityTimeout: 121
+      VisibilityTimeout: 301
 
 Outputs:
   ApiEndpoint:
