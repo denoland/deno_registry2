@@ -8,7 +8,7 @@ Resources:
     Properties:
       Location:
         ApplicationId: arn:aws:serverlessrepo:us-east-1:390065572566:applications/deno
-        SemanticVersion: 1.2.0
+        SemanticVersion: 1.2.1
 
   DenoHttpApi:
     Type: AWS::Serverless::HttpApi
