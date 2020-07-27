@@ -1,4 +1,6 @@
-const data = JSON.parse(Deno.readTextFileSync("./data.json"));
+const data = JSON.parse(Deno.readTextFileSync("./releases.json"));
+
+let totalReleases = 0;
 
 console.log(data.length, "# modules");
 
@@ -13,3 +15,12 @@ console.log("MODULES THAT ARE NOT 200");
 console.log(
   data.filter((d: any) => d.status !== 200).map((d: any) => d.name),
 );
+
+for (const d of data) {
+  totalReleases += d.data.length;
+}
+
+console.log("-----------");
+console.log(totalReleases, "# releases");
+
+export {};

@@ -90,6 +90,13 @@
     "desc": "➗ Powerful math library for Deno, powered by wasm.",
     "default_version": "master"
   },
+  "aloedb": {
+    "type": "github",
+    "owner": "Kirlovon",
+    "repo": "AloeDB",
+    "desc": "Light, Embeddable, NoSQL database for Deno 🌿",
+    "default_version": "master"
+  },
   "alosaur": {
     "type": "github",
     "owner": "irustm",
@@ -159,6 +166,13 @@
     "owner": "HarryET",
     "repo": "Arangeno",
     "desc": "Deno port of ArangoJS - ArangoDB Driver 🥑",
+    "default_version": "master"
+  },
+  "arch": {
+    "type": "github",
+    "owner": "denorg",
+    "repo": "arch",
+    "desc": "Get the actual operating system CPU architecture",
     "default_version": "master"
   },
   "argon2": {
@@ -422,6 +436,13 @@
     "desc": "bls12-381, a pairing-friendly elliptic curve construction.",
     "default_version": "master"
   },
+  "body_parser": {
+    "type": "github",
+    "owner": "Cretezy",
+    "repo": "deno_body_parser",
+    "desc": "A generic Deno HTTP body parser",
+    "default_version": "master"
+  },
   "boolbase": {
     "type": "github",
     "owner": "DenoBRComunitty",
@@ -490,6 +511,20 @@
     "owner": "dan-online",
     "repo": "cabinet",
     "desc": "The easier way to manage local files in Deno.",
+    "default_version": "master"
+  },
+  "cache": {
+    "type": "github",
+    "owner": "denosaurs",
+    "repo": "cache",
+    "desc": "Library to handle deno file caching ",
+    "default_version": "master"
+  },
+  "calcite": {
+    "type": "github",
+    "owner": "Srinivasa314",
+    "repo": "calcite-ts",
+    "desc": "A library to create deno plugins",
     "default_version": "master"
   },
   "caller": {
@@ -856,6 +891,13 @@
     "desc": "Configurable talking cow for Deno",
     "default_version": "master"
   },
+  "crc32": {
+    "type": "github",
+    "owner": "deno-library",
+    "repo": "crc32",
+    "desc": "crc32 for Deno",
+    "default_version": "master"
+  },
   "create_deno_plugin": {
     "type": "github",
     "owner": "chiefbiiko",
@@ -868,6 +910,13 @@
     "owner": "wrzonki",
     "repo": "deno-cron",
     "desc": "Simple cron scheduler for Deno",
+    "default_version": "master"
+  },
+  "cron_expressions": {
+    "type": "github",
+    "owner": "rkrx",
+    "repo": "cron-expressions",
+    "desc": "Cron-expression parser and tooling",
     "default_version": "master"
   },
   "crontab": {
@@ -1054,6 +1103,13 @@
     "owner": "manyuanrong",
     "repo": "deno-deamon",
     "desc": "Make the Deno program run in the background",
+    "default_version": "master"
+  },
+  "debot": {
+    "type": "github",
+    "owner": "viandwi24",
+    "repo": "debot",
+    "desc": "A simple framework for help you build a bot.",
     "default_version": "master"
   },
   "debuglog": {
@@ -1835,6 +1891,13 @@
     "desc": "A module manager for Deno",
     "default_version": "master"
   },
+  "dndb": {
+    "type": "github",
+    "owner": "denyncrawford",
+    "repo": "dndb",
+    "desc": "A Deno 🦕 persistent database for JS & TS.",
+    "default_version": "master"
+  },
   "dnit": {
     "type": "github",
     "owner": "PaulThompson",
@@ -2052,13 +2115,6 @@
     "desc": "ed25519, an elliptic curve that could be used for assymetric encryption and EDDSA signature scheme.",
     "default_version": "master"
   },
-  "effector": {
-    "type": "github",
-    "owner": "zerobias",
-    "repo": "effector",
-    "desc": "The state manager ☄️",
-    "default_version": "master"
-  },
   "ejs_deno": {
     "type": "github",
     "owner": "femiruby",
@@ -2218,6 +2274,13 @@
     "owner": "LitoMore",
     "repo": "fanfou-sdk-deno",
     "desc": "Fanfou SDK for Deno",
+    "default_version": "master"
+  },
+  "fastest_levenshtein": {
+    "type": "github",
+    "owner": "ka-weihe",
+    "repo": "fastest-levenshtein",
+    "desc": "The fastest Levenshtein distance implementation.",
     "default_version": "master"
   },
   "fastlist": {
@@ -2600,6 +2663,13 @@
     "desc": "http-server is a tiny and zero-configuration HTTP server with useful features to serve static files with Deno",
     "default_version": "master"
   },
+  "http_status": {
+    "type": "github",
+    "owner": "brion-fuller",
+    "repo": "http-status",
+    "desc": "http-status is a simple HTTP status utility for deno",
+    "default_version": "master"
+  },
   "http_wrapper": {
     "type": "github",
     "owner": "lindsaykwardell",
@@ -2697,6 +2767,13 @@
     "owner": "iosamuel",
     "repo": "imt",
     "desc": "Implementation of TMI.JS as Twitch client for Deno",
+    "default_version": "master"
+  },
+  "indenosia": {
+    "type": "github",
+    "owner": "indenosia",
+    "repo": "server",
+    "desc": "HTTP server framework for Deno.",
     "default_version": "master"
   },
   "indigobird": {
@@ -3210,7 +3287,7 @@
     "owner": "TheWizardBear",
     "repo": "maze_generator",
     "desc": "A module for generating mazes.",
-    "default_version": "master"
+    "default_version": "main"
   },
   "media_typer": {
     "type": "github",
@@ -3225,6 +3302,13 @@
     "repo": "media_types",
     "desc": "A module that assists in resolving media types and extensions.",
     "default_version": "main"
+  },
+  "memes": {
+    "type": "github",
+    "owner": "Snowflake107",
+    "repo": "memes",
+    "desc": "Simple module to fetch memes from subreddit.",
+    "default_version": "master"
   },
   "memoize": {
     "type": "github",
@@ -3245,6 +3329,13 @@
     "owner": "spitlo",
     "repo": "mercuriceratops",
     "desc": "A basic command line client for the Gemini protocol for deno.",
+    "default_version": "master"
+  },
+  "merlin": {
+    "type": "github",
+    "owner": "crewdevio",
+    "repo": "merlin",
+    "desc": "Testing and Benchmarking framework for deno 🧙‍♂️",
     "default_version": "master"
   },
   "meteorite": {
@@ -3527,6 +3618,13 @@
     "desc": "Njalla API wrapper for Deno.",
     "default_version": "master"
   },
+  "nlp": {
+    "type": "github",
+    "owner": "michael-spengler",
+    "repo": "nlp",
+    "desc": "Deno Module for Natural Language Processing (NLP)",
+    "default_version": "master"
+  },
   "node_buffer": {
     "type": "github",
     "owner": "AliBasicCoder",
@@ -3697,6 +3795,13 @@
     "desc": "Proxy middleware for Opine HTTP servers.",
     "default_version": "main"
   },
+  "optic": {
+    "type": "github",
+    "owner": "onjara",
+    "repo": "optic",
+    "desc": "Powerful, extensible, easy to use logging framework for Deno",
+    "default_version": "master"
+  },
   "orange": {
     "type": "github",
     "owner": "mandarineorg",
@@ -3828,6 +3933,13 @@
     "owner": "DiFronzo",
     "repo": "pkce-deno",
     "desc": "PKCE code verifier and challenge generator for Deno.",
+    "default_version": "master"
+  },
+  "plug": {
+    "type": "github",
+    "owner": "denosaurs",
+    "repo": "plug",
+    "desc": "A module for managing deno plugins",
     "default_version": "master"
   },
   "plugin_prepare": {
@@ -4350,6 +4462,13 @@
     "desc": "🦕 A reactive programming library for Deno ⚡ ",
     "default_version": "master"
   },
+  "s3": {
+    "type": "github",
+    "owner": "lucacasonato",
+    "repo": "deno_s3",
+    "desc": "Amazon S3 for Deno",
+    "default_version": "main"
+  },
   "sass": {
     "type": "github",
     "owner": "divy-work",
@@ -4390,6 +4509,13 @@
     "owner": "krijn-inc",
     "repo": "seed",
     "desc": "Deno package used to generate good, short and fast pseudorandom numbers using a seed",
+    "default_version": "master"
+  },
+  "segno": {
+    "type": "github",
+    "owner": "Keimeno",
+    "repo": "segno",
+    "desc": "segno (Segnosaurus). Validation library for Deno 🦕. Enforcing a high security standard.",
     "default_version": "master"
   },
   "semver": {
@@ -4618,6 +4744,13 @@
     "desc": "Native plugin for SQLite using rusqlite",
     "default_version": "master"
   },
+  "sqs": {
+    "type": "github",
+    "owner": "lucacasonato",
+    "repo": "deno_sqs",
+    "desc": "Amazon SQS for Deno",
+    "default_version": "main"
+  },
   "ssds": {
     "type": "github",
     "owner": "claytsay",
@@ -4674,12 +4807,26 @@
     "desc": "Transforms text to StUdLy CaPs",
     "default_version": "master"
   },
+  "summon": {
+    "type": "github",
+    "owner": "MartonDev",
+    "repo": "summon",
+    "desc": "An elegant requests library for Deno, modelled after axios",
+    "default_version": "master"
+  },
   "superdeno": {
     "type": "github",
     "owner": "asos-craigmorten",
     "repo": "superdeno",
     "desc": "HTTP assertions for Deno made easy via superagent.",
     "default_version": "main"
+  },
+  "supermemo": {
+    "type": "github",
+    "owner": "maxvien",
+    "repo": "supermemo",
+    "desc": "A JavaScript/TypeScript implementation of the SuperMemo 2 (SM2) algorithm for spaced based repetition flashcards.",
+    "default_version": "master"
   },
   "superoak": {
     "type": "github",
@@ -4861,6 +5008,13 @@
     "owner": "zekth",
     "repo": "deno_tiny_templates",
     "desc": "Deno Tiny Templates",
+    "default_version": "master"
+  },
+  "tinyfiledialogs": {
+    "type": "github",
+    "owner": "Srinivasa314",
+    "repo": "tinyfiledialogs-deno",
+    "desc": "A port of tinyfiledialogs-rs for use in Deno",
     "default_version": "master"
   },
   "title": {
@@ -5368,6 +5522,13 @@
     "owner": "Aasim-A",
     "repo": "yt_xml2srt",
     "desc": "A tiny package to convert YouTube caption format from XML to SRT with ZERO dependencies.",
+    "default_version": "master"
+  },
+  "yummy": {
+    "type": "github",
+    "owner": "satyawikananda",
+    "repo": "yummy",
+    "desc": "A simple wrapper themealdb.com API for Deno 🦕.",
     "default_version": "master"
   },
   "zap": {
