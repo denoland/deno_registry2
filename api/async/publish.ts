@@ -42,7 +42,7 @@ export async function handler(
         try {
           await publishGithub(build);
         } catch (err) {
-          console.log("error", err);
+          console.log("error", err, err?.response);
           await database.saveBuild({
             ...build,
             status: "error",
