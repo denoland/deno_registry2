@@ -25,7 +25,6 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const MAX_FILE_SIZE = 100_000;
 
-const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 export async function handler(

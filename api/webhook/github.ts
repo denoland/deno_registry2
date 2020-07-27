@@ -24,7 +24,6 @@ import type { VersionInfo } from "../../utils/types.ts";
 const VALID_NAME = /[A-Za-z0-9_]{3,40}/;
 const MAX_MODULES_PER_REPOSITORY = 3;
 
-const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
