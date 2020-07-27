@@ -73,7 +73,7 @@ async function publishGithub(
   // Clone the repository from GitHub
   const cloneURL = `https://github.com/${repository}`;
   const clonePath = await clone(cloneURL, ref);
-  
+
   console.log("Finished clone");
 
   try {
