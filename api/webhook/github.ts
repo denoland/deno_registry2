@@ -14,16 +14,20 @@ import {
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { getModule, saveModule, createBuild } from "../../utils/database.ts";
-import { getMeta } from "../../utils/storage.ts";
+import { Database } from "../../utils/database.ts";
+import { getMeta, uploadMeta } from "../../utils/storage.ts";
 import type { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
 import { queueBuild } from "../../utils/queue.ts";
 import type { VersionInfo } from "../../utils/types.ts";
 
-const VALID_NAME = /[A-Za-z0-9_]{1,40}/;
+const VALID_NAME = /[A-Za-z0-9_]{3,40}/;
+const MAX_MODULES_PER_REPOSITORY = 3;
 
+const encoder = new TextEncoder();
 const decoder = new TextDecoder();
+
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -53,18 +57,121 @@ export async function handler(
 
   const headers = new Headers(event.headers);
 
-  // Check that event is a GitHub `create` event.
+  // Check the GitHub event type.
   const ghEvent = headers.get("x-github-event");
-  if (ghEvent !== "create") {
+
+  switch (ghEvent) {
+    case "ping":
+      return pingEvent({ headers, moduleName, event });
+    case "create":
+      return createEvent({ headers, moduleName, event });
+    default:
+      return respondJSON({
+        statusCode: 200,
+        body: JSON.stringify({
+          success: false,
+          info: "not a create event",
+        }),
+      });
+  }
+}
+
+async function pingEvent(
+  { headers, moduleName, event }: {
+    headers: Headers;
+    moduleName: string;
+    event: APIGatewayProxyEventV2;
+  },
+): Promise<APIGatewayProxyResultV2> {
+  // Get version, version type, and repository from event
+  if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
     return respondJSON({
-      statusCode: 200,
+      statusCode: 400,
       body: JSON.stringify({
         success: false,
-        info: "not a create event",
+        error: "content-type is not json",
       }),
     });
   }
+  if (!event.body) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "no body provided",
+      }),
+    });
+  }
+  const webhook = JSON.parse(event.body) as WebhookPayloadPing;
+  const repository = webhook.repository.full_name;
 
+  const entry = await database.getModule(moduleName);
+  if (entry) {
+    // Check that entry matches repo
+    if (!(entry.type === "github" && entry.repository === repository)) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error: "module name is registered to a different repository",
+        }),
+      });
+    }
+  } else {
+    // If this entry doesn't exist yet check how many modules this repo
+    // already has.
+    if (
+      await database.countModulesForRepository(repository) >=
+        MAX_MODULES_PER_REPOSITORY
+    ) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error:
+            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+        }),
+      });
+    }
+  }
+
+  // Update meta information in MongoDB (registers module if not present yet)
+  await database.saveModule({
+    name: moduleName,
+    type: "github",
+    repository,
+    description: webhook.repository.description ?? "",
+    star_count: webhook.repository.stargazers_count,
+  });
+
+  const versionInfoBody = await getMeta(moduleName, "versions.json");
+  if (versionInfoBody === undefined) {
+    await uploadMeta(
+      moduleName,
+      "versions.json",
+      encoder.encode(JSON.stringify({ latest: null, versions: [] })),
+    );
+  }
+
+  return respondJSON({
+    statusCode: 200,
+    body: JSON.stringify({
+      success: true,
+      data: {
+        module: moduleName,
+        repository: repository,
+      },
+    }),
+  });
+}
+
+async function createEvent(
+  { headers, moduleName, event }: {
+    headers: Headers;
+    moduleName: string;
+    event: APIGatewayProxyEventV2;
+  },
+): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
   if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
     return respondJSON({
@@ -97,9 +204,9 @@ export async function handler(
     });
   }
 
-  const versionPrefix =
-    decodeURIComponent(event.queryStringParameters?.version_prefix ?? "") ||
-    null;
+  const versionPrefix = decodeURIComponent(
+    event.queryStringParameters?.version_prefix ?? "",
+  );
 
   if (!ref.startsWith(versionPrefix)) {
     return respondJSON({
@@ -111,9 +218,7 @@ export async function handler(
     });
   }
 
-  const version = versionPrefix === null
-    ? ref
-    : ref.substring(versionPrefix.length);
+  const version = ref.substring(versionPrefix.length);
 
   const subdir =
     decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
@@ -138,7 +243,7 @@ export async function handler(
     }
   }
 
-  const entry = await getModule(moduleName);
+  const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
     if (!(entry.type === "github" && entry.repository === repository)) {
@@ -150,10 +255,26 @@ export async function handler(
         }),
       });
     }
+  } else {
+    // If this entry doesn't exist yet check how many modules this repo
+    // already has.
+    if (
+      await database.countModulesForRepository(repository) >=
+        MAX_MODULES_PER_REPOSITORY
+    ) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error:
+            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+        }),
+      });
+    }
   }
 
   // Update meta information in MongoDB (registers module if not present yet)
-  await saveModule({
+  await database.saveModule({
     name: moduleName,
     type: "github",
     repository,
@@ -178,7 +299,7 @@ export async function handler(
 
   // TODO(lucacasonato): Check that a build has not already been queued
 
-  const buildID = await createBuild({
+  const buildID = await database.createBuild({
     options: {
       type: "github",
       moduleName,
@@ -200,7 +321,7 @@ export async function handler(
         module: moduleName,
         version,
         repository: repository,
-        status_url: `https://deno.land/x/-/status/${buildID}`,
+        status_url: `https://deno.land/status/${buildID}`,
       },
     }),
   });
