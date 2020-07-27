@@ -19,6 +19,7 @@ import {
   getMeta,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
+import { asyncPool } from "../../utils/util.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -83,19 +84,26 @@ async function publishGithub(
     );
 
   // Walk all files in the repository (that start with the subdir if present)
+  const entries = [];
   for await (
     const entry of walk(path, {
       includeFiles: true,
       includeDirs: true,
     })
   ) {
+    entries.push(entry);
+  }
+
+  // Pool requests because of https://github.com/denoland/deno_registry2/issues/15
+  asyncPool(95, entries, async (entry) => {
     // If this is a file in the .git folder, ignore it
     if (
       entry.path.startsWith(join(path, ".git/")) ||
       entry.path === join(path, ".git")
     ) {
-      continue;
+      return;
     }
+
     const filename = entry.path.substring(path.length);
     if (entry.isFile) {
       pendingUploads.push(
@@ -122,13 +130,10 @@ async function publishGithub(
           }
         }),
       );
-      // TODO(lucacasonato): remove this. This is currently necessary because Deno does
-      // not cache DNS, and the DNS resolver has a rate limit.
-      await new Promise((resolve) => setTimeout(resolve, 150));
     } else {
       directory.push({ path: filename, size: undefined, type: "dir" });
     }
-  }
+  });
 
   // Upload latest version to S3
   pendingUploads.push(
