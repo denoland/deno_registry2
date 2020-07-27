@@ -8,6 +8,7 @@ const s3 = new S3Bucket(
     region: Deno.env.get("AWS_REGION")!,
     accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
     secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
+    sessionToken: Deno.env.get("AWS_SESSION_TOKEN"),
   },
 );
 
