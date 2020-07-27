@@ -16,6 +16,9 @@ Resources:
       CorsConfiguration:
         AllowOrigins:
           - "*"
+      Domain:
+        DomainName: api.deno.land
+        CertificateArn: arn:aws:acm:us-east-1:035475582903:certificate/661923eb-63f3-40ef-88c8-2753824734cd
 
   WebhookGithubFunction:
     Type: AWS::Serverless::Function
@@ -127,7 +130,6 @@ Resources:
             Method: GET
     Metadata:
       BuildMethod: makefile
-
 
   StorageBucket:
     Type: AWS::S3::Bucket
