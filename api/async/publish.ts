@@ -13,9 +13,9 @@ import { join, walk, SQSEvent, Context } from "../../deps.ts";
 import { Build, Database } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
-  uploadVersionMeta,
+  uploadVersionMetaJson,
   uploadVersionRaw,
-  uploadMeta,
+  uploadMetaJson,
   getMeta,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
@@ -139,14 +139,10 @@ async function publishGithub(
     const versions = versionsBody
       ? JSON.parse(decoder.decode(versionsBody))
       : { versions: [] };
-    await uploadMeta(
+    await uploadMetaJson(
       moduleName,
       "versions.json",
-      encoder.encode(
-        JSON.stringify(
-          { latest: version, versions: [version, ...versions.versions] },
-        ),
-      ),
+      { latest: version, versions: [version, ...versions.versions] },
     );
 
     // Calculate directory sizes
@@ -165,11 +161,11 @@ async function publishGithub(
     }
 
     // Upload directory listing to S3
-    await uploadVersionMeta(
+    await uploadVersionMetaJson(
       moduleName,
       version,
       "meta.json",
-      encoder.encode(JSON.stringify({
+      {
         uploaded_at: new Date().toISOString(),
         directory_listing: directory,
         upload_options: {
@@ -178,7 +174,7 @@ async function publishGithub(
           subdir,
           ref,
         },
-      })),
+      },
     );
 
     await database.saveBuild({
