@@ -5157,13 +5157,6 @@
     "desc": "Definition files for JavaScript libraries compatible with Deno",
     "default_version": "master"
   },
-  "typescript": {
-    "type": "github",
-    "owner": "microsoft",
-    "repo": "typescript",
-    "desc": "TypeScript is a superset of JavaScript that compiles to clean JavaScript output.",
-    "default_version": "master"
-  },
   "uapi": {
     "type": "github",
     "owner": "shynome",
