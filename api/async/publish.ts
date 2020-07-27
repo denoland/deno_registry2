@@ -60,6 +60,9 @@ export async function handler(
 async function publishGithub(
   build: Build,
 ) {
+  console.log(
+    `Publishing ${build.options.moduleName} at ${build.options.ref} from GitHub`,
+  );
   await database.saveBuild({
     ...build,
     status: "publishing",
@@ -70,6 +73,8 @@ async function publishGithub(
   // Clone the repository from GitHub
   const cloneURL = `https://github.com/${repository}`;
   const clonePath = await clone(cloneURL, ref);
+
+  console.log("Finished clone");
 
   // Upload files to S3
   const skippedFiles: string[] = [];
@@ -94,8 +99,10 @@ async function publishGithub(
     entries.push(entry);
   }
 
+  console.log("Total files in repo", entries.length);
+
   // Pool requests because of https://github.com/denoland/deno_registry2/issues/15
-  asyncPool(95, entries, async (entry) => {
+  await asyncPool(95, entries, async (entry) => {
     // If this is a file in the .git folder, ignore it
     if (
       entry.path.startsWith(join(path, ".git/")) ||
@@ -106,56 +113,42 @@ async function publishGithub(
 
     const filename = entry.path.substring(path.length);
     if (entry.isFile) {
-      pendingUploads.push(
-        Deno.open(entry.path).then(async (file) => {
-          try {
-            const body = await Deno.readAll(file);
-            if (body.length > MAX_FILE_SIZE) {
-              skippedFiles.push(filename);
-              return;
-            }
-            directory.push(
-              { path: filename, size: body.length, type: "file" },
-            );
-            await uploadVersionRaw(
-              moduleName,
-              version,
-              filename,
-              body,
-            );
-          } catch (err) {
-            console.log("err", filename, err);
-          } finally {
-            file.close();
-          }
-        }),
+      const file = await Deno.open(entry.path);
+      const body = await Deno.readAll(file);
+      if (body.length > MAX_FILE_SIZE) {
+        skippedFiles.push(filename);
+        return;
+      }
+      directory.push(
+        { path: filename, size: body.length, type: "file" },
       );
+      await uploadVersionRaw(
+        moduleName,
+        version,
+        filename,
+        body,
+      );
+      file.close();
     } else {
       directory.push({ path: filename, size: undefined, type: "dir" });
     }
   });
 
-  // Upload latest version to S3
-  pendingUploads.push(
-    getMeta(moduleName, "versions.json").then(async (body) => {
-      const versions = body
-        ? JSON.parse(decoder.decode(body))
-        : { versions: [] };
-      await uploadMeta(
-        moduleName,
-        "versions.json",
-        encoder.encode(
-          JSON.stringify(
-            { latest: version, versions: [version, ...versions.versions] },
-          ),
-        ),
-      );
-    }),
+  const versionsBody = await getMeta(moduleName, "versions.json");
+  const versions = versionsBody
+    ? JSON.parse(decoder.decode(versionsBody))
+    : { versions: [] };
+  await uploadMeta(
+    moduleName,
+    "versions.json",
+    encoder.encode(
+      JSON.stringify(
+        { latest: version, versions: [version, ...versions.versions] },
+      ),
+    ),
   );
 
-  // Wait for all uploads to S3 to complete
-  await Promise.all(pendingUploads);
-
+  // Remove checkout
   await Deno.remove(clonePath, { recursive: true });
 
   // Calculate directory sizes
