@@ -20,7 +20,7 @@ export async function getMeta(
     join(module, "meta", file),
     {},
   );
-  return resp.body;
+  return resp?.body;
 }
 
 export async function uploadMeta(
