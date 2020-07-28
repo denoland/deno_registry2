@@ -78,7 +78,6 @@ async function publishGithub(
   try {
     // Upload files to S3
     const skippedFiles: string[] = [];
-    const pendingUploads: Promise<void>[] = [];
     const directory: DirectoryListingFile[] = [];
 
     // Create path that has possible subdir prefix
@@ -179,10 +178,9 @@ async function publishGithub(
     await database.saveBuild({
       ...build,
       status: "success",
-      message:
-        `Uploaded ${pendingUploads.length} files. Skipped files due to size: ${
-          JSON.stringify(skippedFiles)
-        }`,
+      message: `Uploaded ${
+        directory.filter((f) => f.type === "file").length
+      } files. Skipped files due to size: ${JSON.stringify(skippedFiles)}`,
     });
   } finally {
     // Remove checkout
