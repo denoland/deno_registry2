@@ -1,6 +1,6 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { S3Bucket, join } from "../deps.ts";
+import { S3Bucket, join, contentType } from "../deps.ts";
 
 const s3 = new S3Bucket(
   {
@@ -50,6 +50,7 @@ export async function uploadVersionRaw(
   file: string,
   contents: Uint8Array,
 ): Promise<{ etag: string }> {
+  const type = contentType(file);
   const resp = await s3.putObject(
     join(module, "versions", version, "raw", file),
     contents,
@@ -57,7 +58,9 @@ export async function uploadVersionRaw(
       acl: "public-read",
       // Versioned files can be cached indefinitely. (1 year)
       cacheControl: "public, max-age=31536000, immutable",
-      // TODO(lucacasonato): add content type
+      contentType: type === "video/mp2t"
+        ? "application/typescript; charset=utf-8"
+        : type,
     },
   );
   return { etag: resp.etag };
