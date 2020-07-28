@@ -842,13 +842,6 @@
     "desc": "🦕 A Discord API wrapper for developing discord bots using the Deno runtime.",
     "default_version": "master"
   },
-  "core": {
-    "type": "github",
-    "owner": "denoland",
-    "repo": "deno",
-    "desc": "A secure runtime for JavaScript and TypeScript.",
-    "default_version": "master"
-  },
   "cors": {
     "type": "github",
     "owner": "tajpouria",
