@@ -1,6 +1,6 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { S3Bucket, join } from "../deps.ts";
+import { S3Bucket, join, contentType } from "../deps.ts";
 
 const s3 = new S3Bucket(
   {
@@ -23,15 +23,23 @@ export async function getMeta(
   return resp?.body;
 }
 
-export async function uploadMeta(
+const encoder = new TextEncoder();
+
+export async function uploadMetaJson(
   module: string,
   file: string,
-  contents: Uint8Array,
+  data: unknown,
 ): Promise<{ etag: string }> {
   const resp = await s3.putObject(
     join(module, "meta", file),
-    contents,
-    { acl: "public-read" },
+    encoder.encode(JSON.stringify(data)),
+    {
+      acl: "public-read",
+      // Global module meta data must always be fresh, but it is acceptable
+      // to serve stale data for a few minutes.
+      cacheControl: "max-age=0, stale-while-revalidate=300",
+      contentType: "application/json",
+    },
   );
   return { etag: resp.etag };
 }
@@ -42,24 +50,37 @@ export async function uploadVersionRaw(
   file: string,
   contents: Uint8Array,
 ): Promise<{ etag: string }> {
+  const type = contentType(file);
   const resp = await s3.putObject(
     join(module, "versions", version, "raw", file),
     contents,
-    { acl: "public-read" },
+    {
+      acl: "public-read",
+      // Versioned files can be cached indefinitely. (1 year)
+      cacheControl: "public, max-age=31536000, immutable",
+      contentType: type === "video/mp2t"
+        ? "application/typescript; charset=utf-8"
+        : type,
+    },
   );
   return { etag: resp.etag };
 }
 
-export async function uploadVersionMeta(
+export async function uploadVersionMetaJson(
   module: string,
   version: string,
   file: string,
-  contents: Uint8Array,
+  data: unknown,
 ): Promise<{ etag: string }> {
   const resp = await s3.putObject(
     join(module, "versions", version, "meta", file),
-    contents,
-    { acl: "public-read" },
+    encoder.encode(JSON.stringify(data)),
+    {
+      acl: "public-read",
+      // Versioned files can be cached indefinitely. (1 year)
+      cacheControl: "public, max-age=31536000, immutable",
+      contentType: "application/json",
+    },
   );
   return { etag: resp.etag };
 }

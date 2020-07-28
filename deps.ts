@@ -21,3 +21,4 @@ export {
   ObjectId,
 } from "https://raw.githubusercontent.com/lucacasonato/deno_mongo_lambda/3f407a302c883f1a84fc6c4aebf28a45ff3aa49e/mod.ts";
 export { SQSClient } from "https://raw.githubusercontent.com/lucacasonato/deno_sqs/a133edaa7a614abbfbe57eed4445882437d5806f/mod.ts";
+export { contentType } from "https://deno.land/x/media_types@v2.4.3/mod.ts";
