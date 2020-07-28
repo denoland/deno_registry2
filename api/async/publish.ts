@@ -13,9 +13,9 @@ import { join, walk, SQSEvent, Context } from "../../deps.ts";
 import { Build, Database } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
-  uploadVersionMeta,
+  uploadVersionMetaJson,
   uploadVersionRaw,
-  uploadMeta,
+  uploadMetaJson,
   getMeta,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
@@ -23,9 +23,8 @@ import { asyncPool } from "../../utils/util.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
-const MAX_FILE_SIZE = 100_000;
+const MAX_FILE_SIZE = 500_000;
 
-const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 export async function handler(
@@ -79,7 +78,6 @@ async function publishGithub(
   try {
     // Upload files to S3
     const skippedFiles: string[] = [];
-    const pendingUploads: Promise<void>[] = [];
     const directory: DirectoryListingFile[] = [];
 
     // Create path that has possible subdir prefix
@@ -139,14 +137,10 @@ async function publishGithub(
     const versions = versionsBody
       ? JSON.parse(decoder.decode(versionsBody))
       : { versions: [] };
-    await uploadMeta(
+    await uploadMetaJson(
       moduleName,
       "versions.json",
-      encoder.encode(
-        JSON.stringify(
-          { latest: version, versions: [version, ...versions.versions] },
-        ),
-      ),
+      { latest: version, versions: [version, ...versions.versions] },
     );
 
     // Calculate directory sizes
@@ -165,11 +159,11 @@ async function publishGithub(
     }
 
     // Upload directory listing to S3
-    await uploadVersionMeta(
+    await uploadVersionMetaJson(
       moduleName,
       version,
       "meta.json",
-      encoder.encode(JSON.stringify({
+      {
         uploaded_at: new Date().toISOString(),
         directory_listing: directory,
         upload_options: {
@@ -178,16 +172,15 @@ async function publishGithub(
           subdir,
           ref,
         },
-      })),
+      },
     );
 
     await database.saveBuild({
       ...build,
       status: "success",
-      message:
-        `Uploaded ${pendingUploads.length} files. Skipped files due to size: ${
-          JSON.stringify(skippedFiles)
-        }`,
+      message: `Uploaded ${
+        directory.filter((f) => f.type === "file").length
+      } files. Skipped files due to size: ${JSON.stringify(skippedFiles)}`,
     });
   } finally {
     // Remove checkout

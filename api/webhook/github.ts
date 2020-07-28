@@ -15,7 +15,7 @@ import {
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
-import { getMeta, uploadMeta } from "../../utils/storage.ts";
+import { getMeta, uploadMetaJson } from "../../utils/storage.ts";
 import type { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
 import { queueBuild } from "../../utils/queue.ts";
@@ -24,7 +24,6 @@ import type { VersionInfo } from "../../utils/types.ts";
 const VALID_NAME = /[A-Za-z0-9_]{3,40}/;
 const MAX_MODULES_PER_REPOSITORY = 3;
 
-const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
@@ -146,10 +145,10 @@ async function pingEvent(
 
   const versionInfoBody = await getMeta(moduleName, "versions.json");
   if (versionInfoBody === undefined) {
-    await uploadMeta(
+    await uploadMetaJson(
       moduleName,
       "versions.json",
-      encoder.encode(JSON.stringify({ latest: null, versions: [] })),
+      { latest: null, versions: [] },
     );
   }
 
