@@ -18,24 +18,22 @@ for (const module of meta) {
   }
   i++;
 
-  await database.saveModule({
-    name: module.name,
-    description: module.data.description,
-    repository: module.repository,
-    type: "github",
-    star_count: module.data.stargazers_count,
-  });
+  // await database.saveModule({
+  //   name: module.name,
+  //   description: module.data.description,
+  //   repository: module.repository,
+  //   type: "github",
+  //   star_count: module.data.stargazers_count,
+  // });
 
-  /*
   const versions = release.data;
   await uploadMeta(
     module.name,
     "/versions.json",
     encoder.encode(JSON.stringify({
-      latest: versions.length === 0 ? undefined : versions[0].name,
+      latest: versions.length === 0 ? null : versions[0].name,
       versions: versions.map((d: any) => d.name),
       isLegacy: versions.length === 0 ? true : undefined,
     })),
   );
-  */
 }
