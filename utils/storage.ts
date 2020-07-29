@@ -1,6 +1,6 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { S3Bucket, join, contentType } from "../deps.ts";
+import { S3Bucket, join, lookup } from "../deps.ts";
 
 const s3 = new S3Bucket(
   {
@@ -50,7 +50,7 @@ export async function uploadVersionRaw(
   file: string,
   contents: Uint8Array,
 ): Promise<{ etag: string }> {
-  const type = contentType(file);
+  const type = lookup(file);
   const resp = await s3.putObject(
     join(module, "versions", version, "raw", file),
     contents,

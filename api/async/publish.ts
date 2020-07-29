@@ -143,9 +143,14 @@ async function publishGithub(
       { latest: version, versions: [version, ...versions.versions] },
     );
 
+    let totalSize = 0;
+
     // Calculate directory sizes
     // TODO: make more efficient
     for (const entry of directory) {
+      if (entry.type === "file") {
+        totalSize += entry.size ?? 0;
+      }
       if (entry.type === "dir") {
         entry.size = 0;
         for (
@@ -178,9 +183,12 @@ async function publishGithub(
     await database.saveBuild({
       ...build,
       status: "success",
-      message: `Uploaded ${
-        directory.filter((f) => f.type === "file").length
-      } files. Skipped files due to size: ${JSON.stringify(skippedFiles)}`,
+      message: `Finished uploading`,
+      stats: {
+        total_files: directory.filter((f) => f.type === "file").length,
+        skipped_due_to_size: skippedFiles,
+        total_size: totalSize,
+      },
     });
   } finally {
     // Remove checkout

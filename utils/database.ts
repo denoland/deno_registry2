@@ -21,6 +21,7 @@ export interface SearchResult {
 
 export interface Build {
   id: string;
+  created_at: Date;
   options: {
     moduleName: string;
     type: string;
@@ -31,6 +32,11 @@ export interface Build {
   };
   status: string;
   message?: string;
+  stats?: {
+    total_files: number;
+    total_size: number;
+    skipped_due_to_size: string[];
+  };
 }
 
 export class Database {
@@ -166,54 +172,40 @@ export class Database {
     if (build === null) return null;
     return {
       id: build._id.$oid,
-      options: {
-        moduleName: build.options.moduleName,
-        type: build.options.type,
-        repository: build.options.repository,
-        ref: build.options.ref,
-        version: build.options.version,
-        subdir: build.options.subdir,
-      },
+      created_at: build.created_at,
+      options: build.options,
       status: build.status,
       message: build.message,
+      stats: build.stats,
     };
   }
 
-  async createBuild(build: Omit<Build, "id">): Promise<string> {
+  async createBuild(
+    build: Omit<Omit<Build, "id">, "created_at">,
+  ): Promise<string> {
     const id = await this._builds.insertOne(
       {
-        options: {
-          moduleName: build.options.moduleName,
-          type: build.options.type,
-          repository: build.options.repository,
-          ref: build.options.ref,
-          version: build.options.version,
-          subdir: build.options.subdir,
-        },
+        created_at: new Date(),
+        options: build.options,
         status: build.status,
         message: build.message,
+        stats: build.stats,
       },
     );
     return id.$oid;
   }
 
-  async saveBuild(build: Build): Promise<void> {
+  async saveBuild(build: Omit<Build, "created_at">): Promise<void> {
     await this._builds.updateOne(
       {
         _id: ObjectId(build.id),
       },
       {
         _id: ObjectId(build.id),
-        options: {
-          moduleName: build.options.moduleName,
-          type: build.options.type,
-          repository: build.options.repository,
-          ref: build.options.ref,
-          version: build.options.version,
-          subdir: build.options.subdir,
-        },
+        options: build.options,
         status: build.status,
         message: build.message,
+        stats: build.stats,
       },
       { upsert: true },
     );
