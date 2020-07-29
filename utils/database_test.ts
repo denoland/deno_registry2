@@ -67,6 +67,9 @@ Deno.test({
     // deno-lint-ignore ban-ts-comment
     // @ts-expect-error
     build.created_at = undefined;
-    assertEquals(build, { ...build1, id });
+    assertEquals(
+      build,
+      { ...build1, id, created_at: undefined, stats: undefined },
+    );
   },
 });
