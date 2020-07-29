@@ -64,6 +64,7 @@ Deno.test({
     const build = await database.getBuild(id);
     assert(build);
     assert(build.created_at);
+    // deno-lint-ignore ban-ts-comment
     // @ts-expect-error
     build.created_at = undefined;
     assertEquals(build, { ...build1, id });
