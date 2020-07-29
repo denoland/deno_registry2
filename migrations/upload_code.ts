@@ -8,8 +8,8 @@ const databasejson = JSON.parse(Deno.readTextFileSync("./database.json"));
 
 const data = JSON.parse(Deno.readTextFileSync("./releases.json"));
 
-const start = 21;
-const end = 100;
+const start = 101;
+const end = 300;
 
 const todo = [];
 
