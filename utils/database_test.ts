@@ -1,6 +1,6 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { assertEquals } from "../test_deps.ts";
+import { assert, assertEquals } from "../test_deps.ts";
 import { Database, Module, Build } from "./database.ts";
 
 const database = new Database("mongodb://localhost:27017");
@@ -44,7 +44,7 @@ Deno.test({
   },
 });
 
-const build1: Omit<Build, "id"> = {
+const build1: Omit<Omit<Build, "id">, "created_at"> = {
   options: {
     moduleName: "ltest",
     type: "github",
@@ -61,6 +61,11 @@ Deno.test({
   name: "add, update, and get builds in database",
   async fn() {
     const id = await database.createBuild(build1);
-    assertEquals(await database.getBuild(id), { ...build1, id });
+    const build = await database.getBuild(id);
+    assert(build);
+    assert(build.created_at);
+    // @ts-expect-error
+    build.created_at = undefined;
+    assertEquals(build, { ...build1, id });
   },
 });

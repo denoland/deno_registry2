@@ -195,7 +195,7 @@ export class Database {
     return id.$oid;
   }
 
-  async saveBuild(build: Build): Promise<void> {
+  async saveBuild(build: Omit<Build, "created_at">): Promise<void> {
     await this._builds.updateOne(
       {
         _id: ObjectId(build.id),
