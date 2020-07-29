@@ -101,7 +101,7 @@ async function publishGithub(
     console.log("Total files in repo", entries.length);
 
     // Pool requests because of https://github.com/denoland/deno_registry2/issues/15
-    await asyncPool(80, entries, async (entry) => {
+    await asyncPool(65, entries, async (entry) => {
       // If this is a file in the .git folder, ignore it
       if (
         entry.path.startsWith(join(path, ".git/")) ||
