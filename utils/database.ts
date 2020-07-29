@@ -180,7 +180,9 @@ export class Database {
     };
   }
 
-  async createBuild(build: Omit<Build, "id">): Promise<string> {
+  async createBuild(
+    build: Omit<Omit<Build, "id">, "created_at">,
+  ): Promise<string> {
     const id = await this._builds.insertOne(
       {
         created_at: new Date(),
