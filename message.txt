@@ -1,0 +1,15 @@
+Hey :wave:
+
+In our ongoing effort to make development with Deno as easy as possible, we are changing how deno.land/x works. Instead of proxying requests directly to GitHub we will cache all module assets on our servers. This means that we can guarantee immutability for all assets served by deno.land/x.
+
+This can only work if all modules on deno.land/x use versions. It seems that this module does not have any tags / releases yet. To keep your module available on deno.land/x you need to create a tag / release before August 2nd 2020. If you do not do this, your module will not be importable. **All modules that do not have a tag / release by August 15th 2020 will be removed**.
+
+With these changes, deno.land/x needs to get notified when you publish a new tag / release. To do this we make use of GitHub Webhooks. To add this webhook, go to the repository settings, click _Add Webhook_, and add a webhook with these parameters:
+
+- **Payload URL:**:  `https://api.deno.land/webhook/gh/ltest`
+- **Content Type:** `application/json`
+- **Secret:** _none_
+- **SSL verification:** `Enabled`
+- **Which events would you like to trigger this webhook?** `Let me select individual events.` and enable the `Branch or tag creation` event
+
+If you have any questions, feel free to ask on [the Deno discord channel](https://discord.gg/deno).

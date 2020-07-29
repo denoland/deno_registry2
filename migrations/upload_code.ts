@@ -7,8 +7,8 @@ const databasejson = JSON.parse(Deno.readTextFileSync("./database.json"));
 
 const data = JSON.parse(Deno.readTextFileSync("./releases.json"));
 
-const start = 300;
-const end = 400;
+const start = 0;
+const end = 100;
 
 let i = 0;
 for (const module of data) {

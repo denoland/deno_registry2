@@ -17,7 +17,7 @@ for (const name in database) {
   const repository = entry.owner + "/" + entry.repo;
 
   responses.push(
-    fetch(`https://api.github.com/repos/${repository}/tags`, {
+    fetch(`https://api.github.com/repos/${repository}/tags?per_page=100`, {
       headers: {
         Authorization: `Bearer ${githubToken}`,
       },

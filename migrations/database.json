@@ -1175,13 +1175,6 @@
     "desc": "A better deno cli with deno.json",
     "default_version": "master"
   },
-  "denet": {
-    "type": "github",
-    "owner": "ryaangu",
-    "repo": "denet",
-    "desc": "Easy Game Networking module for Deno.",
-    "default_version": "master"
-  },
   "denjucks": {
     "type": "github",
     "owner": "denjucks",
@@ -1749,13 +1742,6 @@
     "owner": "denodep",
     "repo": "dep",
     "desc": "Deno dependency management tool.",
-    "default_version": "master"
-  },
-  "deps": {
-    "type": "github",
-    "owner": "denosaurs",
-    "repo": "deps",
-    "desc": "deps.ts & dependency manager for Deno",
     "default_version": "master"
   },
   "descord": {
@@ -2853,13 +2839,6 @@
     "desc": "Simple ip-api.com API wrapper for Deno.",
     "default_version": "master"
   },
-  "irc": {
-    "type": "github",
-    "owner": "hacked",
-    "repo": "irc",
-    "desc": "🦕 Internet Relay Chat (IRC) Message Parser for Deno",
-    "default_version": "master"
-  },
   "iro": {
     "type": "github",
     "owner": "jozsefsallai",
@@ -3724,13 +3703,6 @@
     "desc": "A non official collection of Custom middlewares for oak server[https://github.com/oakserver/oak]",
     "default_version": "master"
   },
-  "oauth2": {
-    "type": "github",
-    "owner": "hacked",
-    "repo": "oauth2",
-    "desc": "🔒 OAuth 2.0 for Deno (RFC 6749)",
-    "default_version": "master"
-  },
   "observable": {
     "type": "github",
     "owner": "bsunderhus",
@@ -4257,20 +4229,6 @@
     "owner": "jacob-ian",
     "repo": "deno_random_bigint",
     "desc": "Generate a random BigInt from a bit-length with Deno",
-    "default_version": "master"
-  },
-  "random_float": {
-    "type": "github",
-    "owner": "yg",
-    "repo": "random-float",
-    "desc": "Generate a random float in deno",
-    "default_version": "master"
-  },
-  "random_int": {
-    "type": "github",
-    "owner": "yg",
-    "repo": "random-int",
-    "desc": "Generate a random integer in deno",
     "default_version": "master"
   },
   "random_interval": {
@@ -4800,6 +4758,14 @@
     "desc": "HTTP status utility for Deno. Based on Java Apache HttpStatus",
     "default_version": "master"
   },
+  "std": {
+    "type": "github",
+    "owner": "denoland",
+    "repo": "deno",
+    "desc": "Deno Standard Modules",
+    "default_version": "master",
+    "path": "/std"
+  },
   "store": {
     "type": "github",
     "owner": "Acathur",
@@ -5169,13 +5135,6 @@
     "owner": "denolib",
     "repo": "typeorm",
     "desc": "A Deno fork of the TypeORM",
-    "default_version": "master"
-  },
-  "types": {
-    "type": "github",
-    "owner": "Soremwar",
-    "repo": "deno_types",
-    "desc": "Definition files for JavaScript libraries compatible with Deno",
     "default_version": "master"
   },
   "uapi": {
