@@ -23,7 +23,7 @@ import { asyncPool } from "../../utils/util.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
-const MAX_FILE_SIZE = 500_000;
+const MAX_FILE_SIZE = 1_000_000;
 
 const decoder = new TextDecoder();
 
