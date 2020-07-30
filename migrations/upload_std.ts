@@ -6,29 +6,31 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 const db = JSON.parse(Deno.readTextFileSync("./database.json"));
 
 const releases = [
-  ["30_seconds_of_typescript", "v1.0.1"],
-  ["calcite", "2.1"],
-  ["calcite", "2.0"],
-  ["compress", "v0.3.2"],
-  ["compress", "v0.3.1"],
-  ["compress", "v0.3.0"],
-  ["compress", "v0.2.2"],
-  ["compress", "v0.2.1"],
-  ["compress", "v0.2.0"],
-  ["crc32", "v0.2.0"],
-  ["denon", "2.3.0"],
-  ["dep", "v0.2.3"],
-  ["effector", "v0.18.2"],
-  ["effector", "v0.18.1"],
-  ["effector", "v0.18.0"],
-  ["effector", "v0.18.0-rc.2"],
-  ["effector", "v0.18.0-beta.11"],
-  ["effector", "v0.18.0-beta.10"],
-  ["effector", "v0.17.6"],
-  ["effector", "v0.17.4"],
-];
+  "0.62.0",
+  "0.61.0",
+  "0.60.0",
+  "0.59.0",
+  "0.58.0",
+  "0.57.0",
+  "0.56.0",
+  "0.55.0",
+  "0.54.0",
+  "0.53.0",
+  "0.52.0",
+  "0.51.0",
+  "0.50.0",
+  "0.42.0",
+  "0.41.0",
+  "0.40.0",
+  "0.39.0",
+  "0.38.0",
+  "0.37.0",
+  "0.36.0",
+  "0.35.0",
+  "0.34.0",
+].map(d => ["std", d]);
 
-await asyncPool(50, releases, async (release) => {
+await asyncPool(4, releases, async (release) => {
   const module = db[release[0]];
 
   const buildID = await database.createBuild({
@@ -36,7 +38,7 @@ await asyncPool(50, releases, async (release) => {
       type: "github",
       moduleName: release[0],
       repository: module.owner + "/" + module.repo,
-      ref: release[1],
+      ref: "std/"+release[1],
       version: release[1],
       subdir: module.path ? module.path.substring(1) + "/" : undefined,
     },

@@ -4,7 +4,7 @@ import { asyncPool } from "../utils/util.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
-// const releases = JSON.parse(Deno.readTextFileSync("./releases_new.json"));
+// const releases = JSON.parse(Deno.readTextFileSync("./releases.json"));
 // const meta = JSON.parse(Deno.readTextFileSync("./meta.json"));
 
 // let i = 0;

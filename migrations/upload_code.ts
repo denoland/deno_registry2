@@ -8,8 +8,8 @@ const databasejson = JSON.parse(Deno.readTextFileSync("./database.json"));
 
 const data = JSON.parse(Deno.readTextFileSync("./releases.json"));
 
-const start = 101;
-const end = 300;
+const start = 701;
+const end = 800;
 
 const todo = [];
 
@@ -33,7 +33,7 @@ for (const module of data) {
 
 let i2 = 0;
 
-await asyncPool(80, todo, async ([module, release]) => {
+await asyncPool(6, todo, async ([module, release]) => {
   i2++;
   const path: string | undefined = databasejson[module.name].path;
   console.log(`${i2}/${todo.length}`, module.name, release);
@@ -48,6 +48,6 @@ await asyncPool(80, todo, async ([module, release]) => {
     },
     status: "queued",
   });
-
   await queueBuild(buildID);
+  await new Promise((r) => setTimeout(r, 1500));
 });
