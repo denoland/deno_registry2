@@ -44,12 +44,12 @@ export async function handler(
   }
 
   const moduleName = event.pathParameters?.name;
-  if (!moduleName || !VALID_NAME.test(moduleName)) {
+  if (!moduleName) {
     return respondJSON({
       statusCode: 400,
       body: JSON.stringify({
         success: false,
-        error: "module name is not valid",
+        error: "no module name specified",
       }),
     });
   }
@@ -129,6 +129,18 @@ async function pingEvent(
           success: false,
           error:
             `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+        }),
+      });
+    }
+
+    // If module does not exist and limit has not been reached, check if
+    // name is valid.
+    if (!VALID_NAME.test(moduleName)) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error: "module name is not valid",
         }),
       });
     }
@@ -267,6 +279,18 @@ async function createEvent(
           success: false,
           error:
             `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+        }),
+      });
+    }
+
+    // If module does not exist and limit has not been reached, check if
+    // name is valid.
+    if (!VALID_NAME.test(moduleName)) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error: "module name is not valid",
         }),
       });
     }
