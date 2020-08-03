@@ -46,7 +46,7 @@ for (const name in database) {
 }
 
 Deno.writeTextFileSync(
-  "./releases.json",
+  "./releases_new.json",
   JSON.stringify(await Promise.all(responses)),
 );
 

@@ -8,28 +8,30 @@ const databasejson = JSON.parse(Deno.readTextFileSync("./database.json"));
 
 const data = JSON.parse(Deno.readTextFileSync("./releases.json"));
 
-const start = 701;
-const end = 800;
+// const start = 701;
+// const end = 800;
 
-const todo = [];
-
-let i = 0;
-for (const module of data) {
-  if (i < start) {
-    i++;
-    continue;
-  }
-  if (module.status !== 200) {
-    console.log(module.name, "status not 200");
-    continue;
-  }
-  const releases = module.data.map((r: any) => r.name);
-  for (const release of releases) {
-    todo.push([module, release]);
-  }
-  i++;
-  if (i > end) break;
-}
+const todo = [
+  ["abc", "v1.0.2"],
+  ["ask", "1.0.5"],
+  ["base64", "v0.2.1"],
+  ["bcrypt", "v0.2.4"],
+  ["bwt", "v0.6.0"],
+  ["bytes_formater", "v1.3.0"],
+  ["cliffy", "v0.12.0"],
+  ["compress", "v0.3.3"],
+  ["cotton", "v0.6.3"],
+  ["deno", "v1.2.2"],
+  ["djwt", "v1.2"],
+  ["dnit", "dnit-v1.1.1"],
+  ["dnit", "dnit-v1.1.0"],
+  ["doa", "v1.0.0"],
+  ["drake", "v1.2.6"],
+  ["drash", "v1.2.1"],
+  ["drash_middleware", "v0.3.0"],
+  ["evt", "1.8.3"],
+  ["evt", "1.8.2"],
+].map(([name, release]) => ([data.find((d: any) => d.name === name), release]));
 
 let i2 = 0;
 
