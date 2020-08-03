@@ -50,7 +50,12 @@ export async function uploadVersionRaw(
   file: string,
   contents: Uint8Array,
 ): Promise<{ etag: string }> {
-  const type = lookup(file);
+  const type = lookup(file) ??
+    (file.endsWith(".tsx")
+      ? "application/typescript; charset=utf-8"
+      : file.endsWith(".tsx")
+      ? "application/javascript; charset=utf-8"
+      : "application/octet-stream");
   const resp = await s3.putObject(
     join(module, "versions", version, "raw", file),
     contents,
@@ -60,6 +65,8 @@ export async function uploadVersionRaw(
       cacheControl: "public, max-age=31536000, immutable",
       contentType: type === "video/mp2t"
         ? "application/typescript; charset=utf-8"
+        : type === "text/jsx"
+        ? "application/javascript; charset=utf-8"
         : type,
     },
   );
