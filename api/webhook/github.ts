@@ -21,7 +21,7 @@ import { isIp4InCidrs } from "../../utils/net.ts";
 import { queueBuild } from "../../utils/queue.ts";
 import type { VersionInfo } from "../../utils/types.ts";
 
-const VALID_NAME = /^[A-Za-z0-9_]{3,40}$/;
+const VALID_NAME = /^[a-z0-9_]{3,40}$/;
 const MAX_MODULES_PER_REPOSITORY = 3;
 
 const decoder = new TextDecoder();
