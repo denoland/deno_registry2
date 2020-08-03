@@ -31,14 +31,14 @@ jobs:
           mongoDBVersion: 4.2
 
       - name: Test
-        run: deno test -A --unstable
+        run: deno test -A --unstable --importmap ./import_map.json
 
       - name: Compile API endpoints
         run: |
-          deno cache --unstable ./api/async/publish.ts
-          deno cache --unstable ./api/builds/get.ts
-          deno cache --unstable ./api/modules/list.ts
-          deno cache --unstable ./api/webhook/github.ts
+          deno cache --unstable --importmap ./import_map.json ./api/async/publish.ts
+          deno cache --unstable --importmap ./import_map.json ./api/builds/get.ts
+          deno cache --unstable --importmap ./import_map.json ./api/modules/list.ts
+          deno cache --unstable --importmap ./import_map.json ./api/webhook/github.ts
 
       - name: Build
         run: sam build
