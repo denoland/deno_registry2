@@ -30,7 +30,7 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   event: APIGatewayProxyEventV2,
-  context: Context,
+  context: Context
 ): Promise<APIGatewayProxyResultV2> {
   const ip = event.requestContext.http.sourceIp;
   if (!isGitHubHooksIP(ip)) {
@@ -75,13 +75,15 @@ export async function handler(
   }
 }
 
-async function pingEvent(
-  { headers, moduleName, event }: {
-    headers: Headers;
-    moduleName: string;
-    event: APIGatewayProxyEventV2;
-  },
-): Promise<APIGatewayProxyResultV2> {
+async function pingEvent({
+  headers,
+  moduleName,
+  event,
+}: {
+  headers: Headers;
+  moduleName: string;
+  event: APIGatewayProxyEventV2;
+}): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
   if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
     return respondJSON({
@@ -104,6 +106,18 @@ async function pingEvent(
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
   const repository = webhook.repository.full_name;
 
+  const releaseEvent = webhook.hook.events.find((e) => e === "create");
+  if (!releaseEvent) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error:
+          "This webhook is not set up to trigger on the 'create' event. Please follow the setup instructions on https://deno.land/x exactly. Once you have fixed this issue you can redeliver this event to check that everything is set up correctly.",
+      }),
+    });
+  }
+
   const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
@@ -120,15 +134,14 @@ async function pingEvent(
     // If this entry doesn't exist yet check how many modules this repo
     // already has.
     if (
-      await database.countModulesForRepository(repository) >=
-        MAX_MODULES_PER_REPOSITORY
+      (await database.countModulesForRepository(repository)) >=
+      MAX_MODULES_PER_REPOSITORY
     ) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          error:
-            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+          error: `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
         }),
       });
     }
@@ -157,11 +170,10 @@ async function pingEvent(
 
   const versionInfoBody = await getMeta(moduleName, "versions.json");
   if (versionInfoBody === undefined) {
-    await uploadMetaJson(
-      moduleName,
-      "versions.json",
-      { latest: null, versions: [] },
-    );
+    await uploadMetaJson(moduleName, "versions.json", {
+      latest: null,
+      versions: [],
+    });
   }
 
   return respondJSON({
@@ -176,13 +188,15 @@ async function pingEvent(
   });
 }
 
-async function createEvent(
-  { headers, moduleName, event }: {
-    headers: Headers;
-    moduleName: string;
-    event: APIGatewayProxyEventV2;
-  },
-): Promise<APIGatewayProxyResultV2> {
+async function createEvent({
+  headers,
+  moduleName,
+  event,
+}: {
+  headers: Headers;
+  moduleName: string;
+  event: APIGatewayProxyEventV2;
+}): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
   if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
     return respondJSON({
@@ -216,7 +230,7 @@ async function createEvent(
   }
 
   const versionPrefix = decodeURIComponent(
-    event.queryStringParameters?.version_prefix ?? "",
+    event.queryStringParameters?.version_prefix ?? ""
   );
 
   if (!ref.startsWith(versionPrefix)) {
@@ -270,15 +284,14 @@ async function createEvent(
     // If this entry doesn't exist yet check how many modules this repo
     // already has.
     if (
-      await database.countModulesForRepository(repository) >=
-        MAX_MODULES_PER_REPOSITORY
+      (await database.countModulesForRepository(repository)) >=
+      MAX_MODULES_PER_REPOSITORY
     ) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          error:
-            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+          error: `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
         }),
       });
     }
