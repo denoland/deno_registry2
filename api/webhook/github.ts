@@ -30,7 +30,7 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   event: APIGatewayProxyEventV2,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   const ip = event.requestContext.http.sourceIp;
   if (!isGitHubHooksIP(ip)) {
@@ -135,13 +135,14 @@ async function pingEvent({
     // already has.
     if (
       (await database.countModulesForRepository(repository)) >=
-      MAX_MODULES_PER_REPOSITORY
+        MAX_MODULES_PER_REPOSITORY
     ) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          error: `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+          error:
+            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
         }),
       });
     }
@@ -230,7 +231,7 @@ async function createEvent({
   }
 
   const versionPrefix = decodeURIComponent(
-    event.queryStringParameters?.version_prefix ?? ""
+    event.queryStringParameters?.version_prefix ?? "",
   );
 
   if (!ref.startsWith(versionPrefix)) {
@@ -285,13 +286,14 @@ async function createEvent({
     // already has.
     if (
       (await database.countModulesForRepository(repository)) >=
-      MAX_MODULES_PER_REPOSITORY
+        MAX_MODULES_PER_REPOSITORY
     ) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          error: `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+          error:
+            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
         }),
       });
     }
