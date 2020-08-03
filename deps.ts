@@ -15,7 +15,7 @@ export type {
   APIGatewayProxyStructuredResultV2,
   SQSEvent,
   Context,
-} from "https://deno.land/x/lambda@7536a48cf2/types.d.ts";
+} from "https://deno.land/x/lambda@1.2.2/types.d.ts";
 export {
   MongoClient,
   ObjectId,
