@@ -31,7 +31,7 @@ jobs:
           mongoDBVersion: 4.2
 
       - name: Test
-        run: deno test -A --unstable
+        run: deno test -A --unstable --importmap ./import_map.json
 
       - name: Compile API endpoints
         run: |
