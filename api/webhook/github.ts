@@ -16,7 +16,11 @@ import {
 import { respondJSON } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
 import { getMeta, uploadMetaJson } from "../../utils/storage.ts";
-import type { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
+import type {
+  WebhookPayloadPing,
+  WebhookPayloadCreate,
+  WebhookPayloadPush,
+} from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
 import { queueBuild } from "../../utils/queue.ts";
 import type { VersionInfo } from "../../utils/types.ts";
@@ -62,6 +66,8 @@ export async function handler(
   switch (ghEvent) {
     case "ping":
       return pingEvent({ headers, moduleName, event });
+    case "push":
+      return pushEvent({ headers, moduleName, event });
     case "create":
       return createEvent({ headers, moduleName, event });
     default:
@@ -103,6 +109,8 @@ async function pingEvent(
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
   const repository = webhook.repository.full_name;
+  const description = webhook.repository.description ?? "";
+  const starCount = webhook.repository.stargazers_count;
 
   const resp = await checkAvailable(moduleName, repository);
   if (resp) return resp;
@@ -112,8 +120,8 @@ async function pingEvent(
     name: moduleName,
     type: "github",
     repository,
-    description: webhook.repository.description ?? "",
-    star_count: webhook.repository.stargazers_count,
+    description,
+    star_count: starCount,
   });
 
   const versionInfoBody = await getMeta(moduleName, "versions.json");
@@ -134,6 +142,65 @@ async function pingEvent(
         repository: repository,
       },
     }),
+  });
+}
+
+async function pushEvent(
+  { headers, moduleName, event }: {
+    headers: Headers;
+    moduleName: string;
+    event: APIGatewayProxyEventV2;
+  },
+): Promise<APIGatewayProxyResultV2> {
+  // Get version, version type, and repository from event
+  if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "content-type is not json",
+      }),
+    });
+  }
+  if (!event.body) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "no body provided",
+      }),
+    });
+  }
+  const webhook = JSON.parse(event.body) as WebhookPayloadPush;
+  const { ref: rawRef } = webhook;
+  const repository = webhook.repository.full_name;
+  if (!rawRef.startsWith("refs/tags/")) {
+    return respondJSON({
+      statusCode: 200,
+      body: JSON.stringify({
+        success: false,
+        info: "created ref is not tag",
+      }),
+    });
+  }
+
+  const ref = rawRef.replace(/^refs\/tags\//, "");
+  const description = webhook.repository.description ?? "";
+  const starCount = webhook.repository.stargazers_count;
+  const versionPrefix = decodeURIComponent(
+    event.queryStringParameters?.version_prefix ?? "",
+  );
+  const subdir =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+
+  return initiateBuild({
+    moduleName,
+    repository,
+    ref,
+    description,
+    starCount,
+    versionPrefix,
+    subdir,
   });
 }
 
@@ -176,7 +243,7 @@ async function createEvent(
     });
   }
 
-  const description = webhook.repository.description;
+  const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
   const versionPrefix = decodeURIComponent(
     event.queryStringParameters?.version_prefix ?? "",
@@ -327,7 +394,7 @@ async function initiateBuild(
   const build = await database.getBuildForVersion(moduleName, version);
   if (build === null) {
     return respondJSON({
-      statusCode: 400,
+      statusCode: 200,
       body: JSON.stringify({
         success: false,
         error: "this module version is already being published",
