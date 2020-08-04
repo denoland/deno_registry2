@@ -320,7 +320,17 @@ async function createEvent(
     });
   }
 
-  // TODO(lucacasonato): Check that a build has not already been queued
+  // Check that a build has not already been queued
+  const build = await database.getBuildForVersion(moduleName, version);
+  if (build === null) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "this module version is already being published",
+      }),
+    });
+  }
 
   const buildID = await database.createBuild({
     options: {

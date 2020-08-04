@@ -180,6 +180,28 @@ export class Database {
     };
   }
 
+  async getBuildForVersion(
+    name: string,
+    version: string,
+  ): Promise<Build | null> {
+    const build = await this._builds.findOne(
+      {
+        // @ts-expect-error
+        "options.moduleName": name,
+        "options.version": version,
+      },
+    );
+    if (build === null) return null;
+    return {
+      id: build._id.$oid,
+      created_at: build.created_at,
+      options: build.options,
+      status: build.status,
+      message: build.message,
+      stats: build.stats,
+    };
+  }
+
   async createBuild(
     build: Omit<Omit<Build, "id">, "created_at">,
   ): Promise<string> {
