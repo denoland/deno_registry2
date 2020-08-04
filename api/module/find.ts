@@ -22,7 +22,17 @@ export async function handler(
   context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   // TODO(@divy-work, @lucacasonato): Handle errors.
-  const query = event.queryStringParameters?.query || undefined;
+  const query = event.queryStringParameters?.query;
+
+  if (!query) {
+    return respondJSON({
+      statusCode: 404,
+      body: JSON.stringify({
+        success: false,
+        error: "no module name provided",
+      }),
+    });
+  }
 
   const results = await database.getModule(query);
 
