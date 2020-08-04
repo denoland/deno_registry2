@@ -3,6 +3,11 @@ build-WebhookGithubFunction:
 	# Cache the mongo plugin
 	cd $(ARTIFACTS_DIR) && deno run -A --unstable --importmap ../../../import_map.json ../../../deps.ts
 
+build-ModuleFindFunction:
+	deno bundle --unstable --importmap ./import_map.json ./api/module/find.ts > $(ARTIFACTS_DIR)/bundle.js
+	# Cache the mongo plugin
+	cd $(ARTIFACTS_DIR) && deno run -A --unstable --importmap ../../../import_map.json ../../../deps.ts
+
 build-ModulesListFunction:
 	deno bundle --unstable --importmap ./import_map.json ./api/modules/list.ts > $(ARTIFACTS_DIR)/bundle.js
 	# Cache the mongo plugin

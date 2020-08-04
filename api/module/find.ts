@@ -8,40 +8,39 @@
  */
 
 import {
-    APIGatewayProxyEventV2,
-    Context,
-    APIGatewayProxyResultV2,
-  } from "../../deps.ts";
-  import { respondJSON } from "../../utils/http.ts";
-  import { Database } from "../../utils/database.ts";
-  
-  const database = new Database(Deno.env.get("MONGO_URI")!);
-  
-  export async function handler(
-    event: APIGatewayProxyEventV2,
-    context: Context,
-  ): Promise<APIGatewayProxyResultV2> {
-    // TODO(@divy-work, @lucacasonato): Handle errors.
-    const query = event.queryStringParameters?.query || undefined;
+  APIGatewayProxyEventV2,
+  Context,
+  APIGatewayProxyResultV2,
+} from "../../deps.ts";
+import { respondJSON } from "../../utils/http.ts";
+import { Database } from "../../utils/database.ts";
 
-    const results = await database.getModule(query);
-    
-    if (!results) {
-        return respondJSON({
-            statusCode: 404,
-            body: JSON.stringify({
-                success: false,
-                error: "module does not exist",
-            }),
-        });
-    }
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
+export async function handler(
+  event: APIGatewayProxyEventV2,
+  context: Context,
+): Promise<APIGatewayProxyResultV2> {
+  // TODO(@divy-work, @lucacasonato): Handle errors.
+  const query = event.queryStringParameters?.query || undefined;
+
+  const results = await database.getModule(query);
+
+  if (!results) {
     return respondJSON({
-      statusCode: 200,
+      statusCode: 404,
       body: JSON.stringify({
-        success: true,
-        data: { results },
+        success: false,
+        error: "module does not exist",
       }),
     });
   }
-  
+
+  return respondJSON({
+    statusCode: 200,
+    body: JSON.stringify({
+      success: true,
+      data: { results },
+    }),
+  });
+}

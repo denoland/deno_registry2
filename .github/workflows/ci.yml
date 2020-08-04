@@ -37,6 +37,7 @@ jobs:
         run: |
           deno cache --unstable --importmap ./import_map.json ./api/async/publish.ts
           deno cache --unstable --importmap ./import_map.json ./api/builds/get.ts
+          deno cache --unstable --importmap ./import_map.json ./api/module/find.ts
           deno cache --unstable --importmap ./import_map.json ./api/modules/list.ts
           deno cache --unstable --importmap ./import_map.json ./api/webhook/github.ts
 
