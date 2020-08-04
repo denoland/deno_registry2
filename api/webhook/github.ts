@@ -104,47 +104,8 @@ async function pingEvent(
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
   const repository = webhook.repository.full_name;
 
-  const entry = await database.getModule(moduleName);
-  if (entry) {
-    // Check that entry matches repo
-    if (!(entry.type === "github" && entry.repository === repository)) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "module name is registered to a different repository",
-        }),
-      });
-    }
-  } else {
-    // If this entry doesn't exist yet check how many modules this repo
-    // already has.
-    if (
-      await database.countModulesForRepository(repository) >=
-        MAX_MODULES_PER_REPOSITORY
-    ) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error:
-            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
-        }),
-      });
-    }
-
-    // If module does not exist and limit has not been reached, check if
-    // name is valid.
-    if (!VALID_NAME.test(moduleName)) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "module name is not valid",
-        }),
-      });
-    }
-  }
+  const resp = await checkAvailable(moduleName, repository);
+  if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
   await database.saveModule({
@@ -215,45 +176,29 @@ async function createEvent(
     });
   }
 
+  const description = webhook.repository.description;
+  const starCount = webhook.repository.stargazers_count;
   const versionPrefix = decodeURIComponent(
     event.queryStringParameters?.version_prefix ?? "",
   );
-
-  if (!ref.startsWith(versionPrefix)) {
-    return respondJSON({
-      statusCode: 200,
-      body: JSON.stringify({
-        success: false,
-        info: "ignoring event as the version does not match the version prefix",
-      }),
-    });
-  }
-
-  const version = ref.substring(versionPrefix.length);
-
   const subdir =
     decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
-  if (subdir !== null) {
-    if (subdir.startsWith("/")) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          info: "provided sub directory is not valid as it starts with a /",
-        }),
-      });
-    } else if (!subdir.endsWith("/")) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          info:
-            "provided sub directory is not valid as it does not end with a /",
-        }),
-      });
-    }
-  }
 
+  return initiateBuild({
+    moduleName,
+    repository,
+    ref,
+    description,
+    starCount,
+    versionPrefix,
+    subdir,
+  });
+}
+
+async function checkAvailable(
+  moduleName: string,
+  repository: string,
+): Promise<APIGatewayProxyResultV2 | undefined> {
   const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
@@ -295,14 +240,72 @@ async function createEvent(
       });
     }
   }
+}
+
+async function initiateBuild(
+  options: {
+    moduleName: string;
+    repository: string;
+    ref: string;
+    description: string;
+    starCount: number;
+    versionPrefix: string;
+    subdir: string | null;
+  },
+): Promise<APIGatewayProxyResultV2> {
+  const {
+    moduleName,
+    repository,
+    ref,
+    description,
+    starCount,
+    versionPrefix,
+    subdir,
+  } = options;
+
+  if (!ref.startsWith(versionPrefix)) {
+    return respondJSON({
+      statusCode: 200,
+      body: JSON.stringify({
+        success: false,
+        info: "ignoring event as the version does not match the version prefix",
+      }),
+    });
+  }
+
+  const version = ref.substring(versionPrefix.length);
+
+  if (subdir !== null) {
+    if (subdir.startsWith("/")) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          info: "provided sub directory is not valid as it starts with a /",
+        }),
+      });
+    } else if (!subdir.endsWith("/")) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          info:
+            "provided sub directory is not valid as it does not end with a /",
+        }),
+      });
+    }
+  }
+
+  const resp = await checkAvailable(moduleName, repository);
+  if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
   await database.saveModule({
     name: moduleName,
     type: "github",
     repository,
-    description: webhook.repository.description,
-    star_count: webhook.repository.stargazers_count,
+    description,
+    star_count: starCount,
   });
 
   // Check that version doesn't already exist
