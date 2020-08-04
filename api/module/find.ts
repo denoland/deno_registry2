@@ -26,7 +26,7 @@ export async function handler(
 
   if (!query) {
     return respondJSON({
-      statusCode: 404,
+      statusCode: 400,
       body: JSON.stringify({
         success: false,
         error: "no module name provided",

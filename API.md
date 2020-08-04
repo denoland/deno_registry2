@@ -96,3 +96,36 @@ There are some query parameters that change the request:
   "info": "internal server error"
 }
 ```
+
+## GET /module
+
+This API endpoint can be used to get a list of all the modules in the registry.
+
+### Request
+
+There are some query parameters that change the request:
+
+- `query` is the name of the module (not set by default)
+
+### Response
+
+#### Headers
+
+`content-type`: `application/json`
+
+#### Body
+
+##### 200 OK
+
+```json
+{
+  "success": true,
+  "data": {
+    "results": {
+        "name": "oak",
+        "description": "A middleware framework for Deno's http server, including a router middleware.",
+        "star_count": 400
+      },
+  }
+}
+```
