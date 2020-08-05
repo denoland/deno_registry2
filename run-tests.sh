@@ -16,4 +16,4 @@ export BUILD_QUEUE=http://sqs:4576/000000000000/builds
 export STORAGE_BUCKET=deno-registry2
 export S3_ENDPOINT_URL=http://s3:9000
 
-deno test --unstable -A
+deno test --unstable --importmap import_map.json -A
