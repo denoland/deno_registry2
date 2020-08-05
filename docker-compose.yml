@@ -14,6 +14,8 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+    logging:
+      driver: none
   sqs:
     image: localstack/localstack
     ports:
@@ -24,6 +26,8 @@ services:
       - DOCKER_HOST=unix:///var/run/docker.sock
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    logging:
+      driver: none
   mongo:
     image: mongo:latest
     environment:
@@ -31,6 +35,8 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
     ports:
       - 27017:27017
+    logging:
+      driver: none
   tests:
     build: .
     links:
