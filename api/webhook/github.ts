@@ -69,7 +69,7 @@ export async function handler(
         statusCode: 200,
         body: JSON.stringify({
           success: false,
-          info: "not a create event",
+          info: "not a ping, or create event",
         }),
       });
   }

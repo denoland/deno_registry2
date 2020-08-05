@@ -3,6 +3,7 @@
 sleep 10
 
 # Set up S3
+aws --endpoint-url=http://s3:9000 s3 rm --recursive s3://deno-registry2 || true
 aws --endpoint-url=http://s3:9000 s3 rb s3://deno-registry2 || true
 aws --endpoint-url=http://s3:9000 s3 mb s3://deno-registry2
 

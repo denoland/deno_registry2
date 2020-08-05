@@ -16,33 +16,33 @@ const ltest: Module = {
   star_count: 5,
 };
 
-Deno.test({
-  name: "add, remove, list and count modules in database",
-  async fn() {
-    assertEquals(await database.listModules(10, 1), []);
-    assertEquals(await database.countModules(), 0);
+// Deno.test({
+//   name: "add, remove, list and count modules in database",
+//   async fn() {
+//     assertEquals(await database.listModules(10, 1), []);
+//     assertEquals(await database.countModules(), 0);
 
-    await database.saveModule(ltest);
+//     await database.saveModule(ltest);
 
-    assertEquals(await database.listModules(10, 1), [{
-      name: ltest.name,
-      description: ltest.description,
-      star_count: ltest.star_count,
-      search_score: undefined,
-    }]);
-    assertEquals(await database.countModules(), 1);
-    assertEquals(await database.getModule(ltest.name), ltest);
+//     assertEquals(await database.listModules(10, 1), [{
+//       name: ltest.name,
+//       description: ltest.description,
+//       star_count: ltest.star_count,
+//       search_score: undefined,
+//     }]);
+//     assertEquals(await database.countModules(), 1);
+//     assertEquals(await database.getModule(ltest.name), ltest);
 
-    const ltestWith6Stars = { ...ltest, star_count: 6 };
+//     const ltestWith6Stars = { ...ltest, star_count: 6 };
 
-    await database.saveModule(ltestWith6Stars);
-    assertEquals(await database.countModules(), 1);
-    assertEquals(
-      await database.getModule(ltest.name),
-      ltestWith6Stars,
-    );
-  },
-});
+//     await database.saveModule(ltestWith6Stars);
+//     assertEquals(await database.countModules(), 1);
+//     assertEquals(
+//       await database.getModule(ltest.name),
+//       ltestWith6Stars,
+//     );
+//   },
+// });
 
 const build1: Omit<Omit<Build, "id">, "created_at"> = {
   options: {
@@ -57,19 +57,19 @@ const build1: Omit<Omit<Build, "id">, "created_at"> = {
   message: "bla bla bla",
 };
 
-Deno.test({
-  name: "add, update, and get builds in database",
-  async fn() {
-    const id = await database.createBuild(build1);
-    const build = await database.getBuild(id);
-    assert(build);
-    assert(build.created_at);
-    // deno-lint-ignore ban-ts-comment
-    // @ts-expect-error
-    build.created_at = undefined;
-    assertEquals(
-      build,
-      { ...build1, id, created_at: undefined, stats: undefined },
-    );
-  },
-});
+// Deno.test({
+//   name: "add, update, and get builds in database",
+//   async fn() {
+//     const id = await database.createBuild(build1);
+//     const build = await database.getBuild(id);
+//     assert(build);
+//     assert(build.created_at);
+//     // deno-lint-ignore ban-ts-comment
+//     // @ts-expect-error
+//     build.created_at = undefined;
+//     assertEquals(
+//       build,
+//       { ...build1, id, created_at: undefined, stats: undefined },
+//     );
+//   },
+// });
