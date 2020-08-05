@@ -8,7 +8,7 @@ export function createAPIGatewayProxyEventV2(
   method: string,
   rawPath: string,
   { data, headers, pathParameters, queryStringParameters }: {
-    data?: any;
+    data?: unknown;
     headers?: KV;
     pathParameters?: KV;
     queryStringParameters?: KV;
@@ -50,7 +50,7 @@ export function createAPIGatewayProxyEventV2(
 export function createJSONWebhookEvent(
   event: string,
   path: string,
-  payload: any,
+  payload: unknown,
   pathParameters: KV,
   queryStringParameters: KV,
 ): APIGatewayProxyEventV2 {
