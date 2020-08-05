@@ -3,7 +3,7 @@
 import { assert, assertEquals } from "../test_deps.ts";
 import { Database, Module, Build } from "./database.ts";
 
-const database = new Database("mongodb://localhost:27017");
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 await database._modules.deleteMany({});
 await database._builds.deleteMany({});

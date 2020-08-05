@@ -25,13 +25,8 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
-      - name: Start mongoDB
-        uses: wbari/start-mongoDB@v0.2
-        with:
-          mongoDBVersion: 4.2
-
       - name: Test
-        run: deno test -A --unstable --importmap ./import_map.json
+        run: docker-compose up --build --abort-on-container-exit
 
       - name: Compile API endpoints
         run: |
