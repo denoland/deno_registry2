@@ -239,7 +239,7 @@ async function createEvent(
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          info: "provided sub directory is not valid as it starts with a /",
+          error: "provided sub directory is not valid as it starts with a /",
         }),
       });
     } else if (!subdir.endsWith("/")) {
@@ -247,7 +247,7 @@ async function createEvent(
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          info:
+          error:
             "provided sub directory is not valid as it does not end with a /",
         }),
       });
