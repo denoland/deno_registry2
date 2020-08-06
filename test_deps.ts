@@ -5,3 +5,4 @@ export {
   assertEquals,
   assertThrows,
 } from "https://deno.land/std@0.61.0/testing/asserts.ts";
+export { readJson } from "https://deno.land/std@0.61.0/fs/mod.ts";
