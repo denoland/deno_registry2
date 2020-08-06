@@ -35,9 +35,8 @@ export async function uploadMetaJson(
     encoder.encode(JSON.stringify(data)),
     {
       acl: "public-read",
-      // Global module meta data must always be fresh, but it is acceptable
-      // to serve stale data for a few minutes.
-      cacheControl: "max-age=0, stale-while-revalidate=300",
+      // Global module meta data must always be fresh.
+      cacheControl: "max-age=10, must-revalidate",
       contentType: "application/json",
     },
   );
