@@ -516,3 +516,129 @@ Deno.test({
     await database._modules.deleteMany({});
   },
 });
+
+Deno.test({
+  name: "create event subdir invalid",
+  async fn() {
+    // Send create event
+    assertEquals(
+      await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest2",
+          createevent,
+          { name: "ltest2" },
+          { subdir: "/asd" },
+        ),
+        createContext(),
+      ),
+      {
+        body:
+          '{"success":false,"error":"provided sub directory is not valid as it starts with a /"}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      },
+    );
+
+    // Send create event
+    assertEquals(
+      await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest2",
+          createevent,
+          { name: "ltest2" },
+          { subdir: "asd" },
+        ),
+        createContext(),
+      ),
+      {
+        body:
+          '{"success":false,"error":"provided sub directory is not valid as it does not end with a /"}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      },
+    );
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+
+    // Check that no builds are queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("ltest2"), null);
+  },
+});
+
+Deno.test({
+  name: "create event subdir success",
+  async fn() {
+    // Send create event
+    const resp = await handler(
+      createJSONWebhookEvent(
+        "create",
+        "/webhook/gh/ltest2",
+        createevent,
+        { name: "ltest2" },
+        { subdir: "asd/" },
+      ),
+      createContext(),
+    );
+
+    const builds = await database._builds.find({});
+
+    // Check that a new build was queued
+    assertEquals(builds.length, 1);
+    assertEquals(
+      builds[0],
+      {
+        _id: builds[0]._id,
+        created_at: builds[0].created_at,
+        options: {
+          moduleName: "ltest2",
+          type: "github",
+          repository: "luca-rand/testing",
+          ref: "0.0.7",
+          version: "0.0.7",
+          subdir: "asd/",
+        },
+        status: "queued",
+      },
+    );
+
+    assertEquals(resp, {
+      body:
+        `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+          builds[0]._id.$oid
+        }"}}`,
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 200,
+    });
+
+    // Check that the database entry
+    assertEquals(
+      await database.getModule("ltest2"),
+      {
+        name: "ltest2",
+        type: "github",
+        repository: "luca-rand/testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+      },
+    );
+
+    // Check that no versions.json file was created
+    assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+
+    // Clean up
+    await database._builds.deleteMany({});
+    await database._modules.deleteMany({});
+  },
+});
