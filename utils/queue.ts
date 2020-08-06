@@ -1,11 +1,12 @@
-import { SQSClient } from "../deps.ts";
+import { SQSQueue } from "../deps.ts";
 
-const buildsSQS = new SQSClient(
+const buildsSQS = new SQSQueue(
   {
     queueURL: Deno.env.get("BUILD_QUEUE")!,
     region: Deno.env.get("AWS_REGION")!,
     accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
     secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
+    sessionToken: Deno.env.get("AWS_SESSION_TOKEN"),
   },
 );
 

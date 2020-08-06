@@ -20,5 +20,5 @@ export {
   MongoClient,
   ObjectId,
 } from "https://raw.githubusercontent.com/lucacasonato/deno_mongo_lambda/3f407a302c883f1a84fc6c4aebf28a45ff3aa49e/mod.ts";
-export { SQSClient } from "https://raw.githubusercontent.com/lucacasonato/deno_sqs/a133edaa7a614abbfbe57eed4445882437d5806f/mod.ts";
+export { SQSQueue } from "https://raw.githubusercontent.com/lucacasonato/deno_sqs/6685e2a534122c01e3bfacbe6e590b8e5931633f/mod.ts";
 export { lookup } from "https://deno.land/x/media_types@v2.4.3/mod.ts";

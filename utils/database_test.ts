@@ -18,7 +18,6 @@ const ltest: Module = {
 
 // TODO(lucacasonato): rewrite this test so it doesn't interfere with integration tests
 Deno.test({
-  ignore: true,
   name: "add, remove, list and count modules in database",
   async fn() {
     assertEquals(await database.listModules(10, 1), []);
@@ -43,6 +42,9 @@ Deno.test({
       await database.getModule(ltest.name),
       ltestWith6Stars,
     );
+
+    // Cleanup
+    await database._modules.deleteMany({});
   },
 });
 
@@ -61,7 +63,6 @@ const build1: Omit<Omit<Build, "id">, "created_at"> = {
 
 // TODO(lucacasonato): rewrite this test so it doesn't interfere with integration tests
 Deno.test({
-  ignore: true,
   name: "add, update, and get builds in database",
   async fn() {
     const id = await database.createBuild(build1);
@@ -75,5 +76,8 @@ Deno.test({
       build,
       { ...build1, id, created_at: undefined, stats: undefined },
     );
+
+    // Cleanup
+    await database._builds.deleteMany({});
   },
 });

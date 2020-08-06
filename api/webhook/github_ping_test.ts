@@ -5,8 +5,7 @@ import {
 } from "../../utils/test_utils.ts";
 import { Database } from "../../utils/database.ts";
 import { assertEquals, readJson } from "../../test_deps.ts";
-import { getMeta } from "../../utils/storage.ts";
-
+import { getMeta, s3 } from "../../utils/storage.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
@@ -35,6 +34,15 @@ Deno.test({
       },
       statusCode: 400,
     });
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("ltest-2", "versions.json"), undefined);
+
+    // Check that no builds are queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("ltest-2"), null);
   },
 });
 
@@ -114,55 +122,37 @@ Deno.test({
 
     // Check that no new build was queued
     assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await s3.deleteObject("ltest2/meta/versions.json");
+    await database._modules.deleteMany({});
   },
 });
 
 Deno.test({
   name: "ping event max registered to repository",
   async fn() {
-    // Send ping event for ltest3
-    assertEquals(
-      await handler(
-        createJSONWebhookEvent(
-          "ping",
-          "/webhook/gh/ltest3",
-          pingevent,
-          { name: "ltest3" },
-          {},
-        ),
-        createContext(),
-      ),
-      {
-        body:
-          '{"success":true,"data":{"module":"ltest3","repository":"luca-rand/testing"}}',
-        headers: {
-          "content-type": "application/json",
-        },
-        statusCode: 200,
-      },
-    );
-
-    // Send ping event for ltest4
-    assertEquals(
-      await handler(
-        createJSONWebhookEvent(
-          "ping",
-          "/webhook/gh/ltest4",
-          pingevent,
-          { name: "ltest4" },
-          {},
-        ),
-        createContext(),
-      ),
-      {
-        body:
-          '{"success":true,"data":{"module":"ltest4","repository":"luca-rand/testing"}}',
-        headers: {
-          "content-type": "application/json",
-        },
-        statusCode: 200,
-      },
-    );
+    await database.saveModule({
+      name: "ltest2",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
+    await database.saveModule({
+      name: "ltest3",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
+    await database.saveModule({
+      name: "ltest4",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
 
     // Send ping event for ltest5
     assertEquals(
@@ -194,5 +184,8 @@ Deno.test({
 
     // Check that builds were queued
     assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await database._modules.deleteMany({});
   },
 });

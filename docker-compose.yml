@@ -17,15 +17,12 @@ services:
     logging:
       driver: none
   sqs:
-    image: localstack/localstack
+    image: softwaremill/elasticmq
     ports:
-      - "4566-4599:4566-4599"
-      - "${PORT_WEB_UI-8080}:${PORT_WEB_UI-8080}"
+      - "9324:9324"
     environment:
-      - SERVICES=sqs
-      - DOCKER_HOST=unix:///var/run/docker.sock
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
+      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
     logging:
       driver: none
   mongo:
