@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Wait for SQS to start
 sleep 10
 
 # Set up S3
