@@ -3,15 +3,17 @@ import {
   createJSONWebhookEvent,
   createContext,
 } from "../../utils/test_utils.ts";
-import { Database } from "../../utils/database.ts";
+import { Database, Build } from "../../utils/database.ts";
 import { assertEquals, readJson } from "../../test_deps.ts";
-import { getMeta } from "../../utils/storage.ts";
-
+import { getMeta, s3 } from "../../utils/storage.ts";
+import { assert } from "https://deno.land/std@0.61.0/_util/assert.ts";
+import { ObjectId } from "https://raw.githubusercontent.com/manyuanrong/deno_mongo/6f1b75193a221ac03b87904313645c389d3c89e7/ts/types.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
 const pingevent = await readJson("./api/webhook/testdata/pingevent.json");
+const createevent = await readJson("./api/webhook/testdata/createevent.json");
 
 Deno.test({
   name: "ping event no name",
@@ -35,6 +37,15 @@ Deno.test({
       },
       statusCode: 400,
     });
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("ltest-2", "versions.json"), undefined);
+
+    // Check that no builds are queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("ltest-2"), null);
   },
 });
 
@@ -114,55 +125,37 @@ Deno.test({
 
     // Check that no new build was queued
     assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await s3.deleteObject("ltest2/meta/versions.json");
+    await database._modules.deleteMany({});
   },
 });
 
 Deno.test({
   name: "ping event max registered to repository",
   async fn() {
-    // Send ping event for ltest3
-    assertEquals(
-      await handler(
-        createJSONWebhookEvent(
-          "ping",
-          "/webhook/gh/ltest3",
-          pingevent,
-          { name: "ltest3" },
-          {},
-        ),
-        createContext(),
-      ),
-      {
-        body:
-          '{"success":true,"data":{"module":"ltest3","repository":"luca-rand/testing"}}',
-        headers: {
-          "content-type": "application/json",
-        },
-        statusCode: 200,
-      },
-    );
-
-    // Send ping event for ltest4
-    assertEquals(
-      await handler(
-        createJSONWebhookEvent(
-          "ping",
-          "/webhook/gh/ltest4",
-          pingevent,
-          { name: "ltest4" },
-          {},
-        ),
-        createContext(),
-      ),
-      {
-        body:
-          '{"success":true,"data":{"module":"ltest4","repository":"luca-rand/testing"}}',
-        headers: {
-          "content-type": "application/json",
-        },
-        statusCode: 200,
-      },
-    );
+    await database.saveModule({
+      name: "ltest2",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
+    await database.saveModule({
+      name: "ltest3",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
+    await database.saveModule({
+      name: "ltest4",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
 
     // Send ping event for ltest5
     assertEquals(
@@ -194,5 +187,194 @@ Deno.test({
 
     // Check that builds were queued
     assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await database._modules.deleteMany({});
+  },
+});
+
+Deno.test({
+  name: "create event no name",
+  async fn() {
+    // Send create event
+    const resp = await handler(
+      createJSONWebhookEvent(
+        "create",
+        "/webhook/gh/",
+        createevent,
+        { name: "" },
+        {},
+      ),
+      createContext(),
+    );
+    assertEquals(resp, {
+      body: '{"success":false,"error":"no module name specified"}',
+
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 400,
+    });
+  },
+});
+
+Deno.test({
+  name: "create event bad name",
+  async fn() {
+    // Send create event
+    const resp = await handler(
+      createJSONWebhookEvent(
+        "create",
+        "/webhook/gh/ltest-2",
+        createevent,
+        { name: "ltest-2" },
+        {},
+      ),
+      createContext(),
+    );
+    assertEquals(resp, {
+      body: '{"success":false,"error":"module name is not valid"}',
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 400,
+    });
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("ltest-2", "versions.json"), undefined);
+
+    // Check that no builds are queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("ltest-2"), null);
+  },
+});
+
+Deno.test({
+  name: "create event max registered to repository",
+  async fn() {
+    await database.saveModule({
+      name: "ltest2",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
+    await database.saveModule({
+      name: "ltest3",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
+    await database.saveModule({
+      name: "ltest4",
+      type: "github",
+      repository: "luca-rand/testing",
+      description: "",
+      star_count: 4,
+    });
+
+    // Send create event for ltest5
+    assertEquals(
+      await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest5",
+          createevent,
+          { name: "ltest5" },
+          {},
+        ),
+        createContext(),
+      ),
+      {
+        body:
+          '{"success":false,"error":"max number of modules for one repository (3) has been reached"}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      },
+    );
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("ltest5", "versions.json"), undefined);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("ltest5"), null);
+
+    // Check that builds were queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await database._modules.deleteMany({});
+  },
+});
+
+Deno.test({
+  name: "create event success",
+  async fn() {
+    // Send create event
+    const resp = await handler(
+      createJSONWebhookEvent(
+        "create",
+        "/webhook/gh/ltest2",
+        createevent,
+        { name: "ltest2" },
+        {},
+      ),
+      createContext(),
+    );
+
+    const builds = await database._builds.find({});
+
+    // Check that a new build was queued
+    assertEquals(builds.length, 1);
+    assertEquals(
+      builds[0],
+      {
+        _id: builds[0]._id,
+        created_at: builds[0].created_at,
+        options: {
+          moduleName: "ltest2",
+          type: "github",
+          repository: "luca-rand/testing",
+          ref: "0.0.7",
+          version: "0.0.7",
+        },
+        status: "queued",
+      },
+    );
+
+    assertEquals(resp, {
+      body:
+        `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+          builds[0]._id.$oid
+        }"}}`,
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 200,
+    });
+
+    // Check that the database entry
+    assertEquals(
+      await database.getModule("ltest2"),
+      {
+        name: "ltest2",
+        type: "github",
+        repository: "luca-rand/testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+      },
+    );
+
+    // Check that no versions.json file was created
+    assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+
+    // Clean up
+    await s3.deleteObject("ltest2/meta/versions.json");
+    await database._modules.deleteMany({});
   },
 });

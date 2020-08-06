@@ -2,7 +2,7 @@
 
 import { S3Bucket, join, lookup } from "../deps.ts";
 
-const s3 = new S3Bucket(
+export const s3 = new S3Bucket(
   {
     bucket: Deno.env.get("STORAGE_BUCKET")!,
     region: Deno.env.get("AWS_REGION")!,
