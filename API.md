@@ -11,7 +11,7 @@ The contents and headers should be a GitHub `create` webhook event. More informa
 There are some query parameters that change the request:
 
 - `subdir`: this specifies a subdirectory of the repository to upload (not set by default). This directory must be in the format `std/`.
-- `version_prefix`: only upload versions that match this prefix. When this is set to `std/` and you tag version `std/0.61.0`, version `0.61.0` will be uploaded.
+- `version_prefix`: only upload versions that match this prefix. When this is set to `std/` and you tag version `std/0.63.0`, version `0.63.0` will be uploaded.
 
 ### Response
 

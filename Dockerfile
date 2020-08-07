@@ -7,9 +7,9 @@ WORKDIR /app
 
 COPY import_map.json .
 COPY deps.ts .
-RUN deno cache --unstable --importmap import_map.json deps.ts
+RUN deno cache --unstable deps.ts
 COPY test_deps.ts .
-RUN deno cache --unstable --importmap import_map.json test_deps.ts
+RUN deno cache --unstable test_deps.ts
 
 ADD . .
 
