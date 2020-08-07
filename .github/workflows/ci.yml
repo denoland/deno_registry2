@@ -15,7 +15,7 @@ jobs:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v1.3.0
         with:
-          deno-version: v1.2.0
+          deno-version: v1.2.2
 
       - uses: actions/checkout@v2
 
@@ -30,10 +30,10 @@ jobs:
 
       - name: Compile API endpoints
         run: |
-          deno cache --unstable --importmap ./import_map.json ./api/async/publish.ts
-          deno cache --unstable --importmap ./import_map.json ./api/builds/get.ts
-          deno cache --unstable --importmap ./import_map.json ./api/modules/list.ts
-          deno cache --unstable --importmap ./import_map.json ./api/webhook/github.ts
+          deno cache --unstable ./api/async/publish.ts
+          deno cache --unstable ./api/builds/get.ts
+          deno cache --unstable ./api/modules/list.ts
+          deno cache --unstable ./api/webhook/github.ts
 
       - name: Build
         run: sam build
