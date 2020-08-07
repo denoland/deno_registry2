@@ -177,3 +177,114 @@ Deno.test({
     await s3.deleteObject("ltest/versions/0.0.7/raw/subproject/mod.ts");
   },
 });
+
+Deno.test({
+  name: "publish success subdir",
+  async fn() {
+    const id = await database.createBuild({
+      options: {
+        moduleName: "ltest",
+        ref: "0.0.7",
+        repository: "luca-rand/testing",
+        type: "github",
+        version: "0.0.7",
+        subdir: "subproject/",
+      },
+      status: "queued",
+    });
+
+    await handler(
+      createSQSEvent({ buildID: id }),
+      createContext(),
+    );
+
+    assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      created_at: undefined,
+      id,
+      options: {
+        moduleName: "ltest",
+        ref: "0.0.7",
+        repository: "luca-rand/testing",
+        type: "github",
+        version: "0.0.7",
+        subdir: "subproject/",
+      },
+      status: "success",
+      message: "Finished uploading",
+      stats: {
+        skipped_due_to_size: [],
+        total_files: 2,
+        total_size: 425,
+      },
+    });
+
+    // Check that versions.json file exists
+    let versions = await s3.getObject("ltest/meta/versions.json");
+    assertEquals(versions?.cacheControl, "max-age=10, must-revalidate");
+    assertEquals(versions?.contentType, "application/json");
+    assertEquals(
+      JSON.parse(decoder.decode(versions?.body)),
+      { latest: "0.0.7", versions: ["0.0.7"] },
+    );
+
+    let meta = await s3.getObject("ltest/versions/0.0.7/meta/meta.json");
+    assertEquals(meta?.cacheControl, "public, max-age=31536000, immutable");
+    assertEquals(meta?.contentType, "application/json");
+    // Check that meta file exists
+    assertEquals(
+      {
+        ...JSON.parse(
+          decoder.decode(
+            meta?.body,
+          ),
+        ),
+        uploaded_at: undefined,
+      },
+      {
+        directory_listing: [
+          {
+            path: "",
+            size: 425,
+            type: "dir",
+          },
+          {
+            path: "/README.md",
+            size: 354,
+            type: "file",
+          },
+          {
+            path: "/mod.ts",
+            size: 71,
+            type: "file",
+          },
+        ],
+        upload_options: {
+          ref: "0.0.7",
+          repository: "luca-rand/testing",
+          subdir: "subproject/",
+          type: "github",
+        },
+        uploaded_at: undefined,
+      },
+    );
+
+    // Check the ts file was uploaded
+    let ts = await s3.getObject("ltest/versions/0.0.7/raw/mod.ts");
+    assertEquals(ts?.cacheControl, "public, max-age=31536000, immutable");
+    assertEquals(ts?.contentType, "application/typescript; charset=utf-8");
+    assertEquals(ts?.body.length, 71);
+
+    // Check the ts file was uploaded
+    let readme = await s3.getObject("ltest/versions/0.0.7/raw/README.md");
+    assertEquals(readme?.cacheControl, "public, max-age=31536000, immutable");
+    assertEquals(readme?.contentType, "text/markdown");
+    assertEquals(readme?.body.length, 354);
+
+    // Cleanup
+    await database._builds.deleteMany({});
+    await s3.deleteObject("ltest/meta/versions.json");
+    await s3.deleteObject("ltest/versions/0.0.7/meta/meta.json");
+    await s3.deleteObject("ltest/versions/0.0.7/raw/mod.ts");
+    await s3.deleteObject("ltest/versions/0.0.7/raw/README.md");
+  },
+});
