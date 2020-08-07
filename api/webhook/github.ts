@@ -107,7 +107,10 @@ async function pingEvent(
   const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
-    if (!(entry.type === "github" && entry.repository === repository)) {
+    if (
+      !(entry.type === "github" &&
+        entry.repository.toLowerCase() === repository.toLowerCase())
+    ) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
