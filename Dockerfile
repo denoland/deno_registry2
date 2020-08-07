@@ -5,7 +5,6 @@ RUN pip install awscli
 
 WORKDIR /app
 
-COPY import_map.json .
 COPY deps.ts .
 RUN deno cache --unstable deps.ts
 COPY test_deps.ts .
