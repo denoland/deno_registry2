@@ -1,5 +1,4 @@
-import { APIGatewayProxyEventV2, Context } from "../deps.ts";
-
+import { APIGatewayProxyEventV2, SQSEvent, Context } from "../deps.ts";
 interface KV {
   [key: string]: string;
 }
@@ -66,6 +65,29 @@ export function createJSONWebhookEvent(
     pathParameters,
     queryStringParameters,
   });
+}
+
+export function createSQSEvent(body: unknown): SQSEvent {
+  return {
+    Records: [
+      {
+        messageId: "01b06e5c-d65c-11ea-9409-7e8b4a054eac",
+        body: JSON.stringify(body),
+        attributes: {
+          ApproximateFirstReceiveTimestamp: new Date().toISOString(),
+          ApproximateReceiveCount: "1",
+          SenderId: "",
+          SentTimestamp: new Date().toISOString(),
+        },
+        awsRegion: "us-east-1",
+        eventSource: "",
+        eventSourceARN: "",
+        md5OfBody: "",
+        messageAttributes: {},
+        receiptHandle: "",
+      },
+    ],
+  };
 }
 
 export function createContext(): Context {

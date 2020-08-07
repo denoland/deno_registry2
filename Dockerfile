@@ -1,6 +1,6 @@
 FROM hayd/alpine-deno:1.2.2
 
-RUN apk add --no-cache python py-pip
+RUN apk add --no-cache python py-pip git
 RUN pip install awscli
 
 WORKDIR /app
