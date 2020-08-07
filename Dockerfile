@@ -7,6 +7,7 @@ WORKDIR /app
 
 COPY deps.ts .
 RUN deno cache --unstable deps.ts
+RUN deno run -A --unstable deps.ts
 COPY test_deps.ts .
 RUN deno cache --unstable test_deps.ts
 
