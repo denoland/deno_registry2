@@ -189,3 +189,113 @@ Deno.test({
     await database._modules.deleteMany({});
   },
 });
+
+Deno.test({
+  name: "ping event wrong repository",
+  async fn() {
+    database.saveModule({
+      name: "ltest",
+      description: "testing things",
+      repository: "luca-rand/testing2",
+      star_count: 4,
+      type: "github",
+    });
+
+    // Send ping event
+    const resp = await handler(
+      createJSONWebhookEvent(
+        "ping",
+        "/webhook/gh/ltest",
+        pingevent,
+        { name: "ltest" },
+        {},
+      ),
+      createContext(),
+    );
+    assertEquals(resp, {
+      body:
+        '{"success":false,"error":"module name is registered to a different repository"}',
+
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 400,
+    });
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("ltest", "versions.json"), undefined);
+
+    // Check that no builds are queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("ltest"), {
+      name: "ltest",
+      description: "testing things",
+      repository: "luca-rand/testing2",
+      star_count: 4,
+      type: "github",
+    });
+
+    // Cleanup
+    await database._modules.deleteMany({});
+  },
+});
+
+Deno.test({
+  name: "ping event success capitalization",
+  async fn() {
+    database.saveModule({
+      name: "ltest2",
+      description: "testing things",
+      repository: "luca-rand/Testing",
+      star_count: 4,
+      type: "github",
+    });
+
+    // Send ping event
+    const resp = await handler(
+      createJSONWebhookEvent(
+        "ping",
+        "/webhook/gh/ltest2",
+        pingevent,
+        { name: "ltest2" },
+        {},
+      ),
+      createContext(),
+    );
+    assertEquals(resp, {
+      body:
+        '{"success":true,"data":{"module":"ltest2","repository":"luca-rand/testing"}}',
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 200,
+    });
+
+    // Check that the database entry
+    assertEquals(
+      await database.getModule("ltest2"),
+      {
+        name: "ltest2",
+        type: "github",
+        repository: "luca-rand/testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+      },
+    );
+
+    // Check that a versions.json file was created
+    assertEquals(
+      JSON.parse(decoder.decode(await getMeta("ltest2", "versions.json"))),
+      { latest: null, versions: [] },
+    );
+
+    // Check that no new build was queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await s3.deleteObject("ltest2/meta/versions.json");
+    await database._modules.deleteMany({});
+  },
+});
