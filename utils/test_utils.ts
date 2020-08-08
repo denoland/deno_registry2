@@ -19,7 +19,9 @@ export function createAPIGatewayProxyEventV2(
     version: "2",
     routeKey: "",
     headers: headers ?? {},
-    body: data ? JSON.stringify(data) : undefined,
+    body: data
+      ? (typeof data === "string" ? data : JSON.stringify(data))
+      : undefined,
     isBase64Encoded: false,
     rawPath: rawPath,
     rawQueryString: queryString,
@@ -63,6 +65,27 @@ export function createJSONWebhookEvent(
       "X-GitHub-Event": event,
     },
     data: payload,
+    pathParameters,
+    queryStringParameters,
+  });
+}
+
+export function createJSONWebhookWebFormEvent(
+  event: string,
+  path: string,
+  payload: unknown,
+  pathParameters: KV,
+  queryStringParameters: KV,
+): APIGatewayProxyEventV2 {
+  return createAPIGatewayProxyEventV2("POST", path, {
+    headers: {
+      "Accept": "*/*",
+      "Content-Type": "application/x-www-form-urlencoded",
+      "User-Agent": "GitHub-Hookshot/f1aa6e4",
+      "X-GitHub-Delivery": "01b06e5c-d65c-11ea-9409-7e8b4a054eac",
+      "X-GitHub-Event": event,
+    },
+    data: btoa(JSON.stringify(payload)),
     pathParameters,
     queryStringParameters,
   });

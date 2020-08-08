@@ -13,7 +13,7 @@ import {
   Context,
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
-import { respondJSON } from "../../utils/http.ts";
+import { respondJSON, parseRequestBody } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
 import { getMeta, uploadMetaJson } from "../../utils/storage.ts";
 import type { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
@@ -56,8 +56,26 @@ export async function handler(
 
   const headers = new Headers(event.headers);
 
+  if (
+    !(headers.get("content-type") ?? "").startsWith("application/json") &&
+    !(headers.get("content-type") ?? "").startsWith(
+      "application/x-www-form-urlencoded",
+    )
+  ) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "content-type is not json or x-www-form-urlencoded",
+      }),
+    });
+  }
+
   // Check the GitHub event type.
   const ghEvent = headers.get("x-github-event");
+
+  // Decode event body in the case the event is submitted as form-urlencoded
+  event = parseRequestBody(event);
 
   switch (ghEvent) {
     case "ping":
@@ -83,15 +101,6 @@ async function pingEvent(
   },
 ): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
-  if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: "content-type is not json",
-      }),
-    });
-  }
   if (!event.body) {
     return respondJSON({
       statusCode: 400,
@@ -187,15 +196,6 @@ async function createEvent(
   },
 ): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
-  if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: "content-type is not json",
-      }),
-    });
-  }
   if (!event.body) {
     return respondJSON({
       statusCode: 400,

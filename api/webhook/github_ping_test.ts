@@ -1,6 +1,7 @@
 import { handler } from "./github.ts";
 import {
   createJSONWebhookEvent,
+  createJSONWebhookWebFormEvent,
   createContext,
 } from "../../utils/test_utils.ts";
 import { Database } from "../../utils/database.ts";
@@ -85,6 +86,56 @@ Deno.test({
     // Send ping event
     const resp = await handler(
       createJSONWebhookEvent(
+        "ping",
+        "/webhook/gh/ltest2",
+        pingevent,
+        { name: "ltest2" },
+        {},
+      ),
+      createContext(),
+    );
+    assertEquals(resp, {
+      body:
+        '{"success":true,"data":{"module":"ltest2","repository":"luca-rand/testing"}}',
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 200,
+    });
+
+    // Check that the database entry
+    assertEquals(
+      await database.getModule("ltest2"),
+      {
+        name: "ltest2",
+        type: "github",
+        repository: "luca-rand/testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+      },
+    );
+
+    // Check that a versions.json file was created
+    assertEquals(
+      JSON.parse(decoder.decode(await getMeta("ltest2", "versions.json"))),
+      { latest: null, versions: [] },
+    );
+
+    // Check that no new build was queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await s3.deleteObject("ltest2/meta/versions.json");
+    await database._modules.deleteMany({});
+  },
+});
+
+Deno.test({
+  name: "ping event success - web form",
+  async fn() {
+    // Send ping event
+    const resp = await handler(
+      createJSONWebhookWebFormEvent(
         "ping",
         "/webhook/gh/ltest2",
         pingevent,
