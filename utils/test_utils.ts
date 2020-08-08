@@ -7,11 +7,12 @@ interface KV {
 export function createAPIGatewayProxyEventV2(
   method: string,
   rawPath: string,
-  { data, headers, pathParameters, queryStringParameters }: {
+  { data, headers, pathParameters, queryStringParameters, isBase64Encoded }: {
     data?: unknown;
     headers?: KV;
     pathParameters?: KV;
     queryStringParameters?: KV;
+    isBase64Encoded?: boolean;
   },
 ): APIGatewayProxyEventV2 {
   const queryString = new URLSearchParams(queryStringParameters).toString();
@@ -22,7 +23,7 @@ export function createAPIGatewayProxyEventV2(
     body: data
       ? (typeof data === "string" ? data : JSON.stringify(data))
       : undefined,
-    isBase64Encoded: false,
+    isBase64Encoded: isBase64Encoded ?? false,
     rawPath: rawPath,
     rawQueryString: queryString,
     requestContext: {
@@ -80,14 +81,15 @@ export function createJSONWebhookWebFormEvent(
   return createAPIGatewayProxyEventV2("POST", path, {
     headers: {
       "Accept": "*/*",
-      "Content-Type": "application/x-www-form-urlencoded",
+      "content-type": "application/json",
       "User-Agent": "GitHub-Hookshot/f1aa6e4",
       "X-GitHub-Delivery": "01b06e5c-d65c-11ea-9409-7e8b4a054eac",
       "X-GitHub-Event": event,
     },
-    data: btoa(JSON.stringify(payload)),
+    data: payload,
     pathParameters,
     queryStringParameters,
+    isBase64Encoded: true,
   });
 }
 

@@ -12,6 +12,9 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 const decoder = new TextDecoder();
 
 const pingevent = await readJson("./api/webhook/testdata/pingevent.json");
+const urlendodedpingevent = await Deno.readTextFile(
+  "./api/webhook/testdata/pingevent.txt",
+);
 
 Deno.test({
   name: "ping event no name",
@@ -138,7 +141,7 @@ Deno.test({
       createJSONWebhookWebFormEvent(
         "ping",
         "/webhook/gh/ltest2",
-        pingevent,
+        btoa(urlendodedpingevent),
         { name: "ltest2" },
         {},
       ),

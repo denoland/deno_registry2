@@ -12,6 +12,9 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 const decoder = new TextDecoder();
 
 const createevent = await readJson("./api/webhook/testdata/createevent.json");
+const urlencodedcreateevent = await await Deno.readTextFile(
+  "./api/webhook/testdata/createevent.txt",
+);
 const createeventBranch = await readJson(
   "./api/webhook/testdata/createevent_branch.json",
 );
@@ -213,7 +216,7 @@ Deno.test({
       createJSONWebhookWebFormEvent(
         "create",
         "/webhook/gh/ltest2",
-        createevent,
+        btoa(urlencodedcreateevent),
         { name: "ltest2" },
         {},
       ),
