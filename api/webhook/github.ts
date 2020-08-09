@@ -342,7 +342,7 @@ async function initiateBuild(
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          info: "provided sub directory is not valid as it starts with a /",
+          error: "provided sub directory is not valid as it starts with a /",
         }),
       });
     } else if (!subdir.endsWith("/")) {
@@ -350,7 +350,7 @@ async function initiateBuild(
         statusCode: 400,
         body: JSON.stringify({
           success: false,
-          info:
+          error:
             "provided sub directory is not valid as it does not end with a /",
         }),
       });
@@ -386,7 +386,7 @@ async function initiateBuild(
 
   // Check that a build has not already been queued
   const build = await database.getBuildForVersion(moduleName, version);
-  if (build === null) {
+  if (build !== null) {
     return respondJSON({
       statusCode: 200,
       body: JSON.stringify({
