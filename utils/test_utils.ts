@@ -92,7 +92,7 @@ export function createSQSEvent(body: unknown): SQSEvent {
     ],
   };
 }
-  
+
 export function createJSONWebhookWebFormEvent(
   event: string,
   path: string,
