@@ -1,6 +1,7 @@
 import { handler } from "./github.ts";
 import {
   createJSONWebhookEvent,
+  createJSONWebhookWebFormEvent,
   createContext,
 } from "../../utils/test_utils.ts";
 import { Database } from "../../utils/database.ts";
@@ -11,6 +12,9 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 const decoder = new TextDecoder();
 
 const createevent = await readJson("./api/webhook/testdata/createevent.json");
+const urlencodedcreateevent = await await Deno.readTextFile(
+  "./api/webhook/testdata/createevent.txt",
+);
 const createeventBranch = await readJson(
   "./api/webhook/testdata/createevent_branch.json",
 );
@@ -146,6 +150,73 @@ Deno.test({
         "create",
         "/webhook/gh/ltest2",
         createevent,
+        { name: "ltest2" },
+        {},
+      ),
+      createContext(),
+    );
+
+    const builds = await database._builds.find({});
+
+    // Check that a new build was queued
+    assertEquals(builds.length, 1);
+    assertEquals(
+      builds[0],
+      {
+        _id: builds[0]._id,
+        created_at: builds[0].created_at,
+        options: {
+          moduleName: "ltest2",
+          type: "github",
+          repository: "luca-rand/testing",
+          ref: "0.0.7",
+          version: "0.0.7",
+        },
+        status: "queued",
+      },
+    );
+
+    assertEquals(resp, {
+      body:
+        `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+          builds[0]._id.$oid
+        }"}}`,
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 200,
+    });
+
+    // Check that the database entry
+    assertEquals(
+      await database.getModule("ltest2"),
+      {
+        name: "ltest2",
+        type: "github",
+        repository: "luca-rand/testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+      },
+    );
+
+    // Check that no versions.json file was created
+    assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+
+    // Clean up
+    await database._builds.deleteMany({});
+    await database._modules.deleteMany({});
+  },
+});
+
+Deno.test({
+  name: "create event success - web form",
+  async fn() {
+    // Send create event
+    const resp = await handler(
+      createJSONWebhookWebFormEvent(
+        "create",
+        "/webhook/gh/ltest2",
+        btoa(urlencodedcreateevent),
         { name: "ltest2" },
         {},
       ),
