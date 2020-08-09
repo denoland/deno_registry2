@@ -3,7 +3,7 @@
 import { assert, assertEquals } from "../test_deps.ts";
 import { Database, Module, Build } from "./database.ts";
 
-const database = new Database("mongodb://localhost:27017");
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 await database._modules.deleteMany({});
 await database._builds.deleteMany({});
@@ -16,6 +16,7 @@ const ltest: Module = {
   star_count: 5,
 };
 
+// TODO(lucacasonato): rewrite this test so it doesn't interfere with integration tests
 Deno.test({
   name: "add, remove, list and count modules in database",
   async fn() {
@@ -41,6 +42,9 @@ Deno.test({
       await database.getModule(ltest.name),
       ltestWith6Stars,
     );
+
+    // Cleanup
+    await database._modules.deleteMany({});
   },
 });
 
@@ -57,6 +61,7 @@ const build1: Omit<Omit<Build, "id">, "created_at"> = {
   message: "bla bla bla",
 };
 
+// TODO(lucacasonato): rewrite this test so it doesn't interfere with integration tests
 Deno.test({
   name: "add, update, and get builds in database",
   async fn() {
@@ -71,5 +76,8 @@ Deno.test({
       build,
       { ...build1, id, created_at: undefined, stats: undefined },
     );
+
+    // Cleanup
+    await database._builds.deleteMany({});
   },
 });

@@ -15,11 +15,12 @@ export async function clone(url: string, tag: string): Promise<string> {
       url,
       tmp,
     ],
-    stdout: "piped",
-    stderr: "piped",
+    stdout: "inherit",
+    stderr: "inherit",
   });
   // TODO: better error handling
   const cloneRes = await clone.status();
+  clone.close();
   if (!cloneRes.success) {
     throw new Error(`Failed to clone git repository ${url} at tag ${tag}`);
   }

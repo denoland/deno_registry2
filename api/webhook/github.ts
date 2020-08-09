@@ -13,7 +13,7 @@ import {
   Context,
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
-import { respondJSON } from "../../utils/http.ts";
+import { respondJSON, parseRequestBody } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
 import { getMeta, uploadMetaJson } from "../../utils/storage.ts";
 import type {
@@ -60,8 +60,26 @@ export async function handler(
 
   const headers = new Headers(event.headers);
 
+  if (
+    !(headers.get("content-type") ?? "").startsWith("application/json") &&
+    !(headers.get("content-type") ?? "").startsWith(
+      "application/x-www-form-urlencoded",
+    )
+  ) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "content-type is not json or x-www-form-urlencoded",
+      }),
+    });
+  }
+
   // Check the GitHub event type.
   const ghEvent = headers.get("x-github-event");
+
+  // Decode event body in the case the event is submitted as form-urlencoded
+  event = parseRequestBody(event);
 
   switch (ghEvent) {
     case "ping":
@@ -75,29 +93,20 @@ export async function handler(
         statusCode: 200,
         body: JSON.stringify({
           success: false,
-          info: "not a create event",
+          info: "not a ping, or create event",
         }),
       });
   }
 }
 
 async function pingEvent(
-  { headers, moduleName, event }: {
+  { moduleName, event }: {
     headers: Headers;
     moduleName: string;
     event: APIGatewayProxyEventV2;
   },
 ): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
-  if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: "content-type is not json",
-      }),
-    });
-  }
   if (!event.body) {
     return respondJSON({
       statusCode: 400,
@@ -153,15 +162,6 @@ async function pushEvent(
   },
 ): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
-  if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: "content-type is not json",
-      }),
-    });
-  }
   if (!event.body) {
     return respondJSON({
       statusCode: 400,
@@ -212,15 +212,6 @@ async function createEvent(
   },
 ): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
-  if (!(headers.get("content-type") ?? "").startsWith("application/json")) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: "content-type is not json",
-      }),
-    });
-  }
   if (!event.body) {
     return respondJSON({
       statusCode: 400,
@@ -269,7 +260,10 @@ async function checkAvailable(
   const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
-    if (!(entry.type === "github" && entry.repository === repository)) {
+    if (
+      !(entry.type === "github" &&
+        entry.repository.toLowerCase() === repository.toLowerCase())
+    ) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({

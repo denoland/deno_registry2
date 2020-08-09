@@ -2,13 +2,14 @@
 
 import { S3Bucket, join, lookup } from "../deps.ts";
 
-const s3 = new S3Bucket(
+export const s3 = new S3Bucket(
   {
     bucket: Deno.env.get("STORAGE_BUCKET")!,
     region: Deno.env.get("AWS_REGION")!,
     accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
     secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
     sessionToken: Deno.env.get("AWS_SESSION_TOKEN"),
+    endpointURL: Deno.env.get("S3_ENDPOINT_URL"),
   },
 );
 
@@ -35,9 +36,8 @@ export async function uploadMetaJson(
     encoder.encode(JSON.stringify(data)),
     {
       acl: "public-read",
-      // Global module meta data must always be fresh, but it is acceptable
-      // to serve stale data for a few minutes.
-      cacheControl: "max-age=0, stale-while-revalidate=300",
+      // Global module meta data must always be fresh.
+      cacheControl: "max-age=10, must-revalidate",
       contentType: "application/json",
     },
   );
