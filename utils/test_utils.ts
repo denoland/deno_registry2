@@ -81,7 +81,7 @@ export function createJSONWebhookWebFormEvent(
   return createAPIGatewayProxyEventV2("POST", path, {
     headers: {
       "Accept": "*/*",
-      "content-type": "application/json",
+      "content-type": "application/x-www-form-urlencoded",
       "User-Agent": "GitHub-Hookshot/f1aa6e4",
       "X-GitHub-Delivery": "01b06e5c-d65c-11ea-9409-7e8b4a054eac",
       "X-GitHub-Event": event,
