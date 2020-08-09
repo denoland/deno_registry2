@@ -15,8 +15,8 @@ export async function clone(url: string, tag: string): Promise<string> {
       url,
       tmp,
     ],
-    stdout: "null",
-    stderr: "null",
+    stdout: "inherit",
+    stderr: "inherit",
   });
   // TODO: better error handling
   const cloneRes = await clone.status();
