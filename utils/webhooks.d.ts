@@ -227,7 +227,7 @@ export type WebhookPayloadPush = {
   forced: boolean;
   base_ref: null;
   compare: string;
-  commits: Array<any>;
+  commits: Array<unknown>;
   head_commit: null;
   repository: PayloadRepository;
   pusher: WebhookPayloadPushPusher;

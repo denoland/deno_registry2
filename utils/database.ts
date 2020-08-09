@@ -186,7 +186,7 @@ export class Database {
   ): Promise<Build | null> {
     const build = await this._builds.findOne(
       {
-        // @ts-expect-error
+        // @ts-expect-error because the deno_mongo typings are incorrect
         "options.moduleName": name,
         "options.version": version,
       },
