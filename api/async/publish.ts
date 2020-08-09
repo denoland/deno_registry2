@@ -170,7 +170,9 @@ async function publishGithub(
       "meta.json",
       {
         uploaded_at: new Date().toISOString(),
-        directory_listing: directory,
+        directory_listing: directory.sort((a, b) =>
+          a.path.localeCompare(b.path)
+        ),
         upload_options: {
           type: "github",
           repository,
