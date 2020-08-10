@@ -16,7 +16,11 @@ import {
 import { respondJSON, parseRequestBody } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
 import { getMeta, uploadMetaJson } from "../../utils/storage.ts";
-import type { WebhookPayloadCreate } from "../../utils/webhooks.d.ts";
+import type {
+  WebhookPayloadPing,
+  WebhookPayloadCreate,
+  WebhookPayloadPush,
+} from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
 import { queueBuild } from "../../utils/queue.ts";
 import type { VersionInfo } from "../../utils/types.ts";
@@ -80,6 +84,8 @@ export async function handler(
   switch (ghEvent) {
     case "ping":
       return pingEvent({ headers, moduleName, event });
+    case "push":
+      return pushEvent({ headers, moduleName, event });
     case "create":
       return createEvent({ headers, moduleName, event });
     default:
@@ -94,7 +100,7 @@ export async function handler(
 }
 
 async function pingEvent(
-  { headers, moduleName, event }: {
+  { moduleName, event }: {
     headers: Headers;
     moduleName: string;
     event: APIGatewayProxyEventV2;
@@ -112,7 +118,145 @@ async function pingEvent(
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
   const repository = webhook.repository.full_name;
+  const description = webhook.repository.description ?? "";
+  const starCount = webhook.repository.stargazers_count;
 
+  const resp = await checkAvailable(moduleName, repository);
+  if (resp) return resp;
+
+  // Update meta information in MongoDB (registers module if not present yet)
+  await database.saveModule({
+    name: moduleName,
+    type: "github",
+    repository,
+    description,
+    star_count: starCount,
+  });
+
+  const versionInfoBody = await getMeta(moduleName, "versions.json");
+  if (versionInfoBody === undefined) {
+    await uploadMetaJson(
+      moduleName,
+      "versions.json",
+      { latest: null, versions: [] },
+    );
+  }
+
+  return respondJSON({
+    statusCode: 200,
+    body: JSON.stringify({
+      success: true,
+      data: {
+        module: moduleName,
+        repository: repository,
+      },
+    }),
+  });
+}
+
+async function pushEvent(
+  { headers, moduleName, event }: {
+    headers: Headers;
+    moduleName: string;
+    event: APIGatewayProxyEventV2;
+  },
+): Promise<APIGatewayProxyResultV2> {
+  // Get version, version type, and repository from event
+  if (!event.body) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "no body provided",
+      }),
+    });
+  }
+  const webhook = JSON.parse(event.body) as WebhookPayloadPush;
+  const { ref: rawRef } = webhook;
+  const repository = webhook.repository.full_name;
+  if (!rawRef.startsWith("refs/tags/")) {
+    return respondJSON({
+      statusCode: 200,
+      body: JSON.stringify({
+        success: false,
+        info: "created ref is not tag",
+      }),
+    });
+  }
+
+  const ref = rawRef.replace(/^refs\/tags\//, "");
+  const description = webhook.repository.description ?? "";
+  const starCount = webhook.repository.stargazers_count;
+  const versionPrefix = decodeURIComponent(
+    event.queryStringParameters?.version_prefix ?? "",
+  );
+  const subdir =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+
+  return initiateBuild({
+    moduleName,
+    repository,
+    ref,
+    description,
+    starCount,
+    versionPrefix,
+    subdir,
+  });
+}
+
+async function createEvent(
+  { headers, moduleName, event }: {
+    headers: Headers;
+    moduleName: string;
+    event: APIGatewayProxyEventV2;
+  },
+): Promise<APIGatewayProxyResultV2> {
+  // Get version, version type, and repository from event
+  if (!event.body) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "no body provided",
+      }),
+    });
+  }
+  const webhook = JSON.parse(event.body) as WebhookPayloadCreate;
+  const { ref } = webhook;
+  const repository = webhook.repository.full_name;
+  if (webhook.ref_type !== "tag") {
+    return respondJSON({
+      statusCode: 200,
+      body: JSON.stringify({
+        success: false,
+        info: "created ref is not tag",
+      }),
+    });
+  }
+
+  const description = webhook.repository.description ?? "";
+  const starCount = webhook.repository.stargazers_count;
+  const versionPrefix = decodeURIComponent(
+    event.queryStringParameters?.version_prefix ?? "",
+  );
+  const subdir =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+
+  return initiateBuild({
+    moduleName,
+    repository,
+    ref,
+    description,
+    starCount,
+    versionPrefix,
+    subdir,
+  });
+}
+
+async function checkAvailable(
+  moduleName: string,
+  repository: string,
+): Promise<APIGatewayProxyResultV2 | undefined> {
   const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
@@ -157,70 +301,28 @@ async function pingEvent(
       });
     }
   }
-
-  // Update meta information in MongoDB (registers module if not present yet)
-  await database.saveModule({
-    name: moduleName,
-    type: "github",
-    repository,
-    description: webhook.repository.description ?? "",
-    star_count: webhook.repository.stargazers_count,
-  });
-
-  const versionInfoBody = await getMeta(moduleName, "versions.json");
-  if (versionInfoBody === undefined) {
-    await uploadMetaJson(
-      moduleName,
-      "versions.json",
-      { latest: null, versions: [] },
-    );
-  }
-
-  return respondJSON({
-    statusCode: 200,
-    body: JSON.stringify({
-      success: true,
-      data: {
-        module: moduleName,
-        repository: repository,
-      },
-    }),
-  });
 }
 
-async function createEvent(
-  { headers, moduleName, event }: {
-    headers: Headers;
+async function initiateBuild(
+  options: {
     moduleName: string;
-    event: APIGatewayProxyEventV2;
+    repository: string;
+    ref: string;
+    description: string;
+    starCount: number;
+    versionPrefix: string;
+    subdir: string | null;
   },
 ): Promise<APIGatewayProxyResultV2> {
-  // Get version, version type, and repository from event
-  if (!event.body) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: "no body provided",
-      }),
-    });
-  }
-  const webhook = JSON.parse(event.body) as WebhookPayloadCreate;
-  const { ref } = webhook;
-  const repository = webhook.repository.full_name;
-  if (webhook.ref_type !== "tag") {
-    return respondJSON({
-      statusCode: 200,
-      body: JSON.stringify({
-        success: false,
-        info: "created ref is not tag",
-      }),
-    });
-  }
-
-  const versionPrefix = decodeURIComponent(
-    event.queryStringParameters?.version_prefix ?? "",
-  );
+  const {
+    moduleName,
+    repository,
+    ref,
+    description,
+    starCount,
+    versionPrefix,
+    subdir,
+  } = options;
 
   if (!ref.startsWith(versionPrefix)) {
     return respondJSON({
@@ -234,8 +336,6 @@ async function createEvent(
 
   const version = ref.substring(versionPrefix.length);
 
-  const subdir =
-    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
   if (subdir !== null) {
     if (subdir.startsWith("/")) {
       return respondJSON({
@@ -257,55 +357,16 @@ async function createEvent(
     }
   }
 
-  const entry = await database.getModule(moduleName);
-  if (entry) {
-    // Check that entry matches repo
-    if (!(entry.type === "github" && entry.repository === repository)) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "module name is registered to a different repository",
-        }),
-      });
-    }
-  } else {
-    // If this entry doesn't exist yet check how many modules this repo
-    // already has.
-    if (
-      await database.countModulesForRepository(repository) >=
-        MAX_MODULES_PER_REPOSITORY
-    ) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error:
-            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
-        }),
-      });
-    }
-
-    // If module does not exist and limit has not been reached, check if
-    // name is valid.
-    if (!VALID_NAME.test(moduleName)) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "module name is not valid",
-        }),
-      });
-    }
-  }
+  const resp = await checkAvailable(moduleName, repository);
+  if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
   await database.saveModule({
     name: moduleName,
     type: "github",
     repository,
-    description: webhook.repository.description,
-    star_count: webhook.repository.stargazers_count,
+    description,
+    star_count: starCount,
   });
 
   // Check that version doesn't already exist
@@ -323,7 +384,17 @@ async function createEvent(
     });
   }
 
-  // TODO(lucacasonato): Check that a build has not already been queued
+  // Check that a build has not already been queued
+  const build = await database.getBuildForVersion(moduleName, version);
+  if (build !== null) {
+    return respondJSON({
+      statusCode: 200,
+      body: JSON.stringify({
+        success: false,
+        error: "this module version is already being published",
+      }),
+    });
+  }
 
   const buildID = await database.createBuild({
     options: {

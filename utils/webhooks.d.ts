@@ -129,7 +129,7 @@ type WebhookPayloadCreateSender = {
   site_admin: boolean;
 };
 
-type WebhookPayloadCreate = {
+export type WebhookPayloadCreate = {
   ref: string;
   ref_type: string;
   master_branch: string;
@@ -187,10 +187,49 @@ type WebhookPayloadPingHook = {
   last_response: WebhookPayloadPingHookLastResponse;
 };
 
-type WebhookPayloadPing = {
+export type WebhookPayloadPing = {
   zen: string;
   hook_id: number;
   hook: WebhookPayloadPingHook;
   repository: PayloadRepository;
   sender: WebhookPayloadPingSender;
+};
+
+type WebhookPayloadPushSender = {
+  login: string;
+  id: number;
+  node_id: string;
+  avatar_url: string;
+  gravatar_id: string;
+  url: string;
+  html_url: string;
+  followers_url: string;
+  following_url: string;
+  gists_url: string;
+  starred_url: string;
+  subscriptions_url: string;
+  organizations_url: string;
+  repos_url: string;
+  events_url: string;
+  received_events_url: string;
+  type: string;
+  site_admin: boolean;
+};
+
+type WebhookPayloadPushPusher = { name: string; email: string };
+
+export type WebhookPayloadPush = {
+  ref: string;
+  before: string;
+  after: string;
+  created: boolean;
+  deleted: boolean;
+  forced: boolean;
+  base_ref: null;
+  compare: string;
+  commits: Array<unknown>;
+  head_commit: null;
+  repository: PayloadRepository;
+  pusher: WebhookPayloadPushPusher;
+  sender: WebhookPayloadPushSender;
 };
