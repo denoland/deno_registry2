@@ -14,6 +14,7 @@ const ltest: Module = {
   type: "github",
   repository: "luca-rand/testing",
   star_count: 5,
+  is_unlisted: false,
 };
 
 // TODO(lucacasonato): rewrite this test so it doesn't interfere with integration tests
