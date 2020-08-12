@@ -26,9 +26,7 @@ Deno.test({
       createAPIGatewayProxyEventV2("GET", "/modules", {}),
       createContext(),
     );
-
-    console.log((res as any).body);
-
+unl
     assertEquals(
       res,
       {
