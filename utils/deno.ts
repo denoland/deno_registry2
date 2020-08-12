@@ -2,31 +2,6 @@ const decoder = new TextDecoder();
 
 export type Dep = [string, Dep[]];
 
-export async function cacheDependencies(
-  options: { entrypoint: string; denoDir: string; importmap: string },
-): Promise<void> {
-  const p = Deno.run({
-    cmd: [
-      "deno",
-      "cache",
-      "--importmap",
-      options.importmap,
-      options.entrypoint,
-    ],
-    env: {
-      "DENO_DIR": options.denoDir,
-    },
-    stdout: "inherit",
-    stderr: "inherit",
-  });
-  const status = await p.status();
-  p.close();
-  if (!status.success) {
-    throw new Error(`Failed to gather dependencies for ${options.entrypoint}`);
-  }
-  return;
-}
-
 export async function runDenoInfo(
   options: { entrypoint: string; denoDir: string },
 ): Promise<Dep> {
@@ -36,6 +11,7 @@ export async function runDenoInfo(
       "info",
       "--json",
       "--unstable",
+      "--no-check",
       options.entrypoint,
     ],
     env: {

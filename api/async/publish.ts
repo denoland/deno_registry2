@@ -62,18 +62,17 @@ export async function handler(
         throw new Error(`Unknown build type: ${build.options.type}`);
     }
 
-    const graph = await analyzeDependencies(build);
-    await uploadVersionMetaJson(
-      build.options.moduleName,
-      build.options.version,
-      "deps.json",
-      { graph },
-    );
+    let message = "Published module.";
+
+    await analyzeDependencies(build).catch((err) => {
+      console.error("failed dependency analysis", build, err, err?.response);
+      message += " Failed to run dependency analysis.";
+    });
 
     await database.saveBuild({
       ...build,
       status: "success",
-      message: `Finished processing module`,
+      message: message,
       stats,
     });
   }
@@ -228,7 +227,7 @@ interface DependencyGraph {
   };
 }
 
-async function analyzeDependencies(build: Build): Promise<DependencyGraph> {
+async function analyzeDependencies(build: Build): Promise<void> {
   console.log(
     `Analyzing dependencies for ${build.options.moduleName}@${build.options.version}`,
   );
@@ -276,7 +275,12 @@ async function analyzeDependencies(build: Build): Promise<DependencyGraph> {
 
   await Deno.remove(denoDir, { recursive: true });
 
-  return graph;
+  await uploadVersionMetaJson(
+    build.options.moduleName,
+    build.options.version,
+    "deps.json",
+    { graph },
+  );
 }
 
 function treeToGraph(graph: DependencyGraph, dep: Dep) {
