@@ -142,7 +142,25 @@ Resources:
   BuildQueue:
     Type: AWS::SQS::Queue
     Properties:
-      VisibilityTimeout: 301
+      VisibilityTimeout:
+        Ref: SQSVisibilityTimeout
+      RedrivePolicy:
+        deadLetterTargetArn:
+          Fn::GetAtt:
+            - "BuildDLQ"
+            - "Arn"
+        maxReceiveCount: 5
+
+  BuildDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout:
+        Ref: SQSVisibilityTimeout
+
+Parameters:
+  SQSVisibilityTimeout:
+    Type: Number
+    Default: 301
 
 Outputs:
   ApiEndpoint:
