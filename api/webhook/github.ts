@@ -131,6 +131,7 @@ async function pingEvent(
     repository,
     description,
     star_count: starCount,
+    is_unlisted: false,
   });
 
   const versionInfoBody = await getMeta(moduleName, "versions.json");
@@ -367,6 +368,7 @@ async function initiateBuild(
     repository,
     description,
     star_count: starCount,
+    is_unlisted: false,
   });
 
   // Check that version doesn't already exist
