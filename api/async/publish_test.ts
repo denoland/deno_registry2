@@ -41,7 +41,7 @@ Deno.test({
         version: "0.0.9",
       },
       status: "success",
-      message: "Finished processing module",
+      message: "Published module.",
       stats: {
         skipped_due_to_size: [],
         total_files: 11,
@@ -349,7 +349,7 @@ Deno.test({
         subdir: "subproject/",
       },
       status: "success",
-      message: "Finished processing module",
+      message: "Published module.",
       stats: {
         skipped_due_to_size: [],
         total_files: 2,
