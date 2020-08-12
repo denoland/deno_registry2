@@ -71,6 +71,7 @@ Resources:
           HANDLER_EXT: js
           MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/deno_registry2:SecretString:MongoURI}}"
           STORAGE_BUCKET: !Ref StorageBucket
+          REMOTE_URL: https://deno.land/x/%m@%v
       Timeout: 300
       Events:
         BuildQueueTrigger:

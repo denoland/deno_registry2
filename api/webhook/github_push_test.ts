@@ -156,8 +156,6 @@ Deno.test({
       createContext(),
     );
 
-    console.log(resp);
-
     const builds = await database._builds.find({});
 
     // Check that a new build was queued
