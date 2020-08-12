@@ -115,7 +115,6 @@ Deno.test({
         repository: "luca-rand/testing",
         description: "Move along, just for testing",
         star_count: 2,
-        is_unlisted: false,
       },
     );
 
@@ -166,7 +165,6 @@ Deno.test({
         repository: "luca-rand/testing",
         description: "Move along, just for testing",
         star_count: 2,
-        is_unlisted: false,
       },
     );
 
@@ -194,7 +192,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "",
       star_count: 4,
-      is_unlisted: false,
     });
     await database.saveModule({
       name: "ltest3",
@@ -202,7 +199,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "",
       star_count: 4,
-      is_unlisted: false,
     });
     await database.saveModule({
       name: "ltest4",
@@ -210,7 +206,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "",
       star_count: 4,
-      is_unlisted: false,
     });
 
     // Send ping event for ltest5
@@ -258,7 +253,6 @@ Deno.test({
       repository: "luca-rand/testing2",
       star_count: 4,
       type: "github",
-      is_unlisted: false,
     });
 
     // Send ping event
@@ -295,7 +289,6 @@ Deno.test({
       repository: "luca-rand/testing2",
       star_count: 4,
       type: "github",
-      is_unlisted: false,
     });
 
     // Cleanup
@@ -312,7 +305,6 @@ Deno.test({
       repository: "luca-rand/Testing",
       star_count: 4,
       type: "github",
-      is_unlisted: false,
     });
 
     // Send ping event
@@ -344,7 +336,6 @@ Deno.test({
         repository: "luca-rand/testing",
         description: "Move along, just for testing",
         star_count: 2,
-        is_unlisted: false,
       },
     );
 

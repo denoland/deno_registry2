@@ -86,7 +86,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "",
       star_count: 4,
-      is_unlisted: false,
     });
     await database.saveModule({
       name: "ltest3",
@@ -94,7 +93,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "",
       star_count: 4,
-      is_unlisted: false,
     });
     await database.saveModule({
       name: "ltest4",
@@ -102,7 +100,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "",
       star_count: 4,
-      is_unlisted: false,
     });
 
     // Send push event for ltest5
@@ -196,7 +193,6 @@ Deno.test({
         repository: "luca-rand/testing",
         description: "Move along, just for testing",
         star_count: 2,
-        is_unlisted: false,
       },
     );
 
@@ -329,7 +325,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "Move along, just for testing",
       star_count: 2,
-      is_unlisted: false,
     });
 
     // Check that no versions.json file was created
@@ -453,7 +448,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "Move along, just for testing",
       star_count: 2,
-      is_unlisted: false,
     });
 
     // Check that no versions.json file was created
@@ -500,7 +494,6 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "Move along, just for testing",
       star_count: 2,
-      is_unlisted: false,
     });
 
     // Check that versions.json was not changed

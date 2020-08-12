@@ -18,17 +18,14 @@ Deno.test({
         repository: "luca-rand/testing",
         star_count: i,
         type: "github",
-        is_unlisted: false,
       });
     }
 
-    const res = await handler(
-      createAPIGatewayProxyEventV2("GET", "/modules", {}),
-      createContext(),
-    );
-
     assertEquals(
-      res,
+      await handler(
+        createAPIGatewayProxyEventV2("GET", "/modules", {}),
+        createContext(),
+      ),
       {
         body:
           '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4},{"name":"ltest3","description":"ltest repo","star_count":3},{"name":"ltest2","description":"ltest repo","star_count":2},{"name":"ltest1","description":"ltest repo","star_count":1},{"name":"ltest0","description":"ltest repo","star_count":0}]}}',
@@ -93,7 +90,6 @@ Deno.test({
         repository: "luca-rand/testing",
         star_count: i,
         type: "github",
-        is_unlisted: false,
       });
     }
 

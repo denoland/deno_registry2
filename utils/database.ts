@@ -10,7 +10,6 @@ export interface Module {
   repository: string;
   description: string;
   star_count: number;
-  is_unlisted: boolean;
 }
 
 export interface SearchResult {
@@ -45,8 +44,12 @@ export interface BuildStats {
 export class Database {
   private mongo = new MongoClient();
   protected db = this.mongo.database("production");
-  _modules = this.db.collection<DBModule>("modules");
-  _builds = this.db.collection<Omit<Build, "id"> & { _id: ObjectId }>("builds");
+  _modules = this.db.collection<DBModule>(
+    "modules",
+  );
+  _builds = this.db.collection<Omit<Build, "id"> & { _id: ObjectId }>(
+    "builds",
+  );
 
   constructor(mongoUri: string) {
     this.mongo.connectWithUri(mongoUri);
@@ -63,7 +66,6 @@ export class Database {
       repository: entry.repository,
       description: entry.description,
       star_count: entry.star_count,
-      is_unlisted: entry.is_unlisted ?? false,
     };
   }
 
@@ -82,7 +84,6 @@ export class Database {
         repository: module.repository,
         description: module.description,
         star_count: module.star_count,
-        is_unlisted: module.is_unlisted,
       },
       { upsert: true },
     );
@@ -141,11 +142,6 @@ export class Database {
 
     //  Query the database
     const docs = (await this._modules.aggregate([
-      {
-        $match: {
-          is_unlisted: { $not: { $eq: true } },
-        },
-      },
       ...searchAggregation,
       {
         $skip: (page - 1) * limit,
@@ -190,11 +186,13 @@ export class Database {
     name: string,
     version: string,
   ): Promise<Build | null> {
-    const build = await this._builds.findOne({
-      // @ts-expect-error because the deno_mongo typings are incorrect
-      "options.moduleName": name,
-      "options.version": version,
-    });
+    const build = await this._builds.findOne(
+      {
+        // @ts-expect-error because the deno_mongo typings are incorrect
+        "options.moduleName": name,
+        "options.version": version,
+      },
+    );
     if (build === null) return null;
     return {
       id: build._id.$oid,
@@ -209,13 +207,15 @@ export class Database {
   async createBuild(
     build: Omit<Omit<Build, "id">, "created_at">,
   ): Promise<string> {
-    const id = await this._builds.insertOne({
-      created_at: new Date(),
-      options: build.options,
-      status: build.status,
-      message: build.message,
-      stats: build.stats,
-    });
+    const id = await this._builds.insertOne(
+      {
+        created_at: new Date(),
+        options: build.options,
+        status: build.status,
+        message: build.message,
+        stats: build.stats,
+      },
+    );
     return id.$oid;
   }
 
