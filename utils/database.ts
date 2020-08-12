@@ -32,11 +32,13 @@ export interface Build {
   };
   status: string;
   message?: string;
-  stats?: {
-    total_files: number;
-    total_size: number;
-    skipped_due_to_size: string[];
-  };
+  stats?: BuildStats;
+}
+
+export interface BuildStats {
+  total_files: number;
+  total_size: number;
+  skipped_due_to_size: string[];
 }
 
 export class Database {

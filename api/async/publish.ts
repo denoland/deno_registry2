@@ -10,18 +10,22 @@
  */
 
 import { join, walk, SQSEvent, Context } from "../../deps.ts";
-import { Build, Database } from "../../utils/database.ts";
+import { Build, Database, BuildStats } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
   uploadVersionMetaJson,
   uploadVersionRaw,
   uploadMetaJson,
   getMeta,
+  getVersionMetaJson,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
 import { asyncPool } from "../../utils/util.ts";
-
+import { runDenoInfo } from "../../utils/deno.ts";
+import type { Dep } from "../../utils/deno.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
+
+const remoteURL = Deno.env.get("REMOTE_URL")!;
 
 const MAX_FILE_SIZE = 2_500_000;
 
@@ -37,10 +41,13 @@ export async function handler(
     if (build === null) {
       throw new Error("Build does not exist!");
     }
+
+    let stats: BuildStats | undefined = undefined;
+
     switch (build.options.type) {
       case "github":
         try {
-          await publishGithub(build);
+          stats = await publishGithub(build);
         } catch (err) {
           console.log("error", err, err?.response);
           await database.saveBuild({
@@ -48,17 +55,37 @@ export async function handler(
             status: "error",
             message: err.message,
           });
+          return;
         }
         break;
       default:
         throw new Error(`Unknown build type: ${build.options.type}`);
     }
+
+    const graph = await analyzeDependencies(build);
+    await uploadVersionMetaJson(
+      build.options.moduleName,
+      build.options.version,
+      "deps.json",
+      { graph },
+    );
+
+    await database.saveBuild({
+      ...build,
+      status: "success",
+      message: `Finished processing module`,
+      stats,
+    });
   }
 }
 
 async function publishGithub(
   build: Build,
-) {
+): Promise<{
+  total_files: number;
+  skipped_due_to_size: string[];
+  total_size: number;
+}> {
   console.log(
     `Publishing ${build.options.moduleName} at ${build.options.ref} from GitHub`,
   );
@@ -182,18 +209,85 @@ async function publishGithub(
       },
     );
 
-    await database.saveBuild({
-      ...build,
-      status: "success",
-      message: `Finished uploading`,
-      stats: {
-        total_files: directory.filter((f) => f.type === "file").length,
-        skipped_due_to_size: skippedFiles,
-        total_size: totalSize,
-      },
-    });
+    return {
+      total_files: directory.filter((f) => f.type === "file").length,
+      skipped_due_to_size: skippedFiles,
+      total_size: totalSize,
+    };
   } finally {
     // Remove checkout
     await Deno.remove(clonePath, { recursive: true });
   }
+}
+
+interface DependencyGraph {
+  nodes: {
+    [url: string]: {
+      imports: string[];
+    };
+  };
+}
+
+async function analyzeDependencies(build: Build): Promise<DependencyGraph> {
+  console.log(
+    `Analyzing dependencies for ${build.options.moduleName}@${build.options.version}`,
+  );
+  await database.saveBuild({
+    ...build,
+    status: "analyzing_dependencies",
+  });
+
+  const { options: { moduleName, version } } = build;
+  const denoDir = await Deno.makeTempDir();
+  const prefix = remoteURL.replace("%m", moduleName).replace("%v", version);
+
+  const rawMeta = await getVersionMetaJson(moduleName, version, "meta.json");
+  if (!rawMeta) {
+    throw new Error("Invalid module");
+  }
+  const meta: { directory_listing: DirectoryListingFile[] } = JSON.parse(
+    decoder.decode(rawMeta),
+  );
+
+  const depsTrees = [];
+
+  for await (const file of meta.directory_listing) {
+    if (file.type !== "file") {
+      continue;
+    }
+    if (
+      !(file.path.endsWith(".js") || file.path.endsWith(".jsx") ||
+        file.path.endsWith(".ts") || file.path.endsWith(".tsx"))
+    ) {
+      continue;
+    }
+    const entrypoint = join(
+      prefix,
+      file.path,
+    );
+    depsTrees.push(await runDenoInfo({ entrypoint, denoDir }));
+  }
+
+  const graph: DependencyGraph = { nodes: {} };
+
+  for (const dep of depsTrees) {
+    treeToGraph(graph, dep);
+  }
+
+  await Deno.remove(denoDir, { recursive: true });
+
+  return graph;
+}
+
+function treeToGraph(graph: DependencyGraph, dep: Dep) {
+  const url = dep[0];
+  if (!graph.nodes[url]) {
+    graph.nodes[url] = { imports: [] };
+  }
+  dep[1].forEach((dep) => {
+    if (!graph.nodes[url].imports.includes(dep[0])) {
+      graph.nodes[url].imports.push(dep[0]);
+    }
+  });
+  dep[1].forEach((dep) => treeToGraph(graph, dep));
 }

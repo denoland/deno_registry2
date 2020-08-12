@@ -24,6 +24,18 @@ export async function getMeta(
   return resp?.body;
 }
 
+export async function getVersionMetaJson(
+  module: string,
+  version: string,
+  file: string,
+): Promise<Uint8Array | undefined> {
+  const resp = await s3.getObject(
+    join(module, "versions", version, "meta", file),
+    {},
+  );
+  return resp?.body;
+}
+
 const encoder = new TextEncoder();
 
 export async function uploadMetaJson(
