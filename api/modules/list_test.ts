@@ -22,14 +22,18 @@ Deno.test({
       });
     }
 
+    const res = await handler(
+      createAPIGatewayProxyEventV2("GET", "/modules", {}),
+      createContext(),
+    );
+
+    console.log((res as any).body);
+
     assertEquals(
-      await handler(
-        createAPIGatewayProxyEventV2("GET", "/modules", {}),
-        createContext(),
-      ),
+      res,
       {
         body:
-          '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4,"is_unlisted":false},{"name":"ltest3","description":"ltest repo","star_count":3,"is_unlisted":false},{"name":"ltest2","description":"ltest repo","star_count":2,"is_unlisted":false},{"name":"ltest1","description":"ltest repo","star_count":1},{"name":"ltest0","description":"ltest repo","star_count":0,"is_unlisted":false}]}}',
+          '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4},{"name":"ltest3","description":"ltest repo","star_count":3},{"name":"ltest2","description":"ltest repo","star_count":2},{"name":"ltest1","description":"ltest repo","star_count":1},{"name":"ltest0","description":"ltest repo","star_count":0}]}}',
         headers: {
           "content-type": "application/json",
         },
@@ -49,7 +53,7 @@ Deno.test({
       ),
       {
         body:
-          '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest2","description":"ltest repo","star_count":2,"is_unlisted":false},{"name":"ltest1","description":"ltest repo","star_count":1,"is_unlisted":false}]}}',
+          '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest2","description":"ltest repo","star_count":2},{"name":"ltest1","description":"ltest repo","star_count":1}]}}',
         headers: {
           "content-type": "application/json",
         },

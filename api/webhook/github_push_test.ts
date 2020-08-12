@@ -502,6 +502,7 @@ Deno.test({
       repository: "luca-rand/testing",
       description: "Move along, just for testing",
       star_count: 2,
+      is_unlisted: false,
     });
 
     // Check that versions.json was not changed
