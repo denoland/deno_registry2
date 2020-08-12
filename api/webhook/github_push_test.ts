@@ -330,7 +330,7 @@ Deno.test({
       type: "github",
       repository: "luca-rand/testing",
       description: "Move along, just for testing",
-      star_count: ,
+      star_count: 2,
       is_unlisted: false,
     });
 
