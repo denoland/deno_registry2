@@ -119,6 +119,11 @@ export class Database {
           },
         },
         {
+          $match: {
+            is_unlisted: { $not: { $eq: true } },
+          },
+        },
+        {
           $addFields: {
             search_score: {
               $meta: "searchScore",
@@ -133,6 +138,11 @@ export class Database {
       ]
       : [
         {
+          $match: {
+            is_unlisted: { $not: { $eq: true } },
+          },
+        },
+        {
           $sort: {
             star_count: -1,
           },
@@ -141,11 +151,6 @@ export class Database {
 
     //  Query the database
     const docs = (await this._modules.aggregate([
-      {
-        $match: {
-          is_unlisted: { $not: { $eq: true } },
-        },
-      },
       ...searchAggregation,
       {
         $skip: (page - 1) * limit,
