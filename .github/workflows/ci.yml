@@ -56,3 +56,7 @@ jobs:
           environment: "production"
           apiToken: ${{ secrets.cloudflareToken }}
           workingDirectory: worker
+
+      - name: Run Smoke Tests (production)
+        run: sleep 30 && deno run --allow-net tools/smoke_test.js
+        if: github.ref == 'refs/heads/main'
