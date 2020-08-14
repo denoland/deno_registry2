@@ -170,7 +170,9 @@ export class Database {
   }
 
   async countModules(): Promise<number> {
-    return this._modules.count();
+    return this._modules.count({
+      is_unlisted: { $not: { $eq: true } },
+    });
   }
 
   async countModulesForRepository(repository: string): Promise<number> {

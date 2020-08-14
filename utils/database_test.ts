@@ -17,6 +17,15 @@ const ltest: Module = {
   is_unlisted: false,
 };
 
+const utest: Module = {
+  name: "unlisted_module",
+  description: "Testing all the things! -- unlisted",
+  type: "github",
+  repository: "wperron/testing-unlisted",
+  star_count: 5,
+  is_unlisted: true,
+};
+
 // TODO(lucacasonato): rewrite this test so it doesn't interfere with integration tests
 Deno.test({
   name: "add, remove, list and count modules in database",
@@ -25,6 +34,7 @@ Deno.test({
     assertEquals(await database.countModules(), 0);
 
     await database.saveModule(ltest);
+    await database.saveModule(utest);
 
     assertEquals(await database.listModules(10, 1), [{
       name: ltest.name,
