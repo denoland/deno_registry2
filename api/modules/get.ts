@@ -1,10 +1,9 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
 /**
- * This function is responsible for listing the modules stored in the
- * database. It can be filtered with a search query and is paginated.
- * The function is triggered by a HTTP GET call to /modules. More
- * information in API.md. 
+ * This function is responsible for returning a single module stored in
+ * the database by name. The function is triggered by a HTTP GET call
+ * to /modules/{name}. More information in API.md. 
  */
 
 import {
@@ -37,7 +36,10 @@ export async function handler(
 
   if (module === null) {
     return respondJSON(
-      { statusCode: 404, body: JSON.stringify({ success: false, error: "module not found" }) },
+      {
+        statusCode: 404,
+        body: JSON.stringify({ success: false, error: "module not found" }),
+      },
     );
   }
 
