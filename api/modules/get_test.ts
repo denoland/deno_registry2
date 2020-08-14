@@ -1,4 +1,4 @@
-import { handler } from "./list.ts";
+import { handler } from "./get.ts";
 import {
   createAPIGatewayProxyEventV2,
   createContext,
