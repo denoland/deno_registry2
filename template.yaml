@@ -107,6 +107,31 @@ Resources:
     Metadata:
       BuildMethod: makefile
 
+  ModulesGetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      MemorySize: 128
+      Handler: bundle.handler
+      Runtime: provided
+      Layers:
+        - !GetAtt Deno.Outputs.LayerArn
+      Environment:
+        Variables:
+          DENO_UNSTABLE: 1
+          HANDLER_EXT: js
+          MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/deno_registry2:SecretString:MongoURI}}"
+      Timeout: 5
+      Events:
+        ApiEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref DenoHttpApi
+            Path: /modules/{name}
+            Method: GET
+    Metadata:
+      BuildMethod: makefile
+
   BuildsGetFunction:
     Type: AWS::Serverless::Function
     Properties:
