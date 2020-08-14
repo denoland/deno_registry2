@@ -96,3 +96,41 @@ There are some query parameters that change the request:
   "info": "internal server error"
 }
 ```
+
+## GET /modules/:name
+
+This API endpoint can be used to get a specific module by name.
+
+### Request
+
+The `name` parameter in the URL is the name of the module.
+
+### Response
+
+#### Headers
+
+`content-type`: `application/json`
+
+#### Body
+
+##### 200 OK
+
+```json
+{
+  "success": true,
+  "data": {
+    "name": "oak",
+    "description": "A middleware framework for Deno's http server, including a router middleware.",
+    "star_count": 400
+  }
+}
+```
+
+##### 400 Bad Request
+
+```json
+{
+  "success": false,
+  "info": "internal server error"
+}
+```
