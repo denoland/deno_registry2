@@ -4,7 +4,6 @@ import {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
   APIGatewayProxyStructuredResultV2,
-  decodeqs,
 } from "../deps.ts";
 
 export function respondJSON(
@@ -32,7 +31,7 @@ export function parseRequestBody(
     headers.get("content-type") === "application/x-www-form-urlencoded" &&
     event.body
   ) {
-    event.body = decodeqs(event.body).payload as string ?? undefined;
+    event.body = new URLSearchParams(event.body).get("payload") ?? undefined;
   }
   return event;
 }

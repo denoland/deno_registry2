@@ -6,7 +6,6 @@ export {
   readJsonSync,
 } from "https://deno.land/std@0.63.0/fs/mod.ts";
 export { join } from "https://deno.land/std@0.63.0/path/mod.ts";
-export { decode as decodeqs } from "https://deno.land/std@0.63.0/node/querystring.ts";
 export { S3Bucket } from "https://raw.githubusercontent.com/lucacasonato/deno_s3/fa75e7a745c6856ef03add70a8cb37fb37e818ce/mod.ts";
 export type {
   APIGatewayProxyEventV2,

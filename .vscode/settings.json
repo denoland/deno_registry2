@@ -1,4 +1,9 @@
 {
   "deno.enable": true,
-  "deno.enableFormatter": true
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  }
 }
