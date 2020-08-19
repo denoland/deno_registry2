@@ -23,6 +23,7 @@ Resources:
   WebhookGithubFunction:
     Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: auto
       CodeUri: .
       MemorySize: 128
       Handler: bundle.handler
@@ -55,6 +56,7 @@ Resources:
   AsyncPublishFunction:
     Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: auto
       CodeUri: .
       MemorySize: 1024
       Handler: bundle.handler
@@ -85,6 +87,7 @@ Resources:
   ModulesListFunction:
     Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: auto
       CodeUri: .
       MemorySize: 128
       Handler: bundle.handler
@@ -110,6 +113,7 @@ Resources:
   ModulesGetFunction:
     Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: auto
       CodeUri: .
       MemorySize: 128
       Handler: bundle.handler
@@ -135,6 +139,7 @@ Resources:
   BuildsGetFunction:
     Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: auto
       CodeUri: .
       MemorySize: 128
       Handler: bundle.handler
