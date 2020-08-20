@@ -1,81 +1,27 @@
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-    }
-    archive = {
-      source = "hashicorp/archive"
-    }
-  }
-}
-
-provider "aws" {
-  profile = "default"
-  region  = "eu-west-1"
-}
-
-variable "mongodb_uri" {
-  type = string
-}
-
-resource "aws_lambda_layer_version" "deno_layer" {
-  filename         = "${path.module}/.terraform/dl/deno-lambda-layer.zip"
-  layer_name       = "deno"
-  source_code_hash = filebase64sha256("${path.module}/.terraform/dl/deno-lambda-layer.zip")
-}
-
-resource "aws_apigatewayv2_api" "deno_api" {
-  name          = "deno_api"
-  protocol_type = "HTTP"
-}
-
-resource "aws_apigatewayv2_stage" "example" {
-  api_id      = aws_apigatewayv2_api.deno_api.id
-  name        = "$default"
-  auto_deploy = true
-}
-
-resource "aws_s3_bucket" "storage_bucket" {
-  bucket = "deno-registry2-storagebucket"
-  acl    = "public-read"
-}
-
-resource "aws_sqs_queue" "build_queue" {
-  name                      = "deno-registry2-build-queue"
-  delay_seconds             = 301
-  max_message_size          = 2048
-  message_retention_seconds = 86400
-}
-
 data "archive_file" "webhook_github_function_zip" {
   type        = "zip"
   output_path = "${path.module}/.terraform/tmp/webhook_github_function.zip"
   source_dir  = "${path.module}/.terraform/tmp/webhook_github_function"
 }
 
-resource "aws_iam_role" "webhook_github_function_iam" {
-  name = "webhook_github_function_iam"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
+data "aws_iam_policy_document" "assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
     }
-  ]
+  }
 }
-EOF
+
+resource "aws_iam_role" "webhook_github_function_iam" {
+  name               = "webhook_github_function_execution_role_${local.short_uuid}"
+  assume_role_policy = data.aws_iam_policy_document.assume.json
 }
 
 resource "aws_lambda_function" "webhook_github_function" {
   filename      = data.archive_file.webhook_github_function_zip.output_path
-  function_name = "webhook_github_function"
+  function_name = "webhook_github_function_${local.short_uuid}"
   role          = aws_iam_role.webhook_github_function_iam.arn
   handler       = "bundle.handler"
 
