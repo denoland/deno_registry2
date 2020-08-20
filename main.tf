@@ -14,6 +14,10 @@ provider "aws" {
   region  = "eu-west-1"
 }
 
+variable "mongodb_uri" {
+  type = string
+}
+
 resource "aws_lambda_layer_version" "deno_layer" {
   filename         = "${path.module}/.terraform/dl/deno-lambda-layer.zip"
   layer_name       = "deno"
@@ -26,9 +30,21 @@ resource "aws_apigatewayv2_api" "deno_api" {
 }
 
 resource "aws_apigatewayv2_stage" "example" {
-  api_id = aws_apigatewayv2_api.deno_api.id
-  name   = "$default"
+  api_id      = aws_apigatewayv2_api.deno_api.id
+  name        = "$default"
   auto_deploy = true
+}
+
+resource "aws_s3_bucket" "storage_bucket" {
+  bucket = "deno-registry2-storagebucket"
+  acl    = "public-read"
+}
+
+resource "aws_sqs_queue" "build_queue" {
+  name                      = "deno-registry2-build-queue"
+  delay_seconds             = 301
+  max_message_size          = 2048
+  message_retention_seconds = 86400
 }
 
 data "archive_file" "webhook_github_function_zip" {
@@ -72,18 +88,28 @@ resource "aws_lambda_function" "webhook_github_function" {
 
   environment {
     variables = {
-      "DENO_UNSTABLE" = "1"
-      "HANDLER_EXT"   = "js"
+      "DENO_UNSTABLE"  = "1"
+      "HANDLER_EXT"    = "js"
+      "MONGO_URI"      = var.mongodb_uri
+      "STORAGE_BUCKET" = aws_s3_bucket.storage_bucket.id
+      "BUILD_QUEUE"    = aws_sqs_queue.build_queue.id
     }
   }
+}
+
+resource "aws_lambda_permission" "webhook_github_function" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.webhook_github_function.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.deno_api.execution_arn}/*/*"
 }
 
 resource "aws_apigatewayv2_integration" "webhook_github_function" {
   api_id           = aws_apigatewayv2_api.deno_api.id
   integration_type = "AWS_PROXY"
 
-  connection_type    = "INTERNET"
-  integration_uri    = aws_lambda_function.webhook_github_function.invoke_arn
+  connection_type        = "INTERNET"
+  integration_uri        = aws_lambda_function.webhook_github_function.invoke_arn
   payload_format_version = "2.0"
 }
 
