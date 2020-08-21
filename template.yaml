@@ -33,6 +33,8 @@ Resources:
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref StorageBucket
+        - S3CrudPolicy:
+            BucketName: !Ref ModerationBucket
         - SQSSendMessagePolicy:
             QueueName: !GetAtt BuildQueue.QueueName
       Environment:
