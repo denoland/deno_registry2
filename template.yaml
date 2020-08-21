@@ -41,6 +41,7 @@ Resources:
           HANDLER_EXT: js
           MONGO_URI: "{{resolve:secretsmanager:mongodb/atlas/deno_registry2:SecretString:MongoURI}}"
           STORAGE_BUCKET: !Ref StorageBucket
+          MODERATION_BUCKET: !Ref ModerationBucket
           BUILD_QUEUE: !Ref BuildQueue
       Timeout: 10
       Events:
@@ -169,6 +170,22 @@ Resources:
         CorsRules:
           - AllowedMethods: [GET]
             AllowedOrigins: ["*"]
+
+  ModerationBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
 
   BuildQueue:
     Type: AWS::SQS::Queue

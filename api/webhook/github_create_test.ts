@@ -12,6 +12,9 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 const decoder = new TextDecoder();
 
 const createevent = await readJson("./api/webhook/testdata/createevent.json");
+const createeventforbidden = await readJson(
+  "./api/webhook/testdata/createeventforbidden.json",
+);
 const urlencodedcreateevent = await await Deno.readTextFile(
   "./api/webhook/testdata/createevent.txt",
 );
@@ -77,6 +80,39 @@ Deno.test({
 
     // Check that there is no module entry in the database
     assertEquals(await database.getModule("ltest-2"), null);
+  },
+});
+
+Deno.test({
+  name: "create event forbidden name",
+  async fn() {
+    // Send create event
+    const resp = await handler(
+      createJSONWebhookEvent(
+        "create",
+        "/webhook/gh/frisbee",
+        createeventforbidden,
+        { name: "frisbee" },
+        {},
+      ),
+      createContext(),
+    );
+    assertEquals(resp, {
+      body: '{"success":false,"error":"found forbidden word in module name"}',
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 400,
+    });
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("frisbee", "versions.json"), undefined);
+
+    // Check that no builds are queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("frisbee"), null);
   },
 });
 
