@@ -44,7 +44,7 @@ jobs:
 
       - name: Deploy AWS (production)
         if: github.ref == 'refs/heads/main'
-        run: sam deploy --stack-name deno-registry-prod --s3-bucket deno-cloudformation-us-east1 --s3-prefix deno-registry-prod --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM --no-confirm-changeset --no-fail-on-empty-changeset
+        run: terraform apply
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
