@@ -37,12 +37,14 @@ jobs:
       - name: Create terraform plan
         if: github.ref != 'refs/heads/main'
         run: terraform plan -var mongodb_uri=demo
+        working-directory: terraform
 
       - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
         run: terraform plan -var mongodb_uri=${{ secrets.MONGODB_URI }}
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        working-directory: terraform
 
       - name: Deploy infrastructure (prod)
         if: github.ref == 'refs/heads/main'
@@ -50,6 +52,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        working-directory: terraform
 
       - name: Deploy CF Worker (prod)
         if: github.ref == 'refs/heads/main'
