@@ -8,3 +8,8 @@ variable "sqs_visibility_delay" {
   type        = number
   default     = 301
 }
+
+variable "env" {
+  description = "the deployment environment (prod, staging)"
+  type        = string
+}

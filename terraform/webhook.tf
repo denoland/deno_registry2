@@ -1,7 +1,7 @@
-data "archive_file" "webhook_github_function_zip" {
+data "archive_file" "webhook_github_zip" {
   type        = "zip"
-  output_path = "${path.module}/.terraform/tmp/webhook_github_function.zip"
-  source_dir  = "${path.module}/.terraform/tmp/webhook_github_function"
+  output_path = "${path.module}/.terraform/tmp/webhook_github.zip"
+  source_dir  = "${path.module}/.terraform/tmp/webhook_github"
 }
 
 data "aws_iam_policy_document" "assume" {
@@ -14,18 +14,18 @@ data "aws_iam_policy_document" "assume" {
   }
 }
 
-resource "aws_iam_role" "webhook_github_function_iam" {
-  name               = "webhook_github_function_execution_role_${local.short_uuid}"
+resource "aws_iam_role" "webhook_github_iam" {
+  name               = "${local.prefix}_webhook_github_execution_role_${local.short_uuid}"
   assume_role_policy = data.aws_iam_policy_document.assume.json
 }
 
-resource "aws_lambda_function" "webhook_github_function" {
-  filename      = data.archive_file.webhook_github_function_zip.output_path
-  function_name = "webhook_github_function_${local.short_uuid}"
-  role          = aws_iam_role.webhook_github_function_iam.arn
+resource "aws_lambda_function" "webhook_github" {
+  filename      = data.archive_file.webhook_github_zip.output_path
+  function_name = "${local.prefix}_webhook_github_${local.short_uuid}"
+  role          = aws_iam_role.webhook_github_iam.arn
   handler       = "bundle.handler"
 
-  source_code_hash = filebase64sha256(data.archive_file.webhook_github_function_zip.output_path)
+  source_code_hash = filebase64sha256(data.archive_file.webhook_github_zip.output_path)
 
   runtime = "provided"
   layers  = [aws_lambda_layer_version.deno_layer.arn]
@@ -43,24 +43,24 @@ resource "aws_lambda_function" "webhook_github_function" {
   }
 }
 
-resource "aws_lambda_permission" "webhook_github_function" {
+resource "aws_lambda_permission" "webhook_github" {
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.webhook_github_function.function_name
+  function_name = aws_lambda_function.webhook_github.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.deno_api.execution_arn}/*/*"
 }
 
-resource "aws_apigatewayv2_integration" "webhook_github_function" {
+resource "aws_apigatewayv2_integration" "webhook_github" {
   api_id           = aws_apigatewayv2_api.deno_api.id
   integration_type = "AWS_PROXY"
 
   connection_type        = "INTERNET"
-  integration_uri        = aws_lambda_function.webhook_github_function.invoke_arn
+  integration_uri        = aws_lambda_function.webhook_github.invoke_arn
   payload_format_version = "2.0"
 }
 
-resource "aws_apigatewayv2_route" "webhook_github_function" {
+resource "aws_apigatewayv2_route" "webhook_github" {
   api_id    = aws_apigatewayv2_api.deno_api.id
   route_key = "POST /webhook/gh/{name}"
-  target    = "integrations/${aws_apigatewayv2_integration.webhook_github_function.id}"
+  target    = "integrations/${aws_apigatewayv2_integration.webhook_github.id}"
 }

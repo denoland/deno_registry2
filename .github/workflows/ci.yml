@@ -20,7 +20,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Format
-        run: deno fmt --check
+        run: |
+          deno fmt --check
+          cd terraform && terraform fmt -check
 
       - name: Lint
         run: deno lint --unstable
@@ -38,12 +40,12 @@ jobs:
         if: github.ref != 'refs/heads/main'
         run: |
           terraform init
-          terraform plan -var mongodb_uri=demo
+          terraform plan -var staging -var mongodb_uri=demo
         working-directory: terraform
 
       - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
-        run: terraform plan -var mongodb_uri=${{ secrets.MONGODB_URI }}
+        run: terraform plan -var prod -var mongodb_uri=${{ secrets.MONGODB_URI }}
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         working-directory: terraform

@@ -1,5 +1,5 @@
 resource "aws_apigatewayv2_api" "deno_api" {
-  name          = "deno_api_${local.short_uuid}"
+  name          = "${local.prefix}_api_${local.short_uuid}"
   protocol_type = "HTTP"
 }
 
