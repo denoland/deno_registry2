@@ -21,4 +21,16 @@ resource "aws_sqs_queue" "build_queue" {
   delay_seconds             = var.sqs_visibility_delay
   max_message_size          = 2048
   message_retention_seconds = 86400
+
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.dlq.arn
+    maxReceiveCount     = 5
+  })
+}
+
+resource "aws_sqs_queue" "dlq" {
+  name                      = "${local.prefix}-build-dlq-${local.short_uuid}"
+  delay_seconds             = var.sqs_visibility_delay
+  max_message_size          = 2048
+  message_retention_seconds = 86400
 }
