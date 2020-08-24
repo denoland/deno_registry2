@@ -39,13 +39,15 @@ jobs:
       - name: Create terraform plan
         if: github.ref != 'refs/heads/main'
         run: |
-          terraform init -backend-config bucket=terraform-state-6eaefd00
+          terraform init
           terraform plan -var staging -var mongodb_uri=demo
         working-directory: terraform
 
       - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
-        run: terraform plan -var env=prod -var mongodb_uri=${{ secrets.MONGODB_URI }} -out plan.tfplan
+        run: |
+          terraform init -backend-config bucket=terraform-state-6eaefd00
+          terraform plan -var env=prod -var mongodb_uri=${{ secrets.MONGODB_URI }} -out plan.tfplan
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
         working-directory: terraform
