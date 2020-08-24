@@ -15,7 +15,7 @@ jobs:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v1.3.0
         with:
-          deno-version: v1.2.2
+          deno-version: v1.3.0
 
       - uses: actions/checkout@v2
 
@@ -28,28 +28,30 @@ jobs:
       - name: Test
         run: docker-compose up --build --abort-on-container-exit
 
-      - name: Compile API endpoints
-        run: |
-          deno cache --unstable ./api/async/publish.ts
-          deno cache --unstable ./api/builds/get.ts
-          deno cache --unstable ./api/modules/list.ts
-          deno cache --unstable ./api/webhook/github.ts
+      - name: Download dependencies
+        run: make download
 
-      - name: Build
-        run: sam build
+      - name: Package lambdas
+        run: make package
+
+      - name: Create terraform plan
+        if: github.ref != 'refs/heads/main'
+        run: terraform plan -var mongodb_uri=demo
+
+      - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
+        run: terraform plan -var mongodb_uri=${{ secrets.MONGODB_URI }}
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+
+      - name: Deploy infrastructure (prod)
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Deploy AWS (production)
-        if: github.ref == 'refs/heads/main'
-        run: sam deploy --stack-name deno-registry-prod --s3-bucket deno-cloudformation-us-east1 --s3-prefix deno-registry-prod --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM --no-confirm-changeset --no-fail-on-empty-changeset
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Deploy CF Worker (production)
+      - name: Deploy CF Worker (prod)
         if: github.ref == 'refs/heads/main'
         uses: cloudflare/wrangler-action@1.2.0
         with:
@@ -57,6 +59,6 @@ jobs:
           apiToken: ${{ secrets.cloudflareToken }}
           workingDirectory: worker
 
-      - name: Run Smoke Tests (production)
+      - name: Run Smoke Tests (prod)
         run: sleep 30 && deno run --allow-net tools/smoke_test.js
         if: github.ref == 'refs/heads/main'
