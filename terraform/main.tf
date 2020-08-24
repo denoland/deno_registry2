@@ -2,7 +2,7 @@ resource "random_uuid" "this" {}
 
 locals {
   short_uuid = substr(random_uuid.this.result, 0, 8)
-  prefix     = "deno_registry2_-${var.env}"
+  prefix     = "deno-registry2-${var.env}"
 }
 
 resource "aws_lambda_layer_version" "deno_layer" {
