@@ -22,7 +22,7 @@ jobs:
       - name: Format
         run: |
           deno fmt --check
-          cd terraform && terraform fmt -check
+          cd terraform && terraform fmt -check -recursive
 
       - name: Lint
         run: deno lint --unstable
