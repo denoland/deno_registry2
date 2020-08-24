@@ -36,11 +36,10 @@ jobs:
       - name: Package lambdas
         run: make package
 
-      - name: Create terraform plan
-        if: github.ref != 'refs/heads/main'
+      - name: Validate
         run: |
-          terraform init
-          terraform plan -var staging -var mongodb_uri=demo
+          terraform init -backend=false
+          terraform validate
         working-directory: terraform
 
       - name: Create terraform plan (prod)
