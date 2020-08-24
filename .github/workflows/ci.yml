@@ -36,7 +36,9 @@ jobs:
 
       - name: Create terraform plan
         if: github.ref != 'refs/heads/main'
-        run: terraform plan -var mongodb_uri=demo
+        run: |
+          terraform init
+          terraform plan -var mongodb_uri=demo
         working-directory: terraform
 
       - name: Create terraform plan (prod)
