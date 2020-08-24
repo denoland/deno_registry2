@@ -34,11 +34,12 @@ resource "aws_lambda_function" "webhook_github" {
 
   environment {
     variables = {
-      "DENO_UNSTABLE"  = "1"
-      "HANDLER_EXT"    = "js"
-      "MONGO_URI"      = var.mongodb_uri
-      "STORAGE_BUCKET" = aws_s3_bucket.storage_bucket.id
-      "BUILD_QUEUE"    = aws_sqs_queue.build_queue.id
+      "DENO_UNSTABLE"     = "1"
+      "HANDLER_EXT"       = "js"
+      "MONGO_URI"         = var.mongodb_uri
+      "STORAGE_BUCKET"    = aws_s3_bucket.storage_bucket.id
+      "MODERATION_BUCKET" = aws_s3_bucket.moderation_bucket.id
+      "BUILD_QUEUE"       = aws_sqs_queue.build_queue.id
     }
   }
 }
