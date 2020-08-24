@@ -4,7 +4,7 @@ data "archive_file" "webhook_github_zip" {
   source_dir  = "${path.module}/.terraform/tmp/webhook_github"
 }
 
-data "aws_iam_policy_document" "assume" {
+data "aws_iam_policy_document" "webhook_github_policy" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "assume" {
 
 resource "aws_iam_role" "webhook_github_iam" {
   name               = "${local.prefix}_webhook_github_execution_role_${local.short_uuid}"
-  assume_role_policy = data.aws_iam_policy_document.assume.json
+  assume_role_policy = data.aws_iam_policy_document.webhook_github_policy.json
 }
 
 resource "aws_lambda_function" "webhook_github" {
