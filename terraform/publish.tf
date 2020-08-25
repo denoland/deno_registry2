@@ -4,25 +4,10 @@ data "archive_file" "async_publish_zip" {
   source_dir  = "${path.module}/.terraform/tmp/async_publish"
 }
 
-data "aws_iam_policy_document" "async_publish_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "async_publish_iam" {
-  name               = "${local.prefix}_async_publish_execution_role_${local.short_uuid}"
-  assume_role_policy = data.aws_iam_policy_document.async_publish_policy.json
-}
-
 resource "aws_lambda_function" "async_publish" {
   filename      = data.archive_file.async_publish_zip.output_path
   function_name = "${local.prefix}_async_publish_${local.short_uuid}"
-  role          = aws_iam_role.async_publish_iam.arn
+  role          = aws_iam_role.lambda_exec_role.arn
   handler       = "bundle.handler"
 
   source_code_hash = filebase64sha256(data.archive_file.async_publish_zip.output_path)

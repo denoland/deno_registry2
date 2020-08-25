@@ -4,25 +4,10 @@ data "archive_file" "builds_get_zip" {
   source_dir  = "${path.module}/.terraform/tmp/builds_get"
 }
 
-data "aws_iam_policy_document" "builds_get_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "builds_get_iam" {
-  name               = "${local.prefix}_builds_get_execution_role_${local.short_uuid}"
-  assume_role_policy = data.aws_iam_policy_document.builds_get_policy.json
-}
-
 resource "aws_lambda_function" "builds_get" {
   filename      = data.archive_file.builds_get_zip.output_path
   function_name = "${local.prefix}_builds_get_${local.short_uuid}"
-  role          = aws_iam_role.builds_get_iam.arn
+  role          = aws_iam_role.lambda_exec_role.arn
   handler       = "bundle.handler"
 
   source_code_hash = filebase64sha256(data.archive_file.builds_get_zip.output_path)

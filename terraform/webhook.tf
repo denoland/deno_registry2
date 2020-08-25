@@ -4,25 +4,10 @@ data "archive_file" "webhook_github_zip" {
   source_dir  = "${path.module}/.terraform/tmp/webhook_github"
 }
 
-data "aws_iam_policy_document" "webhook_github_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "webhook_github_iam" {
-  name               = "${local.prefix}_webhook_github_execution_role_${local.short_uuid}"
-  assume_role_policy = data.aws_iam_policy_document.webhook_github_policy.json
-}
-
 resource "aws_lambda_function" "webhook_github" {
   filename      = data.archive_file.webhook_github_zip.output_path
   function_name = "${local.prefix}_webhook_github_${local.short_uuid}"
-  role          = aws_iam_role.webhook_github_iam.arn
+  role          = aws_iam_role.lambda_exec_role.arn
   handler       = "bundle.handler"
 
   source_code_hash = filebase64sha256(data.archive_file.webhook_github_zip.output_path)
