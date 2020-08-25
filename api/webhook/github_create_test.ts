@@ -122,7 +122,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -130,7 +131,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest3",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -138,7 +140,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest4",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -158,7 +161,7 @@ Deno.test({
       ),
       {
         body:
-          '{"success":false,"error":"max number of modules for one repository (3) has been reached"}',
+          '{"success":false,"error":"Max number of modules for one repository (3) has been reached. Please contact ry@deno.land if you need more."}',
         headers: {
           "content-type": "application/json",
         },
@@ -171,6 +174,57 @@ Deno.test({
 
     // Check that there is no module entry in the database
     assertEquals(await database.getModule("ltest5"), null);
+
+    // Check that builds were queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await database._modules.deleteMany({});
+  },
+});
+
+Deno.test({
+  name: "create event max registered to repository",
+  async fn() {
+    for (let i = 0; i < 15; i++) {
+      await database.saveModule({
+        name: `ltest${i + 2}`,
+        type: "github",
+        owner: "luca-rand",
+        repo: `testing${i + 2}`,
+        description: "",
+        star_count: 4,
+        is_unlisted: false,
+      });
+    }
+
+    // Send create event for ltest5
+    assertEquals(
+      await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest17",
+          createevent,
+          { name: "ltest17" },
+          {},
+        ),
+        createContext(),
+      ),
+      {
+        body:
+          '{"success":false,"error":"Max number of modules for one user/org (15) has been reached. Please contact ry@deno.land if you need more."}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      },
+    );
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("ltest17", "versions.json"), undefined);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("ltest17"), null);
 
     // Check that builds were queued
     assertEquals(await database._builds.find({}), []);
@@ -232,7 +286,8 @@ Deno.test({
       {
         name: "ltest2",
         type: "github",
-        repository: "luca-rand/testing",
+        owner: "luca-rand",
+        repo: "testing",
         description: "Move along, just for testing",
         star_count: 2,
         is_unlisted: false,
@@ -300,7 +355,8 @@ Deno.test({
       {
         name: "ltest2",
         type: "github",
-        repository: "luca-rand/testing",
+        owner: "luca-rand",
+        repo: "testing",
         description: "Move along, just for testing",
         star_count: 2,
         is_unlisted: false,
@@ -433,7 +489,8 @@ Deno.test({
     assertEquals(await database.getModule("ltest2"), {
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "Move along, just for testing",
       star_count: 2,
       is_unlisted: false,
@@ -557,7 +614,8 @@ Deno.test({
     assertEquals(await database.getModule("ltest2"), {
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "Move along, just for testing",
       star_count: 2,
       is_unlisted: false,
@@ -604,7 +662,8 @@ Deno.test({
     assertEquals(await database.getModule("ltest2"), {
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "Move along, just for testing",
       star_count: 2,
       is_unlisted: false,

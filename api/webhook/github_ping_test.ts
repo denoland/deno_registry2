@@ -148,7 +148,8 @@ Deno.test({
       {
         name: "ltest2",
         type: "github",
-        repository: "luca-rand/testing",
+        owner: "luca-rand",
+        repo: "testing",
         description: "Move along, just for testing",
         star_count: 2,
         is_unlisted: false,
@@ -199,7 +200,8 @@ Deno.test({
       {
         name: "ltest2",
         type: "github",
-        repository: "luca-rand/testing",
+        owner: "luca-rand",
+        repo: "testing",
         description: "Move along, just for testing",
         star_count: 2,
         is_unlisted: false,
@@ -227,7 +229,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -235,7 +238,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest3",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -243,7 +247,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest4",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -263,7 +268,7 @@ Deno.test({
       ),
       {
         body:
-          '{"success":false,"error":"max number of modules for one repository (3) has been reached"}',
+          '{"success":false,"error":"Max number of modules for one repository (3) has been reached. Please contact ry@deno.land if you need more."}',
         headers: {
           "content-type": "application/json",
         },
@@ -291,7 +296,8 @@ Deno.test({
     database.saveModule({
       name: "ltest",
       description: "testing things",
-      repository: "luca-rand/testing2",
+      owner: "luca-rand",
+      repo: "testing2",
       star_count: 4,
       type: "github",
       is_unlisted: false,
@@ -328,7 +334,8 @@ Deno.test({
     assertEquals(await database.getModule("ltest"), {
       name: "ltest",
       description: "testing things",
-      repository: "luca-rand/testing2",
+      owner: "luca-rand",
+      repo: "testing2",
       star_count: 4,
       type: "github",
       is_unlisted: false,
@@ -345,7 +352,8 @@ Deno.test({
     database.saveModule({
       name: "ltest2",
       description: "testing things",
-      repository: "luca-rand/Testing",
+      owner: "lUca-rand",
+      repo: "Testing",
       star_count: 4,
       type: "github",
       is_unlisted: false,
@@ -377,7 +385,8 @@ Deno.test({
       {
         name: "ltest2",
         type: "github",
-        repository: "luca-rand/testing",
+        owner: "luca-rand",
+        repo: "testing",
         description: "Move along, just for testing",
         star_count: 2,
         is_unlisted: false,

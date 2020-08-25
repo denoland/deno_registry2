@@ -32,6 +32,7 @@ import { isForbidden } from "../../utils/moderation.ts";
 
 const VALID_NAME = /^[a-z0-9_]{3,40}$/;
 const MAX_MODULES_PER_REPOSITORY = 3;
+const MAX_MODULES_PER_OWNER = 15;
 
 const decoder = new TextDecoder();
 
@@ -122,18 +123,19 @@ async function pingEvent(
     });
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
-  const repository = webhook.repository.full_name;
+  const [owner, repo] = webhook.repository.full_name.split("/");
   const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
 
-  const resp = await checkAvailable(moduleName, repository);
+  const resp = await checkAvailable(moduleName, owner, repo);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
   await database.saveModule({
     name: moduleName,
     type: "github",
-    repository,
+    owner,
+    repo,
     description,
     star_count: starCount,
     is_unlisted: false,
@@ -154,7 +156,7 @@ async function pingEvent(
       success: true,
       data: {
         module: moduleName,
-        repository: repository,
+        repository: `${owner}/${repo}`,
       },
     }),
   });
@@ -179,7 +181,7 @@ async function pushEvent(
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPush;
   const { ref: rawRef } = webhook;
-  const repository = webhook.repository.full_name;
+  const [owner, repo] = webhook.repository.full_name.split("/");
   if (!rawRef.startsWith("refs/tags/")) {
     return respondJSON({
       statusCode: 200,
@@ -201,7 +203,8 @@ async function pushEvent(
 
   return initiateBuild({
     moduleName,
-    repository,
+    owner,
+    repo,
     ref,
     description,
     starCount,
@@ -229,7 +232,7 @@ async function createEvent(
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadCreate;
   const { ref } = webhook;
-  const repository = webhook.repository.full_name;
+  const [owner, repo] = webhook.repository.full_name.split("/");
   if (webhook.ref_type !== "tag") {
     return respondJSON({
       statusCode: 200,
@@ -250,7 +253,8 @@ async function createEvent(
 
   return initiateBuild({
     moduleName,
-    repository,
+    owner,
+    repo,
     ref,
     description,
     starCount,
@@ -261,14 +265,16 @@ async function createEvent(
 
 async function checkAvailable(
   moduleName: string,
-  repository: string,
+  owner: string,
+  repo: string,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
   const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
     if (
       !(entry.type === "github" &&
-        entry.repository.toLowerCase() === repository.toLowerCase())
+        entry.owner.toLowerCase() === owner.toLowerCase() &&
+        entry.repo.toLowerCase() === repo.toLowerCase())
     ) {
       return respondJSON({
         statusCode: 400,
@@ -282,7 +288,7 @@ async function checkAvailable(
     // If this entry doesn't exist yet check how many modules this repo
     // already has.
     if (
-      await database.countModulesForRepository(repository) >=
+      await database.countModulesForRepository(owner, repo) >=
         MAX_MODULES_PER_REPOSITORY
     ) {
       return respondJSON({
@@ -290,7 +296,23 @@ async function checkAvailable(
         body: JSON.stringify({
           success: false,
           error:
-            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+            `Max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached. Please contact ry@deno.land if you need more.`,
+        }),
+      });
+    }
+
+    // If this entry doesn't exist yet check how many modules this user
+    // or org has already registered.
+    if (
+      await database.countModulesForOwner(owner) >=
+        MAX_MODULES_PER_OWNER
+    ) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error:
+            `Max number of modules for one user/org (${MAX_MODULES_PER_OWNER}) has been reached. Please contact ry@deno.land if you need more.`,
         }),
       });
     }
@@ -326,7 +348,8 @@ async function checkAvailable(
 async function initiateBuild(
   options: {
     moduleName: string;
-    repository: string;
+    owner: string;
+    repo: string;
     ref: string;
     description: string;
     starCount: number;
@@ -336,7 +359,8 @@ async function initiateBuild(
 ): Promise<APIGatewayProxyResultV2> {
   const {
     moduleName,
-    repository,
+    owner,
+    repo,
     ref,
     description,
     starCount,
@@ -377,14 +401,15 @@ async function initiateBuild(
     }
   }
 
-  const resp = await checkAvailable(moduleName, repository);
+  const resp = await checkAvailable(moduleName, owner, repo);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
   await database.saveModule({
     name: moduleName,
     type: "github",
-    repository,
+    owner,
+    repo,
     description,
     star_count: starCount,
     is_unlisted: false,
@@ -421,7 +446,7 @@ async function initiateBuild(
     options: {
       type: "github",
       moduleName,
-      repository,
+      repository: `${owner}/${repo}`,
       ref,
       version,
       subdir: subdir ?? undefined,
@@ -438,7 +463,7 @@ async function initiateBuild(
       data: {
         module: moduleName,
         version,
-        repository: repository,
+        repository: `${owner}/${repo}`,
         status_url: `https://deno.land/status/${buildID}`,
       },
     }),

@@ -7,7 +7,8 @@ type DBModule = Omit<Module, "id"> & { _id: string };
 export interface Module {
   name: string;
   type: string;
-  repository: string;
+  owner: string;
+  repo: string;
   description: string;
   star_count: number;
   is_unlisted: boolean;
@@ -60,7 +61,8 @@ export class Database {
     return {
       name: entry._id,
       type: entry.type,
-      repository: entry.repository,
+      owner: entry.owner,
+      repo: entry.repo,
       description: entry.description,
       star_count: entry.star_count,
       is_unlisted: entry.is_unlisted ?? false,
@@ -79,7 +81,8 @@ export class Database {
         // deno-lint-ignore no-explicit-any
         _id: module.name as any,
         type: module.type,
-        repository: module.repository,
+        owner: module.owner,
+        repo: module.repo,
         description: module.description,
         star_count: module.star_count,
         is_unlisted: module.is_unlisted,
@@ -175,8 +178,16 @@ export class Database {
     });
   }
 
-  async countModulesForRepository(repository: string): Promise<number> {
-    const modules = await this._modules.find({ repository });
+  async countModulesForRepository(
+    owner: string,
+    repo: string,
+  ): Promise<number> {
+    const modules = await this._modules.find({ owner, repo });
+    return modules.length;
+  }
+
+  async countModulesForOwner(owner: string): Promise<number> {
+    const modules = await this._modules.find({ owner });
     return modules.length;
   }
 
