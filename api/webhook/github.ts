@@ -296,7 +296,7 @@ async function checkAvailable(
         body: JSON.stringify({
           success: false,
           error:
-            `max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached`,
+            `Max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached. Please contact ry@deno.land if you need more.`,
         }),
       });
     }
@@ -312,7 +312,7 @@ async function checkAvailable(
         body: JSON.stringify({
           success: false,
           error:
-            `max number of modules for one user/org (${MAX_MODULES_PER_OWNER}) has been reached`,
+            `Max number of modules for one user/org (${MAX_MODULES_PER_OWNER}) has been reached. Please contact ry@deno.land if you need more.`,
         }),
       });
     }

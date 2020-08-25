@@ -268,7 +268,7 @@ Deno.test({
       ),
       {
         body:
-          '{"success":false,"error":"max number of modules for one repository (3) has been reached"}',
+          '{"success":false,"error":"Max number of modules for one repository (3) has been reached. Please contact ry@deno.land if you need more."}',
         headers: {
           "content-type": "application/json",
         },
