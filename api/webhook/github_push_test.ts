@@ -119,7 +119,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -127,7 +128,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest3",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -135,7 +137,8 @@ Deno.test({
     await database.saveModule({
       name: "ltest4",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "",
       star_count: 4,
       is_unlisted: false,
@@ -229,7 +232,8 @@ Deno.test({
       {
         name: "ltest2",
         type: "github",
-        repository: "luca-rand/testing",
+        owner: "luca-rand",
+        repo: "testing",
         description: "Move along, just for testing",
         star_count: 2,
         is_unlisted: false,
@@ -362,7 +366,8 @@ Deno.test({
     assertEquals(await database.getModule("ltest2"), {
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "Move along, just for testing",
       star_count: 2,
       is_unlisted: false,
@@ -486,7 +491,8 @@ Deno.test({
     assertEquals(await database.getModule("ltest2"), {
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "Move along, just for testing",
       star_count: 2,
       is_unlisted: false,
@@ -533,7 +539,8 @@ Deno.test({
     assertEquals(await database.getModule("ltest2"), {
       name: "ltest2",
       type: "github",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       description: "Move along, just for testing",
       star_count: 2,
       is_unlisted: false,

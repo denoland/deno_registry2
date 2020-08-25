@@ -9,13 +9,14 @@ import { Database } from "../../utils/database.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
-  name: "`/modules`success",
+  name: "`/modules` success",
   async fn() {
     for (let i = 0; i < 5; i++) {
       await database.saveModule({
         name: `ltest${i}`,
         description: "ltest repo",
-        repository: "luca-rand/testing",
+        owner: "luca-rand",
+        repo: "testing",
         star_count: i,
         type: "github",
         is_unlisted: false,
@@ -84,13 +85,14 @@ Deno.test({
 });
 
 Deno.test({
-  name: "`/modules` limit & page out of bounds",
+  name: "`/modules` limit & page out of bounds",
   async fn() {
     for (let i = 0; i < 5; i++) {
       await database.saveModule({
         name: `ltest${i}`,
         description: "ltest repo",
-        repository: "luca-rand/testing",
+        owner: "luca-rand",
+        repo: "testing",
         star_count: i,
         type: "github",
         is_unlisted: false,

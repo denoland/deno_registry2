@@ -9,12 +9,13 @@ import { Database } from "../../utils/database.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
-  name: "`/modules/:name`success",
+  name: "`/modules/:name` success",
   async fn() {
     await database.saveModule({
       name: "ltest",
       description: "ltest repo",
-      repository: "luca-rand/testing",
+      owner: "luca-rand",
+      repo: "testing",
       star_count: 50,
       type: "github",
       is_unlisted: false,
@@ -47,7 +48,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "`/modules/:name`not found",
+  name: "`/modules/:name` not found",
   async fn() {
     const res = await handler(
       createAPIGatewayProxyEventV2(

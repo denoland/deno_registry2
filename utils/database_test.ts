@@ -12,7 +12,8 @@ const ltest: Module = {
   name: "ltest",
   description: "Testing all the things!",
   type: "github",
-  repository: "luca-rand/testing",
+  owner: "luca-rand",
+  repo: "testing",
   star_count: 5,
   is_unlisted: false,
 };
@@ -21,7 +22,8 @@ const utest: Module = {
   name: "unlisted_module",
   description: "Testing all the things! -- unlisted",
   type: "github",
-  repository: "wperron/testing-unlisted",
+  owner: "wperron",
+  repo: "testing-unlisted",
   star_count: 5,
   is_unlisted: true,
 };
