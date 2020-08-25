@@ -2,6 +2,22 @@
 
 This is the backend for the deno.land/x service.
 
+## Limits
+
+There are a few guidelines / rules that you should follow when publishing a module:
+
+- Please only register module names that you will actually use.
+- Do not squat names. If you do, we might transfer the name to someone that makes better use of it.
+- Do not register names which contain trademarks that you do not own.
+- Do not publish modules containing illegal content.
+
+Additionally to these guidelines there are also hard limits:
+
+- You can not publish more than 3 different modules from a single repository source.
+- You can not publish more than 15 modules from a single GitHub account or organization.
+
+If you need an increase to these quotas, please reach out to [ry@tinyclouds.org](mailto:ry@tinyclouds.org).
+
 ## Requirements
 
 - AWS account
