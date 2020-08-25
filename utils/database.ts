@@ -182,7 +182,6 @@ export class Database {
     owner: string,
     repo: string,
   ): Promise<number> {
-    console.log("all", owner, repo, await this._modules.find({}));
     const modules = await this._modules.find({ owner, repo });
     return modules.length;
   }
