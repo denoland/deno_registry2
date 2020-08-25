@@ -32,7 +32,7 @@ import { isForbidden } from "../../utils/moderation.ts";
 
 const VALID_NAME = /^[a-z0-9_]{3,40}$/;
 const MAX_MODULES_PER_REPOSITORY = 3;
-const MAX_MODULES_PER_OWNER = 5;
+const MAX_MODULES_PER_OWNER = 15;
 
 const decoder = new TextDecoder();
 

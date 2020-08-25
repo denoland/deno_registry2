@@ -186,67 +186,33 @@ Deno.test({
 Deno.test({
   name: "create event max registered to repository",
   async fn() {
-    await database.saveModule({
-      name: "ltest2",
-      type: "github",
-      owner: "luca-rand",
-      repo: "testing2",
-      description: "",
-      star_count: 4,
-      is_unlisted: false,
-    });
-    await database.saveModule({
-      name: "ltest3",
-      type: "github",
-      owner: "luca-rand",
-      repo: "testing3",
-      description: "",
-      star_count: 4,
-      is_unlisted: false,
-    });
-    await database.saveModule({
-      name: "ltest4",
-      type: "github",
-      owner: "luca-rand",
-      repo: "testing4",
-      description: "",
-      star_count: 4,
-      is_unlisted: false,
-    });
-    await database.saveModule({
-      name: "ltest5",
-      type: "github",
-      owner: "luca-rand",
-      repo: "testing5",
-      description: "",
-      star_count: 4,
-      is_unlisted: false,
-    });
-    await database.saveModule({
-      name: "ltest6",
-      type: "github",
-      owner: "luca-rand",
-      repo: "testing6",
-      description: "",
-      star_count: 4,
-      is_unlisted: false,
-    });
+    for (let i = 0; i < 15; i++) {
+      await database.saveModule({
+        name: `ltest${i + 2}`,
+        type: "github",
+        owner: "luca-rand",
+        repo: `testing${i + 2}`,
+        description: "",
+        star_count: 4,
+        is_unlisted: false,
+      });
+    }
 
     // Send create event for ltest5
     assertEquals(
       await handler(
         createJSONWebhookEvent(
           "create",
-          "/webhook/gh/ltest7",
+          "/webhook/gh/ltest17",
           createevent,
-          { name: "ltest7" },
+          { name: "ltest17" },
           {},
         ),
         createContext(),
       ),
       {
         body:
-          '{"success":false,"error":"max number of modules for one user/org (5) has been reached"}',
+          '{"success":false,"error":"max number of modules for one user/org (15) has been reached"}',
         headers: {
           "content-type": "application/json",
         },
@@ -255,10 +221,10 @@ Deno.test({
     );
 
     // Check that no versions.json file exists
-    assertEquals(await getMeta("ltest7", "versions.json"), undefined);
+    assertEquals(await getMeta("ltest17", "versions.json"), undefined);
 
     // Check that there is no module entry in the database
-    assertEquals(await database.getModule("ltest7"), null);
+    assertEquals(await database.getModule("ltest17"), null);
 
     // Check that builds were queued
     assertEquals(await database._builds.find({}), []);
@@ -267,7 +233,6 @@ Deno.test({
     await database._modules.deleteMany({});
   },
 });
-
 
 Deno.test({
   name: "create event success",
