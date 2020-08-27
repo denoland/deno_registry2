@@ -16,8 +16,45 @@ resource "aws_s3_bucket" "storage_bucket" {
   acl    = "public-read"
 }
 
+resource "aws_s3_bucket" "moderation_bucket" {
+  bucket = "${local.prefix}-moderationbucket-${local.short_uuid}"
+  acl    = "private"
+
+  versioning {
+    enabled = true
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "moderation_bucket_public_access" {
+  bucket = aws_s3_bucket.moderation_bucket.id
+  block_public_acls = true
+  block_public_policy = true
+  ignore_public_acls = true
+  restrict_public_buckets = true
+}
+
 resource "aws_sqs_queue" "build_queue" {
   name                      = "${local.prefix}-build-queue-${local.short_uuid}"
+  delay_seconds             = var.sqs_visibility_delay
+  max_message_size          = 2048
+  message_retention_seconds = 86400
+
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.build_dlq.arn
+    maxReceiveCount     = 5
+  })
+}
+
+resource "aws_sqs_queue" "build_dlq" {
+  name                      = "${local.prefix}-build-dlq-${local.short_uuid}"
   delay_seconds             = var.sqs_visibility_delay
   max_message_size          = 2048
   message_retention_seconds = 86400
