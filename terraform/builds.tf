@@ -26,6 +26,8 @@ resource "aws_lambda_function" "builds_get" {
       "BUILD_QUEUE"    = aws_sqs_queue.build_queue.id
     }
   }
+
+  tags = local.tags
 }
 
 resource "aws_lambda_permission" "builds_get" {
