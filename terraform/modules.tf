@@ -57,25 +57,10 @@ data "archive_file" "modules_list_zip" {
   source_dir  = "${path.module}/.terraform/tmp/modules_list"
 }
 
-data "aws_iam_policy_document" "modules_list_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "modules_list_iam" {
-  name               = "${local.prefix}_modules_list_execution_role_${local.short_uuid}"
-  assume_role_policy = data.aws_iam_policy_document.modules_list_policy.json
-}
-
 resource "aws_lambda_function" "modules_list" {
   filename      = data.archive_file.modules_list_zip.output_path
   function_name = "${local.prefix}_modules_list_${local.short_uuid}"
-  role          = aws_iam_role.modules_list_iam.arn
+  role          = aws_iam_role.lambda_exec_role.arn
   handler       = "bundle.handler"
 
   source_code_hash = filebase64sha256(data.archive_file.modules_list_zip.output_path)
