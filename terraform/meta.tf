@@ -17,6 +17,7 @@ terraform {
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "terraform-state-${local.short_uuid}"
   acl    = "private"
+  tags   = local.tags
   versioning {
     enabled = true
   }

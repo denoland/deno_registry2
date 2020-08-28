@@ -3,6 +3,10 @@ resource "random_uuid" "this" {}
 locals {
   short_uuid = substr(random_uuid.this.result, 0, 8)
   prefix     = "deno-registry2-${var.env}"
+  tags = {
+    "deno.land/x:environment" = var.env
+    "deno.land/x:instance"    = local.short_uuid
+  }
 }
 
 resource "aws_lambda_layer_version" "deno_layer" {
@@ -14,11 +18,13 @@ resource "aws_lambda_layer_version" "deno_layer" {
 resource "aws_s3_bucket" "storage_bucket" {
   bucket = "${local.prefix}-storagebucket-${local.short_uuid}"
   acl    = "public-read"
+  tags   = local.tags
 }
 
 resource "aws_s3_bucket" "moderation_bucket" {
   bucket = "${local.prefix}-moderationbucket-${local.short_uuid}"
   acl    = "private"
+  tags   = local.tags
 
   versioning {
     enabled = true
@@ -46,6 +52,7 @@ resource "aws_sqs_queue" "build_queue" {
   delay_seconds             = var.sqs_visibility_delay
   max_message_size          = 2048
   message_retention_seconds = 86400
+  tags                      = local.tags
 
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.build_dlq.arn
@@ -58,4 +65,5 @@ resource "aws_sqs_queue" "build_dlq" {
   delay_seconds             = var.sqs_visibility_delay
   max_message_size          = 2048
   message_retention_seconds = 86400
+  tags                      = local.tags
 }

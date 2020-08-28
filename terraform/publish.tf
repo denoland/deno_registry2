@@ -26,6 +26,8 @@ resource "aws_lambda_function" "async_publish" {
       "BUILD_QUEUE"    = aws_sqs_queue.build_queue.id
     }
   }
+
+  tags = local.tags
 }
 
 resource "aws_lambda_permission" "async_publish" {

@@ -11,6 +11,7 @@ data "aws_iam_policy_document" "assume_policy" {
 resource "aws_iam_role" "lambda_exec_role" {
   name               = "${local.prefix}_execution_role_${local.short_uuid}"
   assume_role_policy = data.aws_iam_policy_document.assume_policy.json
+  tags               = local.tags
 }
 
 data "aws_iam_policy_document" "lambda_permissions" {

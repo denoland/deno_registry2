@@ -25,6 +25,8 @@ resource "aws_lambda_function" "modules_get" {
       "MONGO_URI"     = var.mongodb_uri
     }
   }
+
+  tags = local.tags
 }
 
 resource "aws_lambda_permission" "modules_get" {
@@ -77,6 +79,8 @@ resource "aws_lambda_function" "modules_list" {
       "MONGO_URI"     = var.mongodb_uri
     }
   }
+
+  tags = local.tags
 }
 
 resource "aws_lambda_permission" "modules_list" {

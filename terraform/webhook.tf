@@ -27,6 +27,8 @@ resource "aws_lambda_function" "webhook_github" {
       "BUILD_QUEUE"       = aws_sqs_queue.build_queue.id
     }
   }
+
+  tags = local.tags
 }
 
 resource "aws_lambda_permission" "webhook_github" {
