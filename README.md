@@ -23,8 +23,30 @@ This is the backend for the deno.land/x service.
 
 1. Install `aws` CLI.
 2. Sign in to `aws` by running `aws configure`
-3. [Install AWS `sam` CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
-4. Run `sam build && sam deploy --guided`
+3. [Install Terraform](https://terraform.io/downloads.html) version 0.13 or higher
+4. Copy `terraform/terraform.tfvars.example` to `terraform/terraform.tfvars`
+5. Move to the `terraform/` and **comment out** the `backend` section in the `meta.tf` file (important for first-time apply)
+6. Run the following steps:
+
+```bash
+terraform init
+terraform plan -var-file terraform.tfvars -out plan.tfplan
+terraform apply plan.tfplan
+aws s3 ls | grep 'terraform-state' # take note of your tf state bucket name
+# before the final step, go back and remove the comments from step 5
+terraform init -backend-config "bucket=<your-bucket-name>"
+```
+
+## Teardown
+
+Before destroying your staging environment, make sure to:
+
+1. run `terraform state pull` to make a local copy of your state file
+2. comment out the `backend` section of the `meta.tf` file
+3. re-initialize your terraform workspace by running `terraform init`
+4. make sure you empty your s3 buckets, otherwise the destroy will fail
+
+You can then run `terraform destroy` to completely remove your staging environment.
 
 ## Development
 
