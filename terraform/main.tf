@@ -17,7 +17,7 @@ resource "aws_lambda_layer_version" "deno_layer" {
 
 resource "aws_s3_bucket" "storage_bucket" {
   bucket = "${local.prefix}-storagebucket-${local.short_uuid}"
-  acl    = "private"
+  acl    = "public-read"
   tags   = local.tags
 
   cors_rule {
@@ -38,7 +38,7 @@ resource "aws_s3_bucket" "storage_bucket" {
 }
 
 resource "aws_s3_bucket_public_access_block" "storage_bucket_public_access" {
-  bucket                  = aws_s3_bucket.moderation_bucket.id
+  bucket                  = aws_s3_bucket.storage_bucket.id
   block_public_acls       = false
   block_public_policy     = false
   ignore_public_acls      = false
