@@ -20,7 +20,7 @@ resource "aws_lambda_layer_version" "deno_layer" {
 
 resource "aws_s3_bucket" "storage_bucket" {
   bucket = "${local.prefix}-storagebucket-${local.short_uuid}"
-  acl    = "public-read"
+  acl    = "private"
   tags   = local.tags
 
   cors_rule {
