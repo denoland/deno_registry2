@@ -15,7 +15,11 @@ import {
 } from "../../deps.ts";
 import { respondJSON, parseRequestBody } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
-import { getMeta, uploadMetaJson } from "../../utils/storage.ts";
+import {
+  getMeta,
+  uploadMetaJson,
+  getForbiddenWords,
+} from "../../utils/storage.ts";
 import type {
   WebhookPayloadPing,
   WebhookPayloadCreate,
@@ -24,6 +28,7 @@ import type {
 import { isIp4InCidrs } from "../../utils/net.ts";
 import { queueBuild } from "../../utils/queue.ts";
 import type { VersionInfo } from "../../utils/types.ts";
+import { isForbidden } from "../../utils/moderation.ts";
 
 const VALID_NAME = /^[a-z0-9_]{3,40}$/;
 const MAX_MODULES_PER_REPOSITORY = 3;
@@ -298,6 +303,20 @@ async function checkAvailable(
         body: JSON.stringify({
           success: false,
           error: "module name is not valid",
+        }),
+      });
+    }
+
+    // If the name is valid, check if it does not contain offensive words.
+    const encoder = new TextDecoder("utf8");
+    const res = await getForbiddenWords();
+    const badwords = encoder.decode(res).split("\n");
+    if (isForbidden(moduleName, badwords)) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error: "found forbidden word in module name",
         }),
       });
     }
