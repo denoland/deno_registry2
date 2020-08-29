@@ -277,7 +277,7 @@ async function checkAvailable(
         entry.repo.toLowerCase() === repo.toLowerCase())
     ) {
       return respondJSON({
-        statusCode: 400,
+        statusCode: 409,
         body: JSON.stringify({
           success: false,
           error: "module name is registered to a different repository",
