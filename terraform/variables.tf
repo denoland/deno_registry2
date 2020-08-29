@@ -13,3 +13,13 @@ variable "env" {
   description = "the deployment environment (prod, staging)"
   type        = string
 }
+
+variable "domain" {
+  description = "The domain that hosts the api."
+  type        = string
+}
+
+variable "certificate_arn" {
+  type        = string
+  description = "The certificate arn for the domain."
+}
