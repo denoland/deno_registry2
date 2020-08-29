@@ -38,6 +38,10 @@ resource "aws_s3_bucket" "storage_bucket" {
   versioning {
     enabled = false
   }
+
+  website {
+    index_document = "________________"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "storage_bucket_public_access" {
