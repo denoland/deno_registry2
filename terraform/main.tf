@@ -1,11 +1,14 @@
 resource "random_uuid" "this" {}
 
+data "aws_caller_identity" "this" {}
+
 locals {
   short_uuid = substr(random_uuid.this.result, 0, 8)
   prefix     = "deno-registry2-${var.env}"
   tags = {
-    "deno.land/x:environment" = var.env
-    "deno.land/x:instance"    = local.short_uuid
+    "deno.land/x:environment"    = var.env
+    "deno.land/x:instance"       = local.short_uuid
+    "deno.land/x:provisioned-by" = reverse(split(":", data.aws_caller_identity.this.arn))[0]
   }
 }
 
