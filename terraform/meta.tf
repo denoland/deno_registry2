@@ -10,6 +10,12 @@ terraform {
     cloudflare = {
       source = "terraform-providers/cloudflare"
     }
+    mongodbatlas = {
+      source = "terraform-providers/mongodbatlas"
+    }
+    random = {
+      source = "hashicorp/random"
+    }
   }
   backend "s3" {
     key = "terraform.tfstate"

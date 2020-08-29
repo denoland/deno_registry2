@@ -8,11 +8,6 @@ variable "backup_region" {
   type        = string
 }
 
-variable "mongodb_uri" {
-  description = "MongoDB conection string"
-  type        = string
-}
-
 variable "sqs_visibility_delay" {
   description = "SQS delay before messages become visible again"
   type        = number
@@ -57,5 +52,20 @@ variable "cloudflare_zone_id" {
 
 variable "github_token" {
   description = "GitHub personal access token"
+  type        = string
+}
+
+variable "atlas_public_key" {
+  description = "MongoDB Atlas public key"
+  type        = string
+}
+
+variable "atlas_private_key" {
+  description = "MongoDB Atlas private key"
+  type        = string
+}
+
+variable "atlas_org_id" {
+  description = "MongoDB Atlas organization ID"
   type        = string
 }

@@ -14,7 +14,7 @@ resource "aws_lambda_function" "stats" {
   environment {
     variables = {
       "DENO_UNSTABLE" = "1"
-      "MONGO_URI"     = var.mongodb_uri
+      "MONGO_URI"     = local.mongodb_uri
     }
   }
 
