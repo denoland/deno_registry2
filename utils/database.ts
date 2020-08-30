@@ -51,6 +51,9 @@ export class Database {
 
   constructor(mongoUri: string) {
     this.mongo.connectWithUri(mongoUri);
+    if (this.mongo.clientId === null || this.mongo.clientId === undefined) {
+      throw new Error("Could not connect to database.");
+    }
   }
 
   async getModule(name: string): Promise<Module | null> {
