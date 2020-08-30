@@ -15,12 +15,14 @@ jobs:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v1.3.0
         with:
-          deno-version: v1.2.2
+          deno-version: v1.3.0
 
       - uses: actions/checkout@v2
 
       - name: Format
-        run: deno fmt --check
+        run: |
+          deno fmt --check
+          cd terraform && terraform fmt -check -recursive
 
       - name: Lint
         run: deno lint --unstable
@@ -28,28 +30,44 @@ jobs:
       - name: Test
         run: docker-compose up --build --abort-on-container-exit
 
-      - name: Compile API endpoints
+      - name: Download dependencies
+        run: make download
+
+      - name: Package lambdas
+        run: make package
+
+      - name: Validate
         run: |
-          deno cache --unstable ./api/async/publish.ts
-          deno cache --unstable ./api/builds/get.ts
-          deno cache --unstable ./api/modules/list.ts
-          deno cache --unstable ./api/webhook/github.ts
+          terraform init -backend=false
+          terraform validate
+        working-directory: terraform
 
-      - name: Build
-        run: sam build
+      - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
+        run: |
+          terraform init -backend-config bucket=$TERRAFORM_STATE_BUCKET
+          terraform plan \
+            -var env=prod \
+            -var mongodb_uri=$MONGODB_URI \
+            -var domain=$DOMAIN \
+            -var certificate_arn=$CERTIFICATE_ARN \
+            -out plan.tfplan
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          DOMAIN: staging.api.deno.land
+          CERTIFICATE_ARN: arn:aws:acm:us-east-1:035475582903:certificate/1c3bd085-95ef-4c27-ae09-18d27825739c
+          TERRAFORM_STATE_BUCKET: deno-registry2-prod-terraform-state-b3a31d16
+        working-directory: terraform
+
+      - name: Deploy infrastructure (prod)
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply plan.tfplan
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        working-directory: terraform
 
-      - name: Deploy AWS (production)
-        if: github.ref == 'refs/heads/main'
-        run: sam deploy --stack-name deno-registry-prod --s3-bucket deno-cloudformation-us-east1 --s3-prefix deno-registry-prod --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM --no-confirm-changeset --no-fail-on-empty-changeset
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Deploy CF Worker (production)
+      - name: Deploy CF Worker (prod)
         if: github.ref == 'refs/heads/main'
         uses: cloudflare/wrangler-action@1.2.0
         with:
@@ -57,6 +75,6 @@ jobs:
           apiToken: ${{ secrets.cloudflareToken }}
           workingDirectory: worker
 
-      - name: Run Smoke Tests (production)
+      - name: Run Smoke Tests (prod)
         run: sleep 30 && deno run --allow-net tools/smoke_test.js
         if: github.ref == 'refs/heads/main'

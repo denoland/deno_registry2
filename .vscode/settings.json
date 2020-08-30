@@ -5,5 +5,8 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
-  }
+  },
+  "terraform-ls.rootModules": [
+    "terraform/"
+  ],
 }
