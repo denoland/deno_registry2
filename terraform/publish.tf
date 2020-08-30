@@ -31,6 +31,13 @@ resource "aws_lambda_function" "async_publish" {
   tags = local.tags
 }
 
+resource "aws_lambda_event_source_mapping" "async_publish" {
+  batch_size       = 1
+  event_source_arn = "${aws_sqs_queue.build_queue.arn}"
+  enabled          = true
+  function_name    = "${aws_lambda_function.async_publish.arn}"
+}
+
 resource "aws_lambda_permission" "async_publish" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.async_publish.function_name
