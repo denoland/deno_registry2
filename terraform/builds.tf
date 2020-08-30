@@ -16,6 +16,7 @@ resource "aws_lambda_function" "builds_get" {
   layers  = [aws_lambda_layer_version.deno_layer.arn]
 
   timeout = 10
+  memory_size = 128
 
   environment {
     variables = {
@@ -23,7 +24,6 @@ resource "aws_lambda_function" "builds_get" {
       "HANDLER_EXT"    = "js"
       "MONGO_URI"      = var.mongodb_uri
       "STORAGE_BUCKET" = aws_s3_bucket.storage_bucket.id
-      "BUILD_QUEUE"    = aws_sqs_queue.build_queue.id
     }
   }
 

@@ -17,6 +17,7 @@ resource "aws_lambda_function" "modules_get" {
   layers  = [aws_lambda_layer_version.deno_layer.arn]
 
   timeout = 10
+  memory_size = 128
 
   environment {
     variables = {
@@ -71,6 +72,7 @@ resource "aws_lambda_function" "modules_list" {
   layers  = [aws_lambda_layer_version.deno_layer.arn]
 
   timeout = 10
+  memory_size = 128
 
   environment {
     variables = {

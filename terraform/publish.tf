@@ -13,9 +13,10 @@ resource "aws_lambda_function" "async_publish" {
   source_code_hash = filebase64sha256(data.archive_file.async_publish_zip.output_path)
 
   runtime = "provided"
-  layers  = [aws_lambda_layer_version.deno_layer.arn]
+  layers  = [aws_lambda_layer_version.deno_layer.arn, "arn:aws:lambda:us-east-1:553035198032:layer:git-lambda2:6"]
 
   timeout = 10
+  memory_size = 1024
 
   environment {
     variables = {
@@ -23,7 +24,7 @@ resource "aws_lambda_function" "async_publish" {
       "HANDLER_EXT"    = "js"
       "MONGO_URI"      = var.mongodb_uri
       "STORAGE_BUCKET" = aws_s3_bucket.storage_bucket.id
-      "BUILD_QUEUE"    = aws_sqs_queue.build_queue.id
+      "REMOTE_URL"     = "https://deno.land/x/%m@%v"
     }
   }
 
