@@ -41,7 +41,16 @@ data "aws_iam_policy_document" "lambda_permissions" {
   }
 }
 
+data "aws_iam_policy" "basic_lambda" {
+  arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
 resource "aws_iam_role_policy" "lambda_permissions" {
   role   = aws_iam_role.lambda_exec_role.name
   policy = data.aws_iam_policy_document.lambda_permissions.json
+}
+
+resource "aws_iam_role_policy_attachment" "basic_lambda" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = data.aws_iam_policy.basic_lambda.arn
 }
