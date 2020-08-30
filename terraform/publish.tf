@@ -15,7 +15,7 @@ resource "aws_lambda_function" "async_publish" {
   runtime = "provided"
   layers  = [aws_lambda_layer_version.deno_layer.arn, "arn:aws:lambda:us-east-1:553035198032:layer:git-lambda2:6"]
 
-  timeout = 10
+  timeout     = 10
   memory_size = 1024
 
   environment {

@@ -15,7 +15,7 @@ resource "aws_lambda_function" "builds_get" {
   runtime = "provided"
   layers  = [aws_lambda_layer_version.deno_layer.arn]
 
-  timeout = 10
+  timeout     = 10
   memory_size = 128
 
   environment {
