@@ -31,8 +31,12 @@ data "aws_iam_policy_document" "lambda_permissions" {
   statement {
     actions = [
       "sqs:SendMessage",
+      "sqs:SendMessageBatch",
       "sqs:ReceiveMessage",
       "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:SetQueueAttributes",
+      "sqs:GetQueueUrl",
     ]
     resources = [
       aws_sqs_queue.build_queue.arn,
