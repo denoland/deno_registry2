@@ -79,11 +79,11 @@ resource "aws_s3_bucket_public_access_block" "moderation_bucket_public_access" {
 }
 
 resource "aws_sqs_queue" "build_queue" {
-  name                      = "${local.prefix}-build-queue-${local.short_uuid}"
-  delay_seconds             = var.sqs_visibility_delay
-  max_message_size          = 2048
-  message_retention_seconds = 86400
-  tags                      = local.tags
+  name                       = "${local.prefix}-build-queue-${local.short_uuid}"
+  max_message_size           = 2048
+  message_retention_seconds  = 86400
+  tags                       = local.tags
+  visibility_timeout_seconds = var.sqs_visibility_delay
 
   redrive_policy = jsonencode({
     deadLetterTargetArn = aws_sqs_queue.build_dlq.arn
@@ -92,9 +92,9 @@ resource "aws_sqs_queue" "build_queue" {
 }
 
 resource "aws_sqs_queue" "build_dlq" {
-  name                      = "${local.prefix}-build-dlq-${local.short_uuid}"
-  delay_seconds             = var.sqs_visibility_delay
-  max_message_size          = 2048
-  message_retention_seconds = 86400
-  tags                      = local.tags
+  name                       = "${local.prefix}-build-dlq-${local.short_uuid}"
+  max_message_size           = 2048
+  message_retention_seconds  = 86400
+  visibility_timeout_seconds = var.sqs_visibility_delay
+  tags                       = local.tags
 }
