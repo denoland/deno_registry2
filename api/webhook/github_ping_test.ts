@@ -321,7 +321,7 @@ Deno.test({
       headers: {
         "content-type": "application/json",
       },
-      statusCode: 400,
+      statusCode: 409,
     });
 
     // Check that no versions.json file exists
