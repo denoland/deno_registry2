@@ -18,5 +18,5 @@ export {
   ObjectId,
 } from "https://raw.githubusercontent.com/lucacasonato/deno_mongo_lambda/v0.10.0/mod.ts";
 export { S3Bucket } from "https://deno.land/x/s3@0.1.0/mod.ts";
-export { SQSQueue } from "https://deno.land/x/sqs@0.3.1/mod.ts";
+export { SQSQueue } from "https://deno.land/x/sqs@0.3.2/mod.ts";
 export { lookup } from "https://deno.land/x/media_types@v2.4.6/mod.ts";
