@@ -50,7 +50,7 @@ terraform plan -var-file terraform.tfvars -out plan.tfplan
 terraform apply plan.tfplan
 aws s3 ls | grep 'terraform-state' # take note of your tf state bucket name
 # before the final step, go back and remove the comments from step 5
-terraform init -backend-config "bucket=<your-bucket-name>"
+terraform init -backend-config "bucket=<your-bucket-name>" -backend-config "region=<aws-region>"
 ```
 
 ## Teardown
