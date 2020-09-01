@@ -23,3 +23,13 @@ variable "certificate_arn" {
   type        = string
   description = "The certificate arn for the domain."
 }
+
+variable "cloudflare_account_id" {
+  description = "The account id for the Cloudflare account holding the zone for this domain."
+  type        = string
+}
+
+variable "cloudflare_zone_id" {
+  description = "The zone id for the Cloudflare zone for this domain."
+  type        = string
+}

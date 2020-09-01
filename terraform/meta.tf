@@ -7,6 +7,9 @@ terraform {
     archive = {
       source = "hashicorp/archive"
     }
+    cloudflare = {
+      source = "terraform-providers/cloudflare"
+    }
   }
   backend "s3" {
     key    = "terraform.tfstate"
