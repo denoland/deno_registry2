@@ -1,3 +1,8 @@
+variable "region" {
+  description = "the AWS region"
+  type        = string
+}
+
 variable "mongodb_uri" {
   description = "MongoDB conection string"
   type        = string

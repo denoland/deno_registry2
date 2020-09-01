@@ -45,12 +45,13 @@ jobs:
       - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
         run: |
-          terraform init -backend-config bucket=$TERRAFORM_STATE_BUCKET
+          terraform init -backend-config bucket=$TERRAFORM_STATE_BUCKET -backend-config "region=$AWS_DEFAULT_REGION"
           terraform plan \
             -var env=prod \
             -var mongodb_uri=$MONGODB_URI \
             -var domain=$DOMAIN \
             -var certificate_arn=$CERTIFICATE_ARN \
+            -var region=$AWS_DEFAULT_REGION \
             -out plan.tfplan
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
