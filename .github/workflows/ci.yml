@@ -78,5 +78,5 @@ jobs:
           workingDirectory: worker
 
       - name: Run Smoke Tests (prod)
-        run: sleep 30 && deno run --allow-net tools/smoke_test.js
+        run: sleep 30 && deno run --allow-net tools/smoketest.js
         if: github.ref == 'refs/heads/main'
