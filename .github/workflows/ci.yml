@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_DEFAULT_REGION: us-east-1
+      CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
+      CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
     steps:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v2.2.0
@@ -65,8 +67,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
-          CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
         working-directory: terraform
 
       - name: Deploy infrastructure (prod)
@@ -75,6 +75,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         working-directory: terraform
 
       - name: Run Smoke Tests (prod)
