@@ -4,7 +4,7 @@ resource "cloudflare_worker_script" "worker" {
 
   plain_text_binding {
     name = "S3_BUCKET"
-    text = "https://${aws_s3_bucket.storage_bucket.website_endpoint}"
+    text = "http://${aws_s3_bucket.storage_bucket.website_endpoint}"
   }
 }
 
