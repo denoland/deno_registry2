@@ -13,7 +13,7 @@ resource "aws_lambda_function" "async_publish" {
   source_code_hash = filebase64sha256(data.archive_file.async_publish_zip.output_path)
 
   runtime = "provided"
-  layers  = [aws_lambda_layer_version.deno_layer.arn, "arn:aws:lambda:us-east-1:553035198032:layer:git-lambda2:6"]
+  layers  = [aws_lambda_layer_version.deno_layer.arn, "arn:aws:lambda:${var.region}:553035198032:layer:git-lambda2:6"]
 
   timeout     = 300
   memory_size = 1024
