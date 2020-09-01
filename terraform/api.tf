@@ -27,3 +27,11 @@ resource "aws_apigatewayv2_domain_name" "deno_api_domain" {
     security_policy = "TLS_1_2"
   }
 }
+
+resource "cloudflare_record" "api" {
+  zone_id = var.cloudflare_zone_id
+  name    = var.domain
+  value   = aws_apigatewayv2_domain_name.deno_api_domain.domain_name_configuration[0].target_domain_name
+  type    = "CNAME"
+  ttl     = 1 # '1' = automatic
+}
