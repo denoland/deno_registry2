@@ -14,11 +14,17 @@ variable "env" {
   type        = string
 }
 
-variable "domain" {
-  description = "The domain that hosts the api."
+variable "api_domain" {
+  description = "The domain that hosts the registry API."
   type        = string
 }
 
+variable "cdn_domain" {
+  description = "The domain that hosts the registry CDN."
+  type        = string
+}
+
+# TODO(lucacasonato): autoprovision - then we can remove this.
 variable "certificate_arn" {
   type        = string
   description = "The certificate arn for the domain."
