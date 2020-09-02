@@ -43,11 +43,22 @@ export interface BuildStats {
   skipped_due_to_size: string[];
 }
 
+export interface OwnerQuota {
+  owner: string;
+  type: string;
+  max_modules: number;
+}
+
+export type DBOwnerQuota = Omit<OwnerQuota, "owner"> & {
+  _id: string;
+};
+
 export class Database {
   private mongo = new MongoClient();
   protected db = this.mongo.database("production");
   _modules = this.db.collection<DBModule>("modules");
   _builds = this.db.collection<Omit<Build, "id"> & { _id: ObjectId }>("builds");
+  _owner_quotas = this.db.collection<DBOwnerQuota>("owner_quotas");
 
   constructor(mongoUri: string) {
     this.mongo.connectWithUri(mongoUri);
@@ -252,6 +263,44 @@ export class Database {
         status: build.status,
         message: build.message,
         stats: build.stats,
+      },
+      { upsert: true },
+    );
+  }
+
+  async getOwnerQuota(
+    owner: string,
+  ): Promise<OwnerQuota | null> {
+    const ownerQuota = await this._owner_quotas.findOne({
+      // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+      // deno-lint-ignore no-explicit-any
+      _id: owner as any,
+    });
+    if (ownerQuota === null) return null;
+    return {
+      // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+      // deno-lint-ignore no-explicit-any
+      owner: ownerQuota._id as string,
+      type: ownerQuota.type,
+      max_modules: ownerQuota.max_modules,
+    };
+  }
+
+  async saveOwnerQuota(
+    ownerQuota: OwnerQuota,
+  ): Promise<void> {
+    await this._owner_quotas.updateOne(
+      {
+        // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+        // deno-lint-ignore no-explicit-any
+        _id: ownerQuota.owner as any,
+      },
+      {
+        // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+        // deno-lint-ignore no-explicit-any
+        _id: ownerQuota.owner as any,
+        type: ownerQuota.type,
+        max_modules: ownerQuota.max_modules,
       },
       { upsert: true },
     );
