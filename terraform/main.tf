@@ -36,11 +36,23 @@ resource "aws_s3_bucket" "storage_bucket" {
   }
 
   versioning {
-    enabled = false
+    enabled = true
   }
 
   website {
     index_document = "________________"
+  }
+
+  replication_configuration {
+    role = aws_iam_role.replication.arn
+    rules {
+      id     = local.short_uuid
+      status = "Enabled"
+      destination {
+        bucket        = aws_s3_bucket.storage_bucket_replication.arn
+        storage_class = "STANDARD"
+      }
+    }
   }
 }
 
@@ -50,6 +62,34 @@ resource "aws_s3_bucket_public_access_block" "storage_bucket_public_access" {
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket" "storage_bucket_replication" {
+  provider = aws.backup
+  bucket   = "${local.prefix}-storagebucket-replication-${local.short_uuid}"
+  acl      = "private"
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    enabled = true
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "storage_replication_bucket_public_access" {
+  provider                = aws.backup
+  bucket                  = aws_s3_bucket.storage_bucket_replication.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "cloudflare_record" "cdn" {

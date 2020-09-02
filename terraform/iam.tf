@@ -1,3 +1,4 @@
+# Lambda execution role & policy
 data "aws_iam_policy_document" "assume_policy" {
   statement {
     actions = ["sts:AssumeRole"]
@@ -59,4 +60,57 @@ resource "aws_iam_role_policy" "lambda_permissions" {
 resource "aws_iam_role_policy_attachment" "basic_lambda" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = data.aws_iam_policy.basic_lambda.arn
+}
+
+# S3 replication role & policy
+data "aws_iam_policy_document" "replication_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "replication_permissions" {
+  statement {
+    actions = [
+      "s3:GetReplicationConfiguration",
+      "s3:ListBucket",
+    ]
+    resources = [
+      aws_s3_bucket.storage_bucket.arn,
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:GetObjectVersion",
+      "s3:GetObjectVersionAcl",
+    ]
+    resources = [
+      "${aws_s3_bucket.storage_bucket.arn}/*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:ReplicateObject",
+      "s3:ReplicateDelete",
+    ]
+    resources = [
+      "${aws_s3_bucket.storage_bucket_replication.arn}/*"
+    ]
+  }
+}
+
+resource "aws_iam_role" "replication" {
+  name               = "${local.prefix}-replication-role-${local.short_uuid}"
+  assume_role_policy = data.aws_iam_policy_document.replication_assume.json
+}
+
+resource "aws_iam_role_policy" "replication" {
+  role   = aws_iam_role.replication.name
+  policy = data.aws_iam_policy_document.replication_permissions.json
 }
