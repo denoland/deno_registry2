@@ -32,8 +32,10 @@ If you need an increase to these quotas, please reach out to [ry@tinyclouds.org]
 5. Create a database called `production` in your cluster.
 6. In this database create a collection called `modules`.
 7. In this collection create a new Atlas Search index with the name `default` and the mapping defined in `indexes/atlas_search_index_mapping.json`
-8. In this collection create a new index with the name `by_repository` like it is defined in `indexes/by_repository.json`
-9. In this collection create a new index with the name `by_star_count` like it is defined in `indexes/by_star_count.json`
+8. In this collection create a new index with the name `by_owner_and_repo` like it is defined in `indexes/modules_by_owner_and_repo.json`
+9. In this collection create a new index with the name `by_is_unlisted_and_star_count` like it is defined in `indexes/modules_by_is_unlisted_and_star_count.json`
+10. In this database create a collection called `builds`.
+11. In this collection create a new *unique* index with the name `by_name_and_version` like it is defined in `indexes/builds_by_name_and_version.json`
 
 ## Deploy
 
@@ -59,7 +61,7 @@ Before destroying your staging environment, make sure to:
 
 1. run `terraform state pull` to make a local copy of your state file
 2. comment out the `backend` section of the `meta.tf` file
-3. re-initialize your terraform workspace by running `terraform init`
+3. re-initialize your terraform workspace by running `terraform init -backend-config "region=<aws-region>"`
 4. make sure you empty your s3 buckets, otherwise the destroy will fail
 
 You can then run `terraform destroy` to completely remove your staging environment.
