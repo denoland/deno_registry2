@@ -52,6 +52,15 @@ resource "aws_s3_bucket_public_access_block" "storage_bucket_public_access" {
   restrict_public_buckets = false
 }
 
+resource "cloudflare_record" "cdn" {
+  zone_id = var.cloudflare_zone_id
+  name    = var.cdn_domain
+  value   = aws_s3_bucket.storage_bucket.website_endpoint
+  type    = "CNAME"
+  ttl     = 1 # '1' = automatic
+  proxied = true
+}
+
 resource "aws_s3_bucket" "moderation_bucket" {
   bucket = "${local.prefix}-moderationbucket-${local.short_uuid}"
   acl    = "private"

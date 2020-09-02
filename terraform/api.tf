@@ -20,10 +20,18 @@ resource "aws_apigatewayv2_stage" "deno_api_default_stage" {
 }
 
 resource "aws_apigatewayv2_domain_name" "deno_api_domain" {
-  domain_name = var.domain
+  domain_name = var.api_domain
   domain_name_configuration {
     certificate_arn = var.certificate_arn
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
+}
+
+resource "cloudflare_record" "api" {
+  zone_id = var.cloudflare_zone_id
+  name    = var.api_domain
+  value   = aws_apigatewayv2_domain_name.deno_api_domain.domain_name_configuration[0].target_domain_name
+  type    = "CNAME"
+  ttl     = 1 # '1' = automatic
 }

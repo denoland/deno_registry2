@@ -1,5 +1,4 @@
-const S3_BUCKET =
-  "http://deno-registry2-prod-storagebucket-b3a31d16.s3-website-us-east-1.amazonaws.com";
+// S3_BUCKET is passed in as an env var
 
 /**
  * Handles a request

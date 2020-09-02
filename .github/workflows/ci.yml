@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_DEFAULT_REGION: us-east-1
+      CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
+      CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
     steps:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v2.2.0
@@ -49,17 +51,22 @@ jobs:
           terraform plan \
             -var env=prod \
             -var mongodb_uri=$MONGODB_URI \
-            -var domain=$DOMAIN \
+            -var api_domain=$API_DOMAIN \
+            -var cdn_domain=$CDN_DOMAIN \
             -var certificate_arn=$CERTIFICATE_ARN \
             -var region=$AWS_DEFAULT_REGION \
+            -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
+            -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
             -out plan.tfplan
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          DOMAIN: api.deno.land
+          API_DOMAIN: api.deno.land
+          CDN_DOMAIN: cdn.deno.land
           CERTIFICATE_ARN: arn:aws:acm:us-east-1:035475582903:certificate/1c3bd085-95ef-4c27-ae09-18d27825739c
           TERRAFORM_STATE_BUCKET: deno-registry2-prod-terraform-state-b3a31d16
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         working-directory: terraform
 
       - name: Deploy infrastructure (prod)
@@ -68,15 +75,8 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         working-directory: terraform
-
-      - name: Deploy CF Worker (prod)
-        if: github.ref == 'refs/heads/main'
-        uses: cloudflare/wrangler-action@1.2.0
-        with:
-          environment: "production"
-          apiToken: ${{ secrets.cloudflareToken }}
-          workingDirectory: worker
 
       - name: Run Smoke Tests (prod)
         run: sleep 30 && deno run --allow-net tools/smoketest.js
