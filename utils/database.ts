@@ -279,7 +279,6 @@ export class Database {
     if (ownerQuota === null) return null;
     return {
       // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-      // deno-lint-ignore no-explicit-any
       owner: ownerQuota._id as string,
       type: ownerQuota.type,
       max_modules: ownerQuota.max_modules,
