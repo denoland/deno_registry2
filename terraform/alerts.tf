@@ -3,17 +3,39 @@ resource "aws_sns_topic" "alarm" {
   tags = local.tags
 }
 
-resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
+resource "aws_cloudwatch_metric_alarm" "publish_lambda_errors" {
   for_each = {
     publish = aws_lambda_function.async_publish.function_name,
     webhook = aws_lambda_function.webhook_github.function_name,
+  }
+
+  alarm_name          = "${local.prefix}-lambda-errors-alarm-${each.key}-${local.short_uuid}"
+  alarm_description   = "Lambda function failed more than 2 times in the last 30 minutes."
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 1
+  period              = 1800
+  datapoints_to_alarm = 1
+  statistic           = "Sum"
+  metric_name         = "Errors"
+  namespace           = "AWS/Lambda"
+  dimensions = {
+    "FunctionName" = each.value
+  }
+  threshold          = 2
+  treat_missing_data = "missing"
+  alarm_actions      = [aws_sns_topic.alarm.arn]
+  tags               = local.tags
+}
+
+resource "aws_cloudwatch_metric_alarm" "data_lambda_errors" {
+  for_each = {
     get     = aws_lambda_function.modules_get.function_name,
     list    = aws_lambda_function.modules_list.function_name,
     builds  = aws_lambda_function.builds_get.function_name,
   }
 
   alarm_name          = "${local.prefix}-lambda-errors-alarm-${each.key}-${local.short_uuid}"
-  alarm_description   = "Lambda function failed more than 10 times in the last 5 minutes."
+  alarm_description   = "Lambda function failed more than 5 times in the last 5 minutes."
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
   period              = 300
@@ -24,7 +46,7 @@ resource "aws_cloudwatch_metric_alarm" "lambda_errors" {
   dimensions = {
     "FunctionName" = each.value
   }
-  threshold          = 10
+  threshold          = 5
   treat_missing_data = "missing"
   alarm_actions      = [aws_sns_topic.alarm.arn]
   tags               = local.tags
