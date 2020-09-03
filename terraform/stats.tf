@@ -20,9 +20,9 @@ resource "aws_lambda_function" "stats" {
 
   environment {
     variables = {
-      "DENO_UNSTABLE"  = "1"
-      "HANDLER_EXT"    = "js"
-      "MONGO_URI"      = var.mongodb_uri
+      "DENO_UNSTABLE" = "1"
+      "HANDLER_EXT"   = "js"
+      "MONGO_URI"     = var.mongodb_uri
     }
   }
 
