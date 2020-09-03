@@ -32,6 +32,7 @@ resource "aws_cloudwatch_metric_alarm" "data_lambda_errors" {
     get    = aws_lambda_function.modules_get.function_name,
     list   = aws_lambda_function.modules_list.function_name,
     builds = aws_lambda_function.builds_get.function_name,
+    stats  = aws_lambda_function.stats.function_name,
   }
 
   alarm_name          = "${local.prefix}-lambda-errors-alarm-${each.key}-${local.short_uuid}"
