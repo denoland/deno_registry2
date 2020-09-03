@@ -2,7 +2,7 @@
 
 import { MongoClient, ObjectId } from "../deps.ts";
 
-type DBModule = Omit<Module, "id"> & { _id: string };
+type DBModule = Omit<Module, "name"> & { _id: string };
 
 export interface Module {
   name: string;
@@ -12,6 +12,7 @@ export interface Module {
   description: string;
   star_count: number;
   is_unlisted: boolean;
+  created_at: Date;
 }
 
 export interface SearchResult {
@@ -19,6 +20,13 @@ export interface SearchResult {
   description: string;
   star_count: number;
   search_score: number;
+}
+
+export interface RecentlyAddedModuleResult {
+  name: string;
+  description: string;
+  star_count: number;
+  created_at: Date;
 }
 
 export interface Build {
@@ -69,6 +77,7 @@ export class Database {
       description: entry.description,
       star_count: entry.star_count,
       is_unlisted: entry.is_unlisted ?? false,
+      created_at: entry.created_at,
     };
   }
 
@@ -89,6 +98,7 @@ export class Database {
         description: module.description,
         star_count: module.star_count,
         is_unlisted: module.is_unlisted,
+        created_at: module.created_at ?? new Date(),
       },
       { upsert: true },
     );
@@ -255,5 +265,29 @@ export class Database {
       },
       { upsert: true },
     );
+  }
+
+  async listRecentlyAddedModules(): Promise<RecentlyAddedModuleResult[]> {
+    const results = await this._modules.aggregate([
+      {
+        $match: {
+          is_unlisted: { $not: { $eq: true } },
+        },
+      },
+      {
+        $sort: {
+          created_at: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]) as DBModule[];
+    return results.map((doc) => ({
+      name: doc._id,
+      description: doc.description,
+      star_count: doc.star_count,
+      created_at: doc.created_at,
+    }));
   }
 }
