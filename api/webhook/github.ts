@@ -32,7 +32,7 @@ import { isForbidden } from "../../utils/moderation.ts";
 
 const VALID_NAME = /^[a-z0-9_]{3,40}$/;
 const MAX_MODULES_PER_REPOSITORY = 3;
-const MAX_MODULES_PER_OWNER = 15;
+const MAX_MODULES_PER_OWNER_DEFAULT = 15;
 
 const decoder = new TextDecoder();
 
@@ -301,18 +301,21 @@ async function checkAvailable(
       });
     }
 
+    const ownerQuota = await database.getOwnerQuota(owner);
+    const maxModuleQuota = ownerQuota?.max_modules ??
+      MAX_MODULES_PER_OWNER_DEFAULT;
+
     // If this entry doesn't exist yet check how many modules this user
     // or org has already registered.
     if (
-      await database.countModulesForOwner(owner) >=
-        MAX_MODULES_PER_OWNER
+      await database.countModulesForOwner(owner) >= (maxModuleQuota)
     ) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
           success: false,
           error:
-            `Max number of modules for one user/org (${MAX_MODULES_PER_OWNER}) has been reached. Please contact ry@deno.land if you need more.`,
+            `Max number of modules for one user/org (${maxModuleQuota}) has been reached. Please contact ry@deno.land if you need more.`,
         }),
       });
     }
