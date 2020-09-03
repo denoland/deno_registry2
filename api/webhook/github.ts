@@ -146,7 +146,7 @@ async function pingEvent(
     description,
     star_count: starCount,
   });
-  
+
   const versionInfoBody = await getMeta(moduleName, "versions.json");
   if (versionInfoBody === undefined) {
     await uploadMetaJson(
