@@ -239,6 +239,64 @@ Deno.test({
 });
 
 Deno.test({
+  name: "create event max registered to repository with dynamic owner quota",
+  async fn() {
+    database.saveOwnerQuota({
+      owner: "luca-rand",
+      type: "github",
+      max_modules: 7,
+    });
+
+    for (let i = 0; i < 7; i++) {
+      await database.saveModule({
+        name: `ltest${i + 2}`,
+        type: "github",
+        owner: "luca-rand",
+        repo: `testing${i + 2}`,
+        description: "",
+        star_count: 4,
+        is_unlisted: false,
+      });
+    }
+
+    // Send create event for ltest5
+    assertEquals(
+      await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest9",
+          createevent,
+          { name: "ltest9" },
+          {},
+        ),
+        createContext(),
+      ),
+      {
+        body:
+          '{"success":false,"error":"Max number of modules for one user/org (7) has been reached. Please contact ry@deno.land if you need more."}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      },
+    );
+
+    // Check that no versions.json file exists
+    assertEquals(await getMeta("ltest9", "versions.json"), undefined);
+
+    // Check that there is no module entry in the database
+    assertEquals(await database.getModule("ltest9"), null);
+
+    // Check that builds were queued
+    assertEquals(await database._builds.find({}), []);
+
+    // Clean up
+    await database._modules.deleteMany({});
+    await database._owner_quotas.deleteMany({});
+  },
+});
+
+Deno.test({
   name: "create event success",
   async fn() {
     // Send create event

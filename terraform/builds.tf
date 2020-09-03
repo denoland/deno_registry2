@@ -15,7 +15,7 @@ resource "aws_lambda_function" "builds_get" {
   runtime = "provided"
   layers  = [aws_lambda_layer_version.deno_layer.arn]
 
-  timeout     = 10
+  timeout     = local.lambda_default_timeout
   memory_size = 128
 
   environment {
@@ -44,6 +44,7 @@ resource "aws_apigatewayv2_integration" "builds_get" {
   connection_type        = "INTERNET"
   integration_uri        = aws_lambda_function.builds_get.invoke_arn
   payload_format_version = "2.0"
+  timeout_milliseconds   = local.lambda_default_timeout * 1000
 }
 
 resource "aws_apigatewayv2_route" "builds_get" {
