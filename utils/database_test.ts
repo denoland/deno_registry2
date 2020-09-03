@@ -16,6 +16,7 @@ const ltest: Module = {
   repo: "testing",
   star_count: 5,
   is_unlisted: false,
+  created_at: new Date(2020, 1, 1),
 };
 
 const utest: Module = {
@@ -26,6 +27,7 @@ const utest: Module = {
   repo: "testing-unlisted",
   star_count: 5,
   is_unlisted: true,
+  created_at: new Date(2020, 1, 1),
 };
 
 // TODO(lucacasonato): rewrite this test so it doesn't interfere with integration tests

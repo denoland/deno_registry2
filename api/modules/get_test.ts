@@ -19,6 +19,7 @@ Deno.test({
       star_count: 50,
       type: "github",
       is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
     });
 
     const res = await handler(

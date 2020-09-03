@@ -7,6 +7,7 @@ import {
 import { Database } from "../../utils/database.ts";
 import { assertEquals, readJson } from "../../test_deps.ts";
 import { getMeta, s3 } from "../../utils/storage.ts";
+import { assert } from "https://deno.land/std@0.67.0/testing/asserts.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
@@ -142,19 +143,22 @@ Deno.test({
       statusCode: 200,
     });
 
+    const ltest2 = await database.getModule("ltest2");
+    assert(ltest2);
+    assert(ltest2.created_at <= new Date());
+    ltest2.created_at = new Date(2020, 1, 1);
+
     // Check that the database entry
-    assertEquals(
-      await database.getModule("ltest2"),
-      {
-        name: "ltest2",
-        type: "github",
-        owner: "luca-rand",
-        repo: "testing",
-        description: "Move along, just for testing",
-        star_count: 2,
-        is_unlisted: false,
-      },
-    );
+    assertEquals(ltest2, {
+      name: "ltest2",
+      type: "github",
+      owner: "luca-rand",
+      repo: "testing",
+      description: "Move along, just for testing",
+      star_count: 2,
+      is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
+    });
 
     // Check that a versions.json file was created
     assertEquals(
@@ -194,19 +198,22 @@ Deno.test({
       statusCode: 200,
     });
 
+    const ltest2 = await database.getModule("ltest2");
+    assert(ltest2);
+    assert(ltest2.created_at <= new Date());
+    ltest2.created_at = new Date(2020, 1, 1);
+
     // Check that the database entry
-    assertEquals(
-      await database.getModule("ltest2"),
-      {
-        name: "ltest2",
-        type: "github",
-        owner: "luca-rand",
-        repo: "testing",
-        description: "Move along, just for testing",
-        star_count: 2,
-        is_unlisted: false,
-      },
-    );
+    assertEquals(ltest2, {
+      name: "ltest2",
+      type: "github",
+      owner: "luca-rand",
+      repo: "testing",
+      description: "Move along, just for testing",
+      star_count: 2,
+      is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
+    });
 
     // Check that a versions.json file was created
     assertEquals(
@@ -234,6 +241,7 @@ Deno.test({
       description: "",
       star_count: 4,
       is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
     });
     await database.saveModule({
       name: "ltest3",
@@ -243,6 +251,7 @@ Deno.test({
       description: "",
       star_count: 4,
       is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
     });
     await database.saveModule({
       name: "ltest4",
@@ -252,6 +261,7 @@ Deno.test({
       description: "",
       star_count: 4,
       is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
     });
 
     // Send ping event for ltest5
@@ -301,6 +311,7 @@ Deno.test({
       star_count: 4,
       type: "github",
       is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
     });
 
     // Send ping event
@@ -330,8 +341,13 @@ Deno.test({
     // Check that no builds are queued
     assertEquals(await database._builds.find({}), []);
 
-    // Check that there is no module entry in the database
-    assertEquals(await database.getModule("ltest"), {
+    const ltest2 = await database.getModule("ltest");
+    assert(ltest2);
+    assert(ltest2.created_at <= new Date());
+    ltest2.created_at = new Date(2020, 1, 1);
+
+    // Check that the database entry
+    assertEquals(ltest2, {
       name: "ltest",
       description: "testing things",
       owner: "luca-rand",
@@ -339,6 +355,7 @@ Deno.test({
       star_count: 4,
       type: "github",
       is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
     });
 
     // Cleanup
@@ -357,6 +374,7 @@ Deno.test({
       star_count: 4,
       type: "github",
       is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
     });
 
     // Send ping event
@@ -379,19 +397,22 @@ Deno.test({
       statusCode: 200,
     });
 
+    const ltest2 = await database.getModule("ltest2");
+    assert(ltest2);
+    assert(ltest2.created_at <= new Date());
+    ltest2.created_at = new Date(2020, 1, 1);
+
     // Check that the database entry
-    assertEquals(
-      await database.getModule("ltest2"),
-      {
-        name: "ltest2",
-        type: "github",
-        owner: "luca-rand",
-        repo: "testing",
-        description: "Move along, just for testing",
-        star_count: 2,
-        is_unlisted: false,
-      },
-    );
+    assertEquals(ltest2, {
+      name: "ltest2",
+      type: "github",
+      owner: "luca-rand",
+      repo: "testing",
+      description: "Move along, just for testing",
+      star_count: 2,
+      is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
+    });
 
     // Check that a versions.json file was created
     assertEquals(
