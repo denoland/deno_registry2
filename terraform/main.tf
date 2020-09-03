@@ -3,8 +3,9 @@ resource "random_uuid" "this" {}
 data "aws_caller_identity" "this" {}
 
 locals {
-  short_uuid = substr(random_uuid.this.result, 0, 8)
-  prefix     = "deno-registry2-${var.env}"
+  short_uuid             = substr(random_uuid.this.result, 0, 8)
+  prefix                 = "deno-registry2-${var.env}"
+  lambda_default_timeout = 10
   tags = {
     "deno.land/x:environment"    = var.env
     "deno.land/x:instance"       = local.short_uuid
