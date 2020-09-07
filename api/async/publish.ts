@@ -9,7 +9,7 @@
  * the module name, GitHub repository, version, subdirectory ect.
  */
 
-import { join, walk, SQSEvent, Context } from "../../deps.ts";
+import { join, walk, SQSEvent, Context, pooledMap } from "../../deps.ts";
 import { Build, Database, BuildStats } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
@@ -20,7 +20,6 @@ import {
   getVersionMetaJson,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
-import { asyncPool } from "../../utils/util.ts";
 import { runDenoInfo } from "../../utils/deno.ts";
 import type { Dep } from "../../utils/deno.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
@@ -127,7 +126,7 @@ async function publishGithub(
     console.log("Total files in repo", entries.length);
 
     // Pool requests because of https://github.com/denoland/deno_registry2/issues/15
-    await asyncPool(65, entries, async (entry) => {
+    await collectAsyncIterable(pooledMap(65, entries, async (entry) => {
       // If this is a file in the .git folder, ignore it
       if (
         entry.path.startsWith(join(path, ".git/")) ||
@@ -157,7 +156,7 @@ async function publishGithub(
       } else {
         directory.push({ path: filename, size: undefined, type: "dir" });
       }
-    });
+    }));
 
     const versionsBody = await getMeta(moduleName, "versions.json");
     const versions = versionsBody
