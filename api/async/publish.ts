@@ -22,6 +22,7 @@ import {
 import type { DirectoryListingFile } from "../../utils/types.ts";
 import { runDenoInfo } from "../../utils/deno.ts";
 import type { Dep } from "../../utils/deno.ts";
+import { collectAsyncIterable } from "../../utils/utils.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const remoteURL = Deno.env.get("REMOTE_URL")!;

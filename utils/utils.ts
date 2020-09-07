@@ -1,4 +1,4 @@
-async function collectAsyncIterable<T>(
+export async function collectAsyncIterable<T>(
   iterator: AsyncIterable<T>,
 ): Promise<T[]> {
   const collected = [] as T[];
