@@ -9,6 +9,7 @@ resource "aws_lambda_function" "async_publish" {
   function_name = "${local.prefix}_async_publish_${local.short_uuid}"
   role          = aws_iam_role.lambda_exec_role.arn
   handler       = "bundle.handler"
+  publish       = true
 
   source_code_hash = filebase64sha256(data.archive_file.async_publish_zip.output_path)
 
