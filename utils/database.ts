@@ -313,6 +313,7 @@ export class Database {
       },
       { upsert: true },
     );
+  }
 
   async listRecentlyAddedModules(): Promise<RecentlyAddedModuleResult[]> {
     const results = await this._modules.aggregate([
