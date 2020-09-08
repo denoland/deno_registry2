@@ -278,7 +278,7 @@ export class Database {
     );
   }
 
-    async getOwnerQuota(
+  async getOwnerQuota(
     owner: string,
   ): Promise<OwnerQuota | null> {
     const ownerQuota = await this._owner_quotas.findOne({
