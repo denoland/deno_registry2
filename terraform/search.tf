@@ -6,15 +6,32 @@ data "aws_subnet_ids" "public" {
   vpc_id = data.aws_vpc.default.id
 }
 
-# TODO(wperron): ecs service goes here, depends on ALB, which depends on SG
+resource "aws_ecs_service" "this" {
+  name             = "${local.prefix}-search-svc-${local.short_uuid}"
+  cluster          = aws_ecs_cluster.this.id
+  task_definition  = aws_ecs_task_definition.this.arn
+  desired_count    = 1
+  launch_type      = "FARGATE"
+  platform_version = "1.4.0"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.this.arn
+    container_name   = "meilisearch"
+    container_port   = 7700
+  }
+
+  network_configuration {
+    subnets = data.aws_subnet_ids.public.ids
+  }
+}
 
 resource "aws_ecs_task_definition" "this" {
   family                   = "${local.prefix}-meili-task-def-${local.short_uuid}"
   container_definitions    = file("${path.module}/task_definitions/search.json")
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 256
-  memory                   = 512
+  cpu                      = 512
+  memory                   = 1024
   tags                     = local.tags
 
   volume {
@@ -35,11 +52,25 @@ resource "aws_lb" "this" {
   tags               = local.tags
 }
 
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.this.arn
+  }
+}
+
 resource "aws_lb_target_group" "this" {
-  name     = "search-${local.short_uuid}"
-  port     = 443
-  protocol = "HTTPS"
-  vpc_id   = data.aws_vpc.default.id
+  name        = "search-${local.short_uuid}"
+  port        = 443
+  protocol    = "HTTPS"
+  target_type = "ip"
+  vpc_id      = data.aws_vpc.default.id
 }
 
 resource "aws_security_group" "this" {
