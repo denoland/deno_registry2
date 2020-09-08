@@ -560,3 +560,55 @@ Deno.test({
     await database._modules.deleteMany({});
   },
 });
+
+Deno.test({
+  name: "push event already queued",
+  async fn() {
+    await database.createBuild({
+      options: {
+        moduleName: "ltest2",
+        ref: "0.0.7",
+        repository: "luca-rand/testing",
+        type: "github",
+        version: "0.0.7",
+      },
+      status: "queued",
+    });
+
+    // Send push event
+    const resp = await handler(
+      createJSONWebhookEvent(
+        "push",
+        "/webhook/gh/ltest2",
+        pushevent,
+        { name: "ltest2" },
+        {},
+      ),
+      createContext(),
+    );
+    assertEquals(resp, {
+      body:
+        '{"success":false,"error":"this module version is already being published"}',
+      headers: {
+        "content-type": "application/json",
+      },
+      statusCode: 400,
+    });
+
+    // Check that the database entry was created
+    assertEquals(await database.getModule("ltest2"), {
+      name: "ltest2",
+      type: "github",
+      owner: "luca-rand",
+      repo: "testing",
+      description: "Move along, just for testing",
+      star_count: 2,
+      is_unlisted: false,
+    });
+
+    // Clean up
+    await s3.deleteObject("ltest2/meta/versions.json");
+    await database._modules.deleteMany({});
+    await database._builds.deleteMany({});
+  },
+});
