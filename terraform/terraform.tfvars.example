@@ -1,5 +1,6 @@
 env                   = "staging"
 region                = "us-east-1"
+backup_region         = "eu-central-1"
 mongodb_uri           = "mongodb+srv://<user>:<password>@<cluster>.<id>.mongodb.net/?retryWrites=true&w=majority"
 api_domain            = "api.myregistry.com"
 cdn_domain            = "cdn.myregistry.com"

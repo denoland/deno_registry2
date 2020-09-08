@@ -11,13 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_DEFAULT_REGION: us-east-1
+      AWS_BACKUP_REGION: eu-central-1
       CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
       CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
     steps:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v2.2.0
         with:
-          deno-version: v1.3.2
+          deno-version: v1.3.3
 
       - uses: actions/checkout@v2
 
@@ -55,6 +56,7 @@ jobs:
             -var cdn_domain=$CDN_DOMAIN \
             -var certificate_arn=$CERTIFICATE_ARN \
             -var region=$AWS_DEFAULT_REGION \
+            -var backup_region=$AWS_BACKUP_REGION \
             -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
             -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
             -out plan.tfplan

@@ -449,7 +449,7 @@ async function initiateBuild(
   const build = await database.getBuildForVersion(moduleName, version);
   if (build !== null) {
     return respondJSON({
-      statusCode: 200,
+      statusCode: 400,
       body: JSON.stringify({
         success: false,
         error: "this module version is already being published",

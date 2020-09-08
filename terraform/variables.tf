@@ -3,6 +3,11 @@ variable "region" {
   type        = string
 }
 
+variable "backup_region" {
+  description = "the AWS region used for backups"
+  type        = string
+}
+
 variable "mongodb_uri" {
   description = "MongoDB conection string"
   type        = string
