@@ -256,6 +256,7 @@ Deno.test({
         description: "",
         star_count: 4,
         is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
       });
     }
 
