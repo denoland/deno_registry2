@@ -14,7 +14,7 @@ import {
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON, parseRequestBody } from "../../utils/http.ts";
-import { Database } from "../../utils/database.ts";
+import { Database, Module } from "../../utils/database.ts";
 import {
   getMeta,
   uploadMetaJson,
@@ -127,18 +127,24 @@ async function pingEvent(
   const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
 
-  const resp = await checkAvailable(moduleName, owner, repo);
+  const entry = await database.getModule(moduleName);
+
+  const resp = await checkAvailable(entry, moduleName, owner, repo);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
   await database.saveModule({
-    name: moduleName,
-    type: "github",
+    ...entry ??
+      {
+        name: moduleName,
+        type: "github",
+        created_at: new Date(),
+        is_unlisted: false,
+      },
     owner,
     repo,
     description,
     star_count: starCount,
-    is_unlisted: false,
   });
 
   const versionInfoBody = await getMeta(moduleName, "versions.json");
@@ -264,11 +270,11 @@ async function createEvent(
 }
 
 async function checkAvailable(
+  entry: Module | null,
   moduleName: string,
   owner: string,
   repo: string,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
-  const entry = await database.getModule(moduleName);
   if (entry) {
     // Check that entry matches repo
     if (
@@ -404,18 +410,24 @@ async function initiateBuild(
     }
   }
 
-  const resp = await checkAvailable(moduleName, owner, repo);
+  const entry = await database.getModule(moduleName);
+
+  const resp = await checkAvailable(entry, moduleName, owner, repo);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
   await database.saveModule({
-    name: moduleName,
-    type: "github",
+    ...entry ??
+      {
+        name: moduleName,
+        type: "github",
+        created_at: new Date(),
+        is_unlisted: false,
+      },
     owner,
     repo,
     description,
     star_count: starCount,
-    is_unlisted: false,
   });
 
   // Check that version doesn't already exist

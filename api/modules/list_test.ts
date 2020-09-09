@@ -20,6 +20,7 @@ Deno.test({
         star_count: i,
         type: "github",
         is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
       });
     }
 
@@ -96,6 +97,7 @@ Deno.test({
         star_count: i,
         type: "github",
         is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
       });
     }
 

@@ -21,4 +21,7 @@ package:
 	cp ./.terraform/dl/deno_mongo_d2a782e2c6520b4c89fd44779c665c2a.so ./.terraform/tmp/modules_list/.deno_plugins/ && \
 	mkdir -p ./.terraform/tmp/builds_get/.deno_plugins && \
 	deno bundle --unstable ../api/builds/get.ts > ./.terraform/tmp/builds_get/bundle.js && \
-	cp ./.terraform/dl/deno_mongo_d2a782e2c6520b4c89fd44779c665c2a.so ./.terraform/tmp/builds_get/.deno_plugins/
+	cp ./.terraform/dl/deno_mongo_d2a782e2c6520b4c89fd44779c665c2a.so ./.terraform/tmp/builds_get/.deno_plugins/ && \
+	mkdir -p ./.terraform/tmp/stats/.deno_plugins && \
+	deno bundle --unstable ../api/stats.ts > ./.terraform/tmp/stats/bundle.js && \
+	cp ./.terraform/dl/deno_mongo_d2a782e2c6520b4c89fd44779c665c2a.so ./.terraform/tmp/stats/.deno_plugins/
