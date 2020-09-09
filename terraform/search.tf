@@ -6,26 +6,26 @@ data "aws_subnet_ids" "public" {
   vpc_id = data.aws_vpc.default.id
 }
 
-resource "aws_ecs_service" "this" {
-  name             = "${local.prefix}-search-svc-${local.short_uuid}"
-  cluster          = aws_ecs_cluster.this.id
-  task_definition  = aws_ecs_task_definition.this.arn
-  desired_count    = 1
-  launch_type      = "FARGATE"
-  platform_version = "1.4.0"
+# resource "aws_ecs_service" "this" {
+#   name             = "${local.prefix}-search-svc-${local.short_uuid}"
+#   cluster          = aws_ecs_cluster.this.id
+#   task_definition  = aws_ecs_task_definition.this.arn
+#   desired_count    = 1
+#   launch_type      = "FARGATE"
+#   platform_version = "1.4.0"
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.this.arn
-    container_name   = "meilisearch"
-    container_port   = 7700
-  }
+#   load_balancer {
+#     target_group_arn = aws_lb_target_group.this.arn
+#     container_name   = "meilisearch"
+#     container_port   = 7700
+#   }
 
-  network_configuration {
-    subnets          = data.aws_subnet_ids.public.ids
-    security_groups  = [aws_security_group.this.id]
-    assign_public_ip = true
-  }
-}
+#   network_configuration {
+#     subnets          = data.aws_subnet_ids.public.ids
+#     security_groups  = [aws_security_group.this.id]
+#     assign_public_ip = true
+#   }
+# }
 
 resource "aws_ecs_task_definition" "this" {
   family                   = "${local.prefix}-meili-task-def-${local.short_uuid}"
@@ -34,13 +34,21 @@ resource "aws_ecs_task_definition" "this" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 512
   memory                   = 1024
+  task_role_arn            = aws_iam_role.task.arn
+  execution_role_arn       = aws_iam_role.exec.arn
   tags                     = local.tags
 
   volume {
     name = "data"
     efs_volume_configuration {
-      file_system_id = aws_efs_file_system.this.id
-      root_directory = "/opt/data"
+      file_system_id          = aws_efs_file_system.this.id
+      root_directory          = "/"
+      transit_encryption      = "ENABLED"
+      transit_encryption_port = 2999
+      authorization_config {
+        access_point_id = aws_efs_access_point.this.id
+        iam             = "ENABLED"
+      }
     }
   }
 }
@@ -98,9 +106,34 @@ resource "aws_security_group" "this" {
   tags = local.tags
 }
 
+resource "aws_security_group" "efs" {
+  name        = "${local.prefix}-efs-sg-${local.short_uuid}"
+  description = "Allow traffic to the NFS port"
+  vpc_id      = data.aws_vpc.default.id
+
+  ingress {
+    description = "NFS traffic from VPC"
+    protocol    = "tcp"
+    from_port   = 2049
+    to_port     = 2049
+    cidr_blocks = [data.aws_vpc.default.cidr_block]
+  }
+}
+
 resource "aws_efs_file_system" "this" {
   creation_token = local.short_uuid
   tags           = local.tags
+}
+
+resource "aws_efs_access_point" "this" {
+  file_system_id = aws_efs_file_system.this.id
+}
+
+resource "aws_efs_mount_target" "this" {
+  for_each        = { for s in data.aws_subnet_ids.public.ids : s => s }
+  file_system_id  = aws_efs_file_system.this.id
+  subnet_id       = each.value
+  security_groups = [aws_security_group.efs.id]
 }
 
 resource "aws_ecs_cluster" "this" {

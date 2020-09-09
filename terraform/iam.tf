@@ -114,3 +114,54 @@ resource "aws_iam_role_policy" "replication" {
   role   = aws_iam_role.replication.name
   policy = data.aws_iam_policy_document.replication_permissions.json
 }
+
+# ECS Search service
+data "aws_iam_policy_document" "ecs_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "task" {
+  statement {
+    actions = [
+      "elasticfilesystem:ClientMount",
+      "elasticfilesystem:ClientWrite",
+    ]
+    resources = [aws_efs_file_system.this.arn]
+    condition {
+      test     = "StringEquals"
+      variable = "elasticfilesystem:AccessPointArn"
+      values   = [aws_efs_access_point.this.arn]
+    }
+  }
+}
+
+# default AWS ECS service policy
+data "aws_iam_policy" "ecs_exec" {
+  arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role" "exec" {
+  name               = "${local.prefix}-ecs-exec-role-${local.short_uuid}"
+  assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
+}
+
+resource "aws_iam_role" "task" {
+  name               = "${local.prefix}-ecs-task-role-${local.short_uuid}"
+  assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
+}
+
+resource "aws_iam_role_policy_attachment" "exec" {
+  role       = aws_iam_role.exec.name
+  policy_arn = data.aws_iam_policy.ecs_exec.arn
+}
+
+resource "aws_iam_role_policy" "task" {
+  role   = aws_iam_role.task.name
+  policy = data.aws_iam_policy_document.task.json
+}
