@@ -620,7 +620,13 @@ Deno.test({
     });
 
     // Check that the database entry was created
-    assertEquals(await database.getModule("ltest2"), {
+    const ltest2 = await database.getModule("ltest2");
+    assert(ltest2);
+    assert(ltest2.created_at <= new Date());
+    ltest2.created_at = new Date(2020, 1, 1);
+
+    // Check that the database entry
+    assertEquals(ltest2, {
       name: "ltest2",
       type: "github",
       owner: "luca-rand",
@@ -628,6 +634,7 @@ Deno.test({
       description: "Move along, just for testing",
       star_count: 2,
       is_unlisted: false,
+      created_at: new Date(2020, 1, 1),
     });
 
     // Clean up
