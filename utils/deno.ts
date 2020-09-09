@@ -20,8 +20,8 @@ export async function runDenoInfo(
     stdout: "piped",
     stderr: "inherit",
   });
-  const status = await p.status();
   const file = await p.output();
+  const status = await p.status();
   p.close();
   if (!status.success) {
     throw new Error(`Failed to run deno info for ${options.entrypoint}`);
