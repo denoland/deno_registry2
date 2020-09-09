@@ -55,6 +55,54 @@ Deno.test({
       created_at: new Date(2020, 1, 3),
     });
 
+    await database._builds.insertMany([
+      {
+        created_at: new Date(2020, 1, 1),
+        options: {
+          moduleName: "ltest",
+          ref: "0.1.0",
+          repository: "luca-rand/testing",
+          type: "github",
+          version: "0.1.0",
+        },
+        status: "queued",
+      },
+      {
+        created_at: new Date(2020, 1, 2),
+        options: {
+          moduleName: "ltest2",
+          ref: "0.1.0",
+          repository: "luca-rand/testing",
+          type: "github",
+          version: "0.1.0",
+        },
+        status: "queued",
+      },
+      {
+        created_at: new Date(2020, 1, 4),
+        options: {
+          moduleName: "ltest",
+          ref: "0.2.0",
+          repository: "luca-rand/testing",
+          type: "github",
+          version: "0.2.0",
+        },
+        status: "queued",
+      },
+      {
+        created_at: new Date(2020, 1, 3),
+        options: {
+          moduleName: "ltest3",
+          ref: "0.3.0",
+          repository: "luca-rand/testing",
+          type: "github",
+          version: "0.3.0",
+          subdir: "subproject/",
+        },
+        status: "queued",
+      },
+    ]);
+
     const res = await handler(
       createAPIGatewayProxyEventV2(
         "GET",
@@ -64,11 +112,14 @@ Deno.test({
       createContext(),
     );
 
+    // @ts-ignore asd
+    console.log(res.body);
+
     assertEquals(
       res,
       {
         body:
-          '{"success":true,"data":{"recentlyAddedModules":[{"name":"ltest1","description":"ltest1 repo","star_count":50,"created_at":"2020-02-03T00:00:00.000Z"},{"name":"ltest3","description":"ltest3 repo","star_count":50,"created_at":"2020-02-02T00:00:00.000Z"},{"name":"ltest2","description":"ltest2 repo","star_count":50,"created_at":"2020-02-01T00:00:00.000Z"}]}}',
+          '{"success":true,"data":{"recentlyAddedModules":[{"name":"ltest1","description":"ltest1 repo","star_count":50,"created_at":"2020-02-03T00:00:00.000Z"},{"name":"ltest3","description":"ltest3 repo","star_count":50,"created_at":"2020-02-02T00:00:00.000Z"},{"name":"ltest2","description":"ltest2 repo","star_count":50,"created_at":"2020-02-01T00:00:00.000Z"}],"recentlyUploadedVersions":[{"name":"ltest","version":"0.2.0","created_at":"2020-02-04T00:00:00.000Z"},{"name":"ltest3","version":"0.3.0","created_at":"2020-02-03T00:00:00.000Z"},{"name":"ltest2","version":"0.1.0","created_at":"2020-02-02T00:00:00.000Z"},{"name":"ltest","version":"0.1.0","created_at":"2020-02-01T00:00:00.000Z"}]}}',
         headers: {
           "content-type": "application/json",
         },
@@ -78,5 +129,6 @@ Deno.test({
 
     // Cleanup
     await database._modules.deleteMany({});
+    await database._builds.deleteMany({});
   },
 });
