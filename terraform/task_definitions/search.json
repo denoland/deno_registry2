@@ -2,8 +2,8 @@
   {
     "name": "meilisearch",
     "image": "getmeili/meilisearch:v0.14.0",
-    "cpu": 256,
-    "memory": 512,
+    "cpu": 512,
+    "memory": 2014,
     "essential": true,
     "portMappings": [
       {
@@ -11,6 +11,14 @@
         "hostPort": 7700
       }
     ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "meilisearch"
+      }
+    },
     "mountPoints": [
       {
         "containerPath": "/data.ms",
