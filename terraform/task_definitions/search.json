@@ -3,7 +3,7 @@
     "name": "meilisearch",
     "image": "getmeili/meilisearch:v0.14.0",
     "cpu": 512,
-    "memory": 2014,
+    "memory": 1024,
     "essential": true,
     "portMappings": [
       {
