@@ -29,6 +29,12 @@ export interface RecentlyAddedModuleResult {
   created_at: Date;
 }
 
+export interface RecentlyAddedUploadedVersions {
+  name: string;
+  version: string;
+  created_at: Date;
+}
+
 export interface Build {
   id: string;
   created_at: Date;
@@ -335,6 +341,26 @@ export class Database {
       name: doc._id,
       description: doc.description,
       star_count: doc.star_count,
+      created_at: doc.created_at,
+    }));
+  }
+
+  async listRecentlyUploadedVersions(): Promise<
+    RecentlyAddedUploadedVersions[]
+  > {
+    const results = await this._builds.aggregate([
+      {
+        $sort: {
+          created_at: -1,
+        },
+      },
+      {
+        $limit: 10,
+      },
+    ]) as Build[];
+    return results.map((doc) => ({
+      name: doc.options.moduleName,
+      version: doc.options.version,
       created_at: doc.created_at,
     }));
   }

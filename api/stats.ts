@@ -20,12 +20,16 @@ export async function handler(
   context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   const recentlyAddedModules = await database.listRecentlyAddedModules();
+  const recentlyUploadedVersions = await database
+    .listRecentlyUploadedVersions();
+
   return respondJSON({
     statusCode: 200,
     body: JSON.stringify({
       success: true,
       data: {
         recentlyAddedModules,
+        recentlyUploadedVersions,
       },
     }),
   });
