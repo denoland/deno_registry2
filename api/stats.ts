@@ -19,8 +19,9 @@ export async function handler(
   event: APIGatewayProxyEventV2,
   context: Context,
 ): Promise<APIGatewayProxyResultV2> {
-  const recentlyAddedModules = await database.listRecentlyAddedModules();
-  const recentlyUploadedVersions = await database
+  const total_count = await database.countModules();
+  const recently_added_modules = await database.listRecentlyAddedModules();
+  const recently_uploaded_versions = await database
     .listRecentlyUploadedVersions();
 
   return respondJSON({
@@ -28,8 +29,9 @@ export async function handler(
     body: JSON.stringify({
       success: true,
       data: {
-        recentlyAddedModules,
-        recentlyUploadedVersions,
+        total_count,
+        recently_added_modules,
+        recently_uploaded_versions,
       },
     }),
   });
