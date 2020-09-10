@@ -6,30 +6,49 @@ data "aws_subnet_ids" "public" {
   vpc_id = data.aws_vpc.default.id
 }
 
-# resource "aws_ecs_service" "this" {
-#   name             = "${local.prefix}-search-svc-${local.short_uuid}"
-#   cluster          = aws_ecs_cluster.this.id
-#   task_definition  = aws_ecs_task_definition.this.arn
-#   desired_count    = 1
-#   launch_type      = "FARGATE"
-#   platform_version = "1.4.0"
+resource "aws_ecs_cluster" "this" {
+  name               = "${local.prefix}-ecs-cluster-${local.short_uuid}"
+  capacity_providers = ["FARGATE"]
+  tags               = local.tags
 
-#   load_balancer {
-#     target_group_arn = aws_lb_target_group.this.arn
-#     container_name   = "meilisearch"
-#     container_port   = 7700
-#   }
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
 
-#   network_configuration {
-#     subnets          = data.aws_subnet_ids.public.ids
-#     security_groups  = [aws_security_group.this.id]
-#     assign_public_ip = true
-#   }
-# }
+resource "aws_ecs_service" "this" {
+  name             = "${local.prefix}-search-svc-${local.short_uuid}"
+  cluster          = aws_ecs_cluster.this.id
+  task_definition  = aws_ecs_task_definition.this.arn
+  desired_count    = 1
+  launch_type      = "FARGATE"
+  platform_version = "1.4.0"
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.this.arn
+    container_name   = "meilisearch"
+    container_port   = 7700
+  }
+
+  network_configuration {
+    subnets          = data.aws_subnet_ids.public.ids
+    security_groups  = [aws_security_group.meili.id]
+    assign_public_ip = true
+  }
+}
+
+data "template_file" "container" {
+  template = "${file("${path.module}/task_definitions/search.json")}"
+  vars = {
+    log_group = aws_cloudwatch_log_group.this.name
+    region    = var.region
+  }
+}
 
 resource "aws_ecs_task_definition" "this" {
   family                   = "${local.prefix}-meili-task-def-${local.short_uuid}"
-  container_definitions    = file("${path.module}/task_definitions/search.json")
+  container_definitions    = data.template_file.container.rendered
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 512
@@ -76,15 +95,25 @@ resource "aws_lb_listener" "front_end" {
 }
 
 resource "aws_lb_target_group" "this" {
-  name        = "search-${local.short_uuid}"
-  port        = 443
-  protocol    = "HTTPS"
+  name_prefix = "search"
+  port        = 7700
+  protocol    = "HTTP"
   target_type = "ip"
   vpc_id      = data.aws_vpc.default.id
+
+  health_check {
+    path    = "/health"
+    matcher = "200,201,202,204"
+    port    = 7700
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_security_group" "this" {
-  name        = "${local.prefix}-public-tls-sg-${local.short_uuid}"
+  name        = "${local.prefix}-public-http-sg-${local.short_uuid}"
   description = "Allow TLS inbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
@@ -92,6 +121,14 @@ resource "aws_security_group" "this" {
     description = "TLS from Internet"
     from_port   = 443
     to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "plain HTTP from Internet"
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -104,6 +141,36 @@ resource "aws_security_group" "this" {
   }
 
   tags = local.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_security_group" "meili" {
+  name        = "${local.prefix}-internal-meili-${local.short_uuid}"
+  description = "Allows internal traffic to the Meili port"
+
+  ingress {
+    description = "Meilisearch on port 7700"
+    from_port   = 7700
+    to_port     = 7700
+    protocol    = "tcp"
+    cidr_blocks = [data.aws_vpc.default.cidr_block]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = local.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_security_group" "efs" {
@@ -117,6 +184,10 @@ resource "aws_security_group" "efs" {
     from_port   = 2049
     to_port     = 2049
     cidr_blocks = [data.aws_vpc.default.cidr_block]
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -136,13 +207,9 @@ resource "aws_efs_mount_target" "this" {
   security_groups = [aws_security_group.efs.id]
 }
 
-resource "aws_ecs_cluster" "this" {
-  name               = "${local.prefix}-ecs-cluster-${local.short_uuid}"
-  capacity_providers = ["FARGATE"]
-  tags               = local.tags
+resource "aws_cloudwatch_log_group" "this" {
+  name              = "/aws/ecs/${local.prefix}-${local.short_uuid}"
+  retention_in_days = 7
 
-  setting {
-    name  = "containerInsights"
-    value = "enabled"
-  }
+  tags = local.tags
 }
