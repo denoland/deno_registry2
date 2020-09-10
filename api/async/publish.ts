@@ -22,7 +22,7 @@ import {
 import type { DirectoryListingFile } from "../../utils/types.ts";
 import { runDenoInfo } from "../../utils/deno.ts";
 import type { Dep } from "../../utils/deno.ts";
-import { collectAsyncIterable } from "../../utils/utils.ts";
+import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const remoteURL = Deno.env.get("REMOTE_URL")!;
@@ -169,25 +169,7 @@ async function publishGithub(
       { latest: version, versions: [version, ...versions.versions] },
     );
 
-    let totalSize = 0;
-
-    // Calculate directory sizes
-    // TODO: make more efficient
-    for (const entry of directory) {
-      if (entry.type === "file") {
-        totalSize += entry.size ?? 0;
-      }
-      if (entry.type === "dir") {
-        entry.size = 0;
-        for (
-          const f of directory.filter(
-            (f) => f.type === "file" && f.path.startsWith(entry.path),
-          )
-        ) {
-          entry.size += f.size ?? 0;
-        }
-      }
-    }
+    const totalSize = directorySize(directory);
 
     // Upload directory listing to S3
     await uploadVersionMetaJson(

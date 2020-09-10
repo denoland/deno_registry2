@@ -1,0 +1,6950 @@
+[
+  {
+    "path": "",
+    "type": "dir"
+  },
+  {
+    "path": "/.cargo",
+    "type": "dir"
+  },
+  {
+    "path": "/.cargo/config",
+    "size": 81,
+    "type": "file"
+  },
+  {
+    "path": "/.dprintrc.json",
+    "size": 710,
+    "type": "file"
+  },
+  {
+    "path": "/.editorconfig",
+    "size": 278,
+    "type": "file"
+  },
+  {
+    "path": "/.eslintignore",
+    "size": 157,
+    "type": "file"
+  },
+  {
+    "path": "/.eslintrc.json",
+    "size": 1334,
+    "type": "file"
+  },
+  {
+    "path": "/.gitattributes",
+    "size": 462,
+    "type": "file"
+  },
+  {
+    "path": "/.github",
+    "type": "dir"
+  },
+  {
+    "path": "/.github/FUNDING.yml",
+    "size": 17,
+    "type": "file"
+  },
+  {
+    "path": "/.github/PULL_REQUEST_TEMPLATE.md",
+    "size": 111,
+    "type": "file"
+  },
+  {
+    "path": "/.github/workflows",
+    "type": "dir"
+  },
+  {
+    "path": "/.github/workflows/ci.yml",
+    "size": 8257,
+    "type": "file"
+  },
+  {
+    "path": "/.gitignore",
+    "size": 554,
+    "type": "file"
+  },
+  {
+    "path": "/.gitmodules",
+    "size": 226,
+    "type": "file"
+  },
+  {
+    "path": "/.rustfmt.toml",
+    "size": 120,
+    "type": "file"
+  },
+  {
+    "path": "/CODE_OF_CONDUCT.md",
+    "size": 245,
+    "type": "file"
+  },
+  {
+    "path": "/Cargo.lock",
+    "size": 74167,
+    "type": "file"
+  },
+  {
+    "path": "/Cargo.toml",
+    "size": 296,
+    "type": "file"
+  },
+  {
+    "path": "/LICENSE",
+    "size": 1078,
+    "type": "file"
+  },
+  {
+    "path": "/README.md",
+    "size": 843,
+    "type": "file"
+  },
+  {
+    "path": "/Releases.md",
+    "size": 87901,
+    "type": "file"
+  },
+  {
+    "path": "/cli",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/Cargo.toml",
+    "size": 2749,
+    "type": "file"
+  },
+  {
+    "path": "/cli/README.md",
+    "size": 297,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/bench/deno_http_proxy.ts",
+    "size": 602,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/deno_tcp.ts",
+    "size": 835,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/deno_tcp_proxy.ts",
+    "size": 846,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/http.rs",
+    "size": 7413,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/main.rs",
+    "size": 11227,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/node_http.js",
+    "size": 253,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/node_http_proxy.js",
+    "size": 602,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/node_tcp.js",
+    "size": 473,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/node_tcp_promise.js",
+    "size": 637,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/node_tcp_proxy.js",
+    "size": 1360,
+    "type": "file"
+  },
+  {
+    "path": "/cli/bench/throughput.rs",
+    "size": 1635,
+    "type": "file"
+  },
+  {
+    "path": "/cli/build.rs",
+    "size": 5617,
+    "type": "file"
+  },
+  {
+    "path": "/cli/checksum.rs",
+    "size": 306,
+    "type": "file"
+  },
+  {
+    "path": "/cli/colors.rs",
+    "size": 4076,
+    "type": "file"
+  },
+  {
+    "path": "/cli/deno.ico",
+    "size": 109963,
+    "type": "file"
+  },
+  {
+    "path": "/cli/deno_dir.rs",
+    "size": 4292,
+    "type": "file"
+  },
+  {
+    "path": "/cli/diagnostics.rs",
+    "size": 14250,
+    "type": "file"
+  },
+  {
+    "path": "/cli/diff.rs",
+    "size": 4274,
+    "type": "file"
+  },
+  {
+    "path": "/cli/disk_cache.rs",
+    "size": 8245,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/dts/README.md",
+    "size": 573,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.d.ts",
+    "size": 994,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.deno.ns.d.ts",
+    "size": 73153,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.deno.shared_globals.d.ts",
+    "size": 46075,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.deno.unstable.d.ts",
+    "size": 44901,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.deno.window.d.ts",
+    "size": 887,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.deno.worker.d.ts",
+    "size": 1433,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.dom.d.ts",
+    "size": 835914,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.dom.iterable.d.ts",
+    "size": 13658,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.collection.d.ts",
+    "size": 2833,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.core.d.ts",
+    "size": 19924,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.d.ts",
+    "size": 1243,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.generator.d.ts",
+    "size": 2554,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.iterable.d.ts",
+    "size": 15218,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.promise.d.ts",
+    "size": 7146,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.proxy.d.ts",
+    "size": 1954,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.reflect.d.ts",
+    "size": 1906,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.symbol.d.ts",
+    "size": 1650,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2015.symbol.wellknown.d.ts",
+    "size": 10294,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2016.array.include.d.ts",
+    "size": 4863,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2016.d.ts",
+    "size": 930,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2016.full.d.ts",
+    "size": 1033,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2017.d.ts",
+    "size": 1085,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2017.full.d.ts",
+    "size": 1033,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2017.intl.d.ts",
+    "size": 1246,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2017.object.d.ts",
+    "size": 2453,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2017.sharedmemory.d.ts",
+    "size": 6341,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2017.string.d.ts",
+    "size": 2380,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2017.typedarrays.d.ts",
+    "size": 1427,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2018.asyncgenerator.d.ts",
+    "size": 2689,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2018.asynciterable.d.ts",
+    "size": 1748,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2018.d.ts",
+    "size": 1090,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2018.full.d.ts",
+    "size": 1033,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2018.intl.d.ts",
+    "size": 2244,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2018.promise.d.ts",
+    "size": 1354,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2018.regexp.d.ts",
+    "size": 1229,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2019.array.d.ts",
+    "size": 3175,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2019.d.ts",
+    "size": 1037,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2019.full.d.ts",
+    "size": 1034,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2019.object.d.ts",
+    "size": 1474,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2019.string.d.ts",
+    "size": 1334,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2019.symbol.d.ts",
+    "size": 1008,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2020.bigint.d.ts",
+    "size": 35199,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2020.d.ts",
+    "size": 1085,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2020.full.d.ts",
+    "size": 1034,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2020.intl.d.ts",
+    "size": 14683,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2020.promise.d.ts",
+    "size": 1870,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2020.string.d.ts",
+    "size": 1239,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es2020.symbol.wellknown.d.ts",
+    "size": 1450,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es5.d.ts",
+    "size": 206048,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.es6.d.ts",
+    "size": 1034,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.esnext.d.ts",
+    "size": 999,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.esnext.full.d.ts",
+    "size": 1033,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.esnext.intl.d.ts",
+    "size": 1246,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.esnext.promise.d.ts",
+    "size": 1780,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.esnext.string.d.ts",
+    "size": 1594,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.scripthost.d.ts",
+    "size": 9455,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.webworker.d.ts",
+    "size": 257815,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/lib.webworker.importscripts.d.ts",
+    "size": 1044,
+    "type": "file"
+  },
+  {
+    "path": "/cli/dts/typescript.d.ts",
+    "size": 442899,
+    "type": "file"
+  },
+  {
+    "path": "/cli/errors.rs",
+    "size": 6512,
+    "type": "file"
+  },
+  {
+    "path": "/cli/file_fetcher.rs",
+    "size": 60859,
+    "type": "file"
+  },
+  {
+    "path": "/cli/flags.rs",
+    "size": 79136,
+    "type": "file"
+  },
+  {
+    "path": "/cli/flags_allow_net.rs",
+    "size": 4841,
+    "type": "file"
+  },
+  {
+    "path": "/cli/fmt.rs",
+    "size": 9562,
+    "type": "file"
+  },
+  {
+    "path": "/cli/fmt_errors.rs",
+    "size": 5244,
+    "type": "file"
+  },
+  {
+    "path": "/cli/fs.rs",
+    "size": 2779,
+    "type": "file"
+  },
+  {
+    "path": "/cli/global_state.rs",
+    "size": 15478,
+    "type": "file"
+  },
+  {
+    "path": "/cli/global_timer.rs",
+    "size": 1403,
+    "type": "file"
+  },
+  {
+    "path": "/cli/http_cache.rs",
+    "size": 8592,
+    "type": "file"
+  },
+  {
+    "path": "/cli/http_util.rs",
+    "size": 15858,
+    "type": "file"
+  },
+  {
+    "path": "/cli/import_map.rs",
+    "size": 64191,
+    "type": "file"
+  },
+  {
+    "path": "/cli/inspector.rs",
+    "size": 25003,
+    "type": "file"
+  },
+  {
+    "path": "/cli/installer.rs",
+    "size": 20889,
+    "type": "file"
+  },
+  {
+    "path": "/cli/js.rs",
+    "size": 1435,
+    "type": "file"
+  },
+  {
+    "path": "/cli/lint.rs",
+    "size": 6064,
+    "type": "file"
+  },
+  {
+    "path": "/cli/lockfile.rs",
+    "size": 2097,
+    "type": "file"
+  },
+  {
+    "path": "/cli/main.rs",
+    "size": 22679,
+    "type": "file"
+  },
+  {
+    "path": "/cli/metrics.rs",
+    "size": 1863,
+    "type": "file"
+  },
+  {
+    "path": "/cli/module_graph.rs",
+    "size": 29114,
+    "type": "file"
+  },
+  {
+    "path": "/cli/msg.rs",
+    "size": 2086,
+    "type": "file"
+  },
+  {
+    "path": "/cli/op_fetch_asset.rs",
+    "size": 5098,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/ops/compiler.rs",
+    "size": 1631,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/dispatch_json.rs",
+    "size": 3273,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/dispatch_minimal.rs",
+    "size": 5678,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/errors.rs",
+    "size": 1817,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/fetch.rs",
+    "size": 4004,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/fs.rs",
+    "size": 46209,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/fs_events.rs",
+    "size": 3886,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/idna.rs",
+    "size": 1221,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/io.rs",
+    "size": 14485,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/mod.rs",
+    "size": 735,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/net.rs",
+    "size": 14944,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/net_unix.rs",
+    "size": 3203,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/os.rs",
+    "size": 4234,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/permissions.rs",
+    "size": 3573,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/plugin.rs",
+    "size": 4045,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/process.rs",
+    "size": 5714,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/random.rs",
+    "size": 917,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/repl.rs",
+    "size": 2142,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/resources.rs",
+    "size": 1210,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/runtime.rs",
+    "size": 4662,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/runtime_compiler.rs",
+    "size": 2262,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/signal.rs",
+    "size": 3636,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/timers.rs",
+    "size": 2409,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/tls.rs",
+    "size": 12089,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/tty.rs",
+    "size": 9856,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/web_worker.rs",
+    "size": 2725,
+    "type": "file"
+  },
+  {
+    "path": "/cli/ops/worker_host.rs",
+    "size": 11022,
+    "type": "file"
+  },
+  {
+    "path": "/cli/permissions.rs",
+    "size": 35805,
+    "type": "file"
+  },
+  {
+    "path": "/cli/repl.rs",
+    "size": 1731,
+    "type": "file"
+  },
+  {
+    "path": "/cli/resolve_addr.rs",
+    "size": 1895,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/rt/00_bootstrap_namespace.js",
+    "size": 344,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/01_build.js",
+    "size": 536,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/01_colors.js",
+    "size": 1746,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/01_errors.js",
+    "size": 2818,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/01_internals.js",
+    "size": 593,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/01_version.js",
+    "size": 448,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/01_web_util.js",
+    "size": 5344,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/02_console.js",
+    "size": 34180,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/03_dom_iterable.js",
+    "size": 2011,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/06_util.js",
+    "size": 3382,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/10_dispatch_json.js",
+    "size": 2042,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/10_dispatch_minimal.js",
+    "size": 2954,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/11_crypto.js",
+    "size": 638,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/11_resources.js",
+    "size": 512,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/11_streams.js",
+    "size": 95904,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/11_timers.js",
+    "size": 15271,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/11_url.js",
+    "size": 24446,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/11_workers.js",
+    "size": 5491,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/12_io.js",
+    "size": 2673,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/13_buffer.js",
+    "size": 6339,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/20_blob.js",
+    "size": 6200,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/20_headers.js",
+    "size": 8064,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/20_streams_queuing_strategy.js",
+    "size": 1087,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/21_dom_file.js",
+    "size": 799,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/21_filereader.js",
+    "size": 8770,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/22_form_data.js",
+    "size": 3133,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/23_multipart.js",
+    "size": 5566,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/24_body.js",
+    "size": 6143,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/25_request.js",
+    "size": 3390,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/26_fetch.js",
+    "size": 12116,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/30_files.js",
+    "size": 3570,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/30_fs.js",
+    "size": 8128,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/30_metrics.js",
+    "size": 272,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/30_net.js",
+    "size": 4519,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/30_os.js",
+    "size": 1011,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_compiler_api.js",
+    "size": 2485,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_diagnostics.js",
+    "size": 552,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_error_stack.js",
+    "size": 7536,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_fs_events.js",
+    "size": 1160,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_net_unstable.js",
+    "size": 1041,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_performance.js",
+    "size": 8399,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_permissions.js",
+    "size": 1092,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_plugins.js",
+    "size": 304,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_process.js",
+    "size": 2751,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_read_file.js",
+    "size": 1056,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_repl.js",
+    "size": 5820,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_signals.js",
+    "size": 4787,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_testing.js",
+    "size": 9861,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_tls.js",
+    "size": 1668,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_tty.js",
+    "size": 469,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/40_write_file.js",
+    "size": 2114,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/90_deno_ns.js",
+    "size": 5159,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/99_main.js",
+    "size": 14495,
+    "type": "file"
+  },
+  {
+    "path": "/cli/rt/README.md",
+    "size": 3213,
+    "type": "file"
+  },
+  {
+    "path": "/cli/signal.rs",
+    "size": 1432,
+    "type": "file"
+  },
+  {
+    "path": "/cli/source_maps.rs",
+    "size": 6688,
+    "type": "file"
+  },
+  {
+    "path": "/cli/startup_data.rs",
+    "size": 556,
+    "type": "file"
+  },
+  {
+    "path": "/cli/state.rs",
+    "size": 17170,
+    "type": "file"
+  },
+  {
+    "path": "/cli/swc_util.rs",
+    "size": 7966,
+    "type": "file"
+  },
+  {
+    "path": "/cli/system_loader.js",
+    "size": 2182,
+    "type": "file"
+  },
+  {
+    "path": "/cli/system_loader_es5.js",
+    "size": 6061,
+    "type": "file"
+  },
+  {
+    "path": "/cli/test_runner.rs",
+    "size": 5309,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/001_hello.js",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/001_hello.js.out",
+    "size": 12,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/002_hello.ts",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/002_hello.ts.out",
+    "size": 12,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/003_relative_import.ts",
+    "size": 69,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/003_relative_import.ts.out",
+    "size": 17,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/004_set_timeout.ts",
+    "size": 177,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/004_set_timeout.ts.out",
+    "size": 12,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/005_more_imports.ts",
+    "size": 211,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/005_more_imports.ts.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/006_url_imports.ts",
+    "size": 115,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/006_url_imports.ts.out",
+    "size": 14,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/012_async.ts",
+    "size": 231,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/012_async.ts.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/013_dynamic_import.ts",
+    "size": 281,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/013_dynamic_import.ts.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/014_duplicate_import.ts",
+    "size": 255,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/014_duplicate_import.ts.out",
+    "size": 7,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/015_duplicate_parallel_import.js",
+    "size": 508,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/015_duplicate_parallel_import.js.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/016_double_await.ts",
+    "size": 305,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/016_double_await.ts.out",
+    "size": 11,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/017_import_redirect.ts",
+    "size": 215,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/017_import_redirect.ts.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/018_async_catch.ts",
+    "size": 342,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/018_async_catch.ts.out",
+    "size": 40,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/019_media_types.ts",
+    "size": 1166,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/019_media_types.ts.out",
+    "size": 58,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/020_json_modules.ts",
+    "size": 80,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/020_json_modules.ts.out",
+    "size": 521,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/021_mjs_modules.ts",
+    "size": 65,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/021_mjs_modules.ts.out",
+    "size": 5,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/022_info_flag_script.out",
+    "size": 791,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/023_no_ext_with_headers",
+    "size": 22,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/023_no_ext_with_headers.headers.json",
+    "size": 42,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/023_no_ext_with_headers.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/024_import_no_ext_with_headers.ts",
+    "size": 36,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/024_import_no_ext_with_headers.ts.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/025_hrtime.ts",
+    "size": 189,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/025_hrtime.ts.out",
+    "size": 10,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/025_reload_js_type_error.js",
+    "size": 147,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/025_reload_js_type_error.js.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/026_redirect_javascript.js",
+    "size": 90,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/026_redirect_javascript.js.out",
+    "size": 12,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/027_redirect_typescript.ts",
+    "size": 90,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/027_redirect_typescript.ts.out",
+    "size": 12,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/028_args.ts",
+    "size": 59,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/028_args.ts.out",
+    "size": 37,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/029_eval.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/030_eval_ts.out",
+    "size": 4,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/031_info_no_check.out",
+    "size": 127,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/031_info_no_check.ts",
+    "size": 24,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/033_import_map.out",
+    "size": 190,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/034_onload",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/034_onload.out",
+    "size": 407,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/034_onload/imported.ts",
+    "size": 348,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/034_onload/main.ts",
+    "size": 597,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/034_onload/nest_imported.ts",
+    "size": 329,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/035_cached_only_flag.out",
+    "size": 116,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/036_import_map_fetch.out",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/037_fetch_multiple.out",
+    "size": 255,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/038_checkjs.js",
+    "size": 215,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/038_checkjs.js.out",
+    "size": 555,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/038_checkjs.tsconfig.json",
+    "size": 72,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/041_dyn_import_eval.out",
+    "size": 62,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/041_info_flag.out",
+    "size": 114,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/042_dyn_import_evalcontext.ts",
+    "size": 113,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/042_dyn_import_evalcontext.ts.out",
+    "size": 62,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/044_bad_resource.ts",
+    "size": 163,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/044_bad_resource.ts.out",
+    "size": 241,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/045_proxy_client.ts",
+    "size": 199,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/045_proxy_test.ts",
+    "size": 2579,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/045_proxy_test.ts.out",
+    "size": 221,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/046_jsx_test.tsx",
+    "size": 298,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/046_jsx_test.tsx.out",
+    "size": 57,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/047_jsx_test.jsx",
+    "size": 190,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/047_jsx_test.jsx.out",
+    "size": 57,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/048_media_types_jsx.ts",
+    "size": 1465,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/048_media_types_jsx.ts.out",
+    "size": 59,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/049_info_flag_script_jsx.out",
+    "size": 835,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/052_no_remote_flag.out",
+    "size": 82,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/053_import_compression",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/053_import_compression.out",
+    "size": 55,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/053_import_compression/brotli",
+    "size": 26,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/053_import_compression/gziped",
+    "size": 39,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/053_import_compression/main.ts",
+    "size": 407,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/054_info_local_imports.out",
+    "size": 278,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/055_info_file_json.out",
+    "size": 492,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/056_make_temp_file_write_perm.out",
+    "size": 32,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/056_make_temp_file_write_perm.ts",
+    "size": 213,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/058_tasks_microtasks_close.ts",
+    "size": 383,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/058_tasks_microtasks_close.ts.out",
+    "size": 82,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/059_fs_relative_path_perm.ts",
+    "size": 94,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/059_fs_relative_path_perm.ts.out",
+    "size": 130,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/060_deno_doc_displays_all_overloads_in_details_view.ts",
+    "size": 220,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/060_deno_doc_displays_all_overloads_in_details_view.ts.out",
+    "size": 424,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/061_permissions_request.ts",
+    "size": 301,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/061_permissions_request.ts.out",
+    "size": 122,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/062_permissions_request_global.ts",
+    "size": 286,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/062_permissions_request_global.ts.out",
+    "size": 124,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/063_permissions_revoke.ts",
+    "size": 299,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/063_permissions_revoke.ts.out",
+    "size": 122,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/064_permissions_revoke_global.ts",
+    "size": 285,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/064_permissions_revoke_global.ts.out",
+    "size": 121,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/Component.tsx",
+    "size": 29,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/DenoWinRunner.cs",
+    "size": 4602,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/DenoWinRunner.ps1",
+    "size": 428,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/README.md",
+    "size": 99,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/async_error.ts",
+    "size": 194,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/async_error.ts.out",
+    "size": 188,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/badly_formatted.mjs",
+    "size": 83,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/badly_formatted_fixed.js",
+    "size": 82,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/bundle.test.out",
+    "size": 586,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/bundle_im.json",
+    "size": 62,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/bundle_im.ts",
+    "size": 307,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cafile_info.ts",
+    "size": 1174,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cafile_info.ts.out",
+    "size": 786,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cafile_ts_fetch.ts",
+    "size": 132,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cafile_ts_fetch.ts.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cafile_url_imports.ts",
+    "size": 116,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cafile_url_imports.ts.out",
+    "size": 14,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cat.ts",
+    "size": 220,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/circular1.js",
+    "size": 51,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/circular1.js.out",
+    "size": 20,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/circular2.js",
+    "size": 51,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cjs_imports.ts",
+    "size": 25,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/cjs_imports.ts.out",
+    "size": 12,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/commonjs.cjs",
+    "size": 27,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/compiler_api_test.ts",
+    "size": 5656,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/compiler_js_error.ts",
+    "size": 61,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/compiler_js_error.ts.out",
+    "size": 333,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/complex_permissions_test.ts",
+    "size": 1493,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/config.ts",
+    "size": 100,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/config.ts.out",
+    "size": 269,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/config.tsconfig.json",
+    "size": 92,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/deno_doc.out",
+    "size": 33,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/deno_doc.ts",
+    "size": 121,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/deno_doc_builtin.out",
+    "size": 36,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/deno_test.out",
+    "size": 433,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/deno_test_fail_fast.out",
+    "size": 235,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/deno_test_no_color.ts",
+    "size": 185,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/deno_test_only.ts",
+    "size": 142,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/deno_test_only.ts.out",
+    "size": 188,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/disallow_http_from_https.js",
+    "size": 128,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/disallow_http_from_https.ts",
+    "size": 128,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/disallow_http_from_https_js.out",
+    "size": 162,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/disallow_http_from_https_ts.out",
+    "size": 162,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/echo.ts",
+    "size": 141,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/echo_server.ts",
+    "size": 326,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/encoding",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/encoding/utf-16be.ts",
+    "size": 58,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/encoding/utf-16le.ts",
+    "size": 58,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/encoding/utf-8.ts",
+    "size": 31,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/encoding/windows-1255",
+    "size": 26,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_001.ts",
+    "size": 91,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_001.ts.out",
+    "size": 201,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_002.ts",
+    "size": 99,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_002.ts.out",
+    "size": 244,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_003_typescript.ts",
+    "size": 211,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_003_typescript.ts.out",
+    "size": 333,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_004_missing_module.ts",
+    "size": 74,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_004_missing_module.ts.out",
+    "size": 169,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_005_missing_dynamic_import.ts",
+    "size": 119,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_005_missing_dynamic_import.ts.out",
+    "size": 130,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_006_import_ext_failure.ts",
+    "size": 25,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_006_import_ext_failure.ts.out",
+    "size": 176,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_007_any.ts",
+    "size": 10,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_007_any.ts.out",
+    "size": 36,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_008_checkjs.js",
+    "size": 215,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_008_checkjs.js.out",
+    "size": 142,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_009_missing_js_module.disabled",
+    "size": 124,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_009_missing_js_module.js",
+    "size": 26,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_009_missing_js_module.js.out",
+    "size": 88,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_010_nonexistent_arg.disabled",
+    "size": 106,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_010_nonexistent_arg.out",
+    "size": 82,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_011_bad_module_specifier.ts",
+    "size": 72,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_011_bad_module_specifier.ts.out",
+    "size": 148,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_012_bad_dynamic_import_specifier.ts",
+    "size": 117,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_012_bad_dynamic_import_specifier.ts.out",
+    "size": 224,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_013_missing_script.out",
+    "size": 59,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_014_catch_dynamic_import_error.js",
+    "size": 701,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_014_catch_dynamic_import_error.js.out",
+    "size": 624,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_015_dynamic_import_permissions.js",
+    "size": 87,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_015_dynamic_import_permissions.out",
+    "size": 131,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_016_dynamic_import_permissions2.js",
+    "size": 226,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_016_dynamic_import_permissions2.out",
+    "size": 160,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_017_hide_long_source_ts.ts",
+    "size": 456,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_017_hide_long_source_ts.ts.out",
+    "size": 126,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_018_hide_long_source_js.js",
+    "size": 456,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_018_hide_long_source_js.js.out",
+    "size": 139,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_019_stack_function.ts",
+    "size": 136,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_019_stack_function.ts.out",
+    "size": 318,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_020_stack_constructor.ts",
+    "size": 151,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_020_stack_constructor.ts.out",
+    "size": 340,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_021_stack_method.ts",
+    "size": 147,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_021_stack_method.ts.out",
+    "size": 306,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_022_stack_custom_error.ts",
+    "size": 233,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_022_stack_custom_error.ts.out",
+    "size": 210,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_023_stack_async.ts",
+    "size": 209,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_023_stack_async.ts.out",
+    "size": 430,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_024_stack_promise_all.ts",
+    "size": 217,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_024_stack_promise_all.ts.out",
+    "size": 410,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_025_tab_indent",
+    "size": 76,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_025_tab_indent.out",
+    "size": 223,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_local_static_import_from_remote.js",
+    "size": 35,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_local_static_import_from_remote.js.out",
+    "size": 182,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_local_static_import_from_remote.ts",
+    "size": 35,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_local_static_import_from_remote.ts.out",
+    "size": 182,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_no_check.ts",
+    "size": 72,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_no_check.ts.out",
+    "size": 125,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_syntax.js",
+    "size": 66,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_syntax.js.out",
+    "size": 72,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_syntax_empty_trailing_line.mjs",
+    "size": 76,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_syntax_empty_trailing_line.mjs.out",
+    "size": 83,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_type_definitions.ts",
+    "size": 136,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/error_type_definitions.ts.out",
+    "size": 130,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/es_private_fields.js",
+    "size": 202,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/es_private_fields.js.out",
+    "size": 8,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/esm_imports_a.js",
+    "size": 78,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/esm_imports_b.js",
+    "size": 62,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/exec_path.ts",
+    "size": 30,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/exit_error42.ts",
+    "size": 60,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/exit_error42.ts.out",
+    "size": 7,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/export_type_def.ts",
+    "size": 94,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/fetch",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/fetch/other.ts",
+    "size": 74,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/fetch/test.ts",
+    "size": 57,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/file_exists.ts",
+    "size": 87,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/fix_js_import_js.ts",
+    "size": 65,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/fix_js_import_js.ts.out",
+    "size": 5,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/fix_js_imports.ts",
+    "size": 72,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/fix_js_imports.ts.out",
+    "size": 48,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/fixture.json",
+    "size": 337,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/fmt_check_tests_dir.out",
+    "size": 45,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/hash.ts",
+    "size": 1467,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/hello.txt",
+    "size": 12,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/https_import.ts",
+    "size": 294,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/https_import.ts.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/if_main.ts",
+    "size": 136,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/if_main.ts.out",
+    "size": 5,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/import_file_with_colon.ts",
+    "size": 72,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/import_file_with_colon.ts.out",
+    "size": 34,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/import_map_no_unstable.out",
+    "size": 66,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/import_meta.ts",
+    "size": 92,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/import_meta.ts.out",
+    "size": 87,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/import_meta2.ts",
+    "size": 64,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/importmaps/import_map.json",
+    "size": 297,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps/lodash",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/importmaps/lodash/lodash.ts",
+    "size": 44,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps/lodash/other_file.ts",
+    "size": 48,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps/moment",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/importmaps/moment/moment.ts",
+    "size": 44,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps/moment/other_file.ts",
+    "size": 48,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps/scope",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/importmaps/scope/scoped.ts",
+    "size": 52,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps/scoped_moment.ts",
+    "size": 42,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps/test.ts",
+    "size": 184,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/importmaps/vue.ts",
+    "size": 41,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/info_json.out",
+    "size": 103,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/info_type_import.out",
+    "size": 186,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/info_type_import.ts",
+    "size": 97,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/inspector1.js",
+    "size": 54,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/inspector2.js",
+    "size": 152,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/inspector3.js",
+    "size": 138,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/inspector4.js",
+    "size": 91,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/integration_tests.rs",
+    "size": 90083,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/js_import_detect.ts",
+    "size": 78,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/js_import_detect.ts.out",
+    "size": 3,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/jsx_import_from_ts.App.jsx",
+    "size": 133,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/jsx_import_from_ts.ts",
+    "size": 67,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/jsx_import_from_ts.ts.out",
+    "size": 16,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lib_ref.ts",
+    "size": 290,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lib_ref.ts.out",
+    "size": 39,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lib_runtime_api.ts",
+    "size": 215,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lib_runtime_api.ts.out",
+    "size": 39,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lint",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/lint/expected.out",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lint/expected_glob.out",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lint/expected_ignore.out",
+    "size": 27,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lint/expected_json.out",
+    "size": 934,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lint/file1.js",
+    "size": 37,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lint/file2.ts",
+    "size": 133,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lint/ignored_file.ts",
+    "size": 49,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lint/malformed.js",
+    "size": 73,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_check_err.json",
+    "size": 197,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_check_err.out",
+    "size": 127,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_check_err2.json",
+    "size": 1052,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_check_err2.out",
+    "size": 137,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_check_err_with_bundle.json",
+    "size": 317,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_check_err_with_bundle.out",
+    "size": 140,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_check_ok.json",
+    "size": 258,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_check_ok2.json",
+    "size": 1113,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_dynamic_imports.json",
+    "size": 444,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_dynamic_imports.out",
+    "size": 134,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_write_fetch.ts",
+    "size": 1089,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_write_fetch.ts.out",
+    "size": 46,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/lock_write_requires_lock.out",
+    "size": 87,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/main_module.ts",
+    "size": 74,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/main_module.ts.out",
+    "size": 87,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/main_module2.ts",
+    "size": 46,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/no_color.js",
+    "size": 38,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/performance_stats.out",
+    "size": 280,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/permission_test.ts",
+    "size": 809,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/proto_exploit.js",
+    "size": 159,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/proto_exploit.js.out",
+    "size": 47,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/raw_mode.ts",
+    "size": 537,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/seed_random.js",
+    "size": 192,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/seed_random.js.out",
+    "size": 562,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/single_compile_with_reload.ts",
+    "size": 142,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/single_compile_with_reload.ts.out",
+    "size": 106,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/single_compile_with_reload_dyn.ts",
+    "size": 211,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/std_lint.out",
+    "size": 37,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/subdir/amd_like.js",
+    "size": 99,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/auto_print_hello.ts",
+    "size": 42,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/bench_worker.ts",
+    "size": 502,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/busy_worker.js",
+    "size": 145,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/circular1.ts",
+    "size": 115,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/circular2.ts",
+    "size": 115,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/config.json",
+    "size": 58,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/deno_worker.ts",
+    "size": 169,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/event_worker.js",
+    "size": 121,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/event_worker_scope.js",
+    "size": 774,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/evil_remote_import.js",
+    "size": 196,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/fetching_worker.js",
+    "size": 136,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/foo_types.d.ts",
+    "size": 47,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/form_urlencoded.txt",
+    "size": 29,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/indirect_import_error.js",
+    "size": 39,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/indirect_throws.js",
+    "size": 29,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/json_1.json",
+    "size": 126,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/json_2.json",
+    "size": 16,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/main.ts",
+    "size": 58,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mismatch_ext.ts",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mod1.ts",
+    "size": 320,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mod2.ts",
+    "size": 47,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mod3.js",
+    "size": 31,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mod4.js",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mod5.mjs",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mod6.js",
+    "size": 36,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_application_ecmascript.j2.js",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_application_ecmascript_jsx.j2.jsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_application_x_javascript.j4.js",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_application_x_javascript_jsx.j4.jsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_application_x_typescript.t4.ts",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_application_x_typescript_tsx.t4.tsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_javascript.js",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_javascript_jsx.jsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_text_ecmascript.j3.js",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_text_ecmascript_jsx.j3.jsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_text_javascript.j1.js",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_text_javascript_jsx.j1.jsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_text_typescript.t1.ts",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_text_typescript_tsx.t1.tsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_video_mp2t.t3.ts",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_video_mp2t_tsx.t3.tsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_video_vdn.t2.ts",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/mt_video_vdn_tsx.t2.tsx",
+    "size": 95,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/nested_worker.js",
+    "size": 398,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/no_ext",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/non_deno_worker.js",
+    "size": 172,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/print_hello.ts",
+    "size": 63,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/racy_worker.js",
+    "size": 546,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/redirects",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/subdir/redirects/redirect1.js",
+    "size": 27,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/redirects/redirect1.ts",
+    "size": 27,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/redirects/redirect2.js",
+    "size": 25,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/redirects/redirect3.js",
+    "size": 89,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/redirects/redirect4.ts",
+    "size": 89,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/sibling_worker.js",
+    "size": 58,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/single_module.ts",
+    "size": 81,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/subdir2",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/subdir/subdir2/dynamic_import.ts",
+    "size": 117,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/subdir2/mod2.ts",
+    "size": 163,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/test_worker.js",
+    "size": 321,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/test_worker.ts",
+    "size": 176,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/test_worker_basic.js",
+    "size": 317,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/throwing_worker.js",
+    "size": 87,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/throws.js",
+    "size": 100,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/tla.ts",
+    "size": 51,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/type_and_code.ts",
+    "size": 180,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/type_reference.d.ts",
+    "size": 25,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/type_reference.js",
+    "size": 75,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/unknown_ext.deno",
+    "size": 28,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/subdir/worker_crypto.js",
+    "size": 59,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/swc_syntax_error.ts",
+    "size": 74,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/swc_syntax_error.ts.out",
+    "size": 205,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/test_runner_test.ts",
+    "size": 410,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/text_decoder_perf.js",
+    "size": 922,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/text_encoder_perf.js",
+    "size": 685,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tls",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/tls/README.md",
+    "size": 1479,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tls/RootCA.crt",
+    "size": 1147,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tls/RootCA.key",
+    "size": 1704,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tls/RootCA.pem",
+    "size": 1147,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tls/domains.txt",
+    "size": 199,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tls/localhost.crt",
+    "size": 1245,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tls/localhost.key",
+    "size": 1708,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/top_level_await.js",
+    "size": 117,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/top_level_await.out",
+    "size": 23,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/top_level_await.ts",
+    "size": 137,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/top_level_for_await.js",
+    "size": 148,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/top_level_for_await.out",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/top_level_for_await.ts",
+    "size": 227,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_decorators.ts",
+    "size": 248,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_decorators.ts.out",
+    "size": 49,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_import_from_js.deps.js",
+    "size": 109,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_import_from_js.js",
+    "size": 96,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_import_from_js.js.out",
+    "size": 20,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_type_imports.ts",
+    "size": 118,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_type_imports.ts.out",
+    "size": 264,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_type_imports_foo.ts",
+    "size": 39,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_type_only_import.d.ts",
+    "size": 45,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_type_only_import.ts",
+    "size": 44,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_type_only_import.ts.out",
+    "size": 263,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/ts_with_generic.ts",
+    "size": 54,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tsconfig.decorators.json",
+    "size": 66,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tsx_imports.ts",
+    "size": 26,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/tsx_imports.ts.out",
+    "size": 88,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/type_definitions.ts",
+    "size": 288,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions.ts.out",
+    "size": 23,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions/bar.d.ts",
+    "size": 99,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions/bar.js",
+    "size": 65,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions/fizz.d.ts",
+    "size": 51,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions/fizz.js",
+    "size": 26,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions/foo.d.ts",
+    "size": 52,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions/foo.js",
+    "size": 26,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions/qat.ts",
+    "size": 26,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions_for_export.ts",
+    "size": 108,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_definitions_for_export.ts.out",
+    "size": 215,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_directives_01.ts",
+    "size": 89,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_directives_01.ts.out",
+    "size": 109,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_directives_02.ts",
+    "size": 74,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_directives_02.ts.out",
+    "size": 117,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_directives_js_main.js",
+    "size": 74,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_directives_js_main.js.out",
+    "size": 113,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_directives_redirect.ts",
+    "size": 60,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_directives_redirect.ts.out",
+    "size": 240,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_headers_deno_types.ts",
+    "size": 634,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/type_headers_deno_types.ts.out",
+    "size": 239,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/types.out",
+    "size": 160,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unbuffered_stderr.ts",
+    "size": 50,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unbuffered_stderr.ts.out",
+    "size": 12,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unbuffered_stdout.ts",
+    "size": 50,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unbuffered_stdout.ts.out",
+    "size": 1,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tests/unit/README.md",
+    "size": 2846,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/abort_controller_test.ts",
+    "size": 1473,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/blob_test.ts",
+    "size": 2950,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/body_test.ts",
+    "size": 2916,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/buffer_test.ts",
+    "size": 12523,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/build_test.ts",
+    "size": 404,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/chmod_test.ts",
+    "size": 5247,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/chown_test.ts",
+    "size": 5774,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/console_test.ts",
+    "size": 34282,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/copy_file_test.ts",
+    "size": 6411,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/custom_event_test.ts",
+    "size": 892,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/dir_test.ts",
+    "size": 1596,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/dispatch_json_test.ts",
+    "size": 2022,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/dispatch_minimal_test.ts",
+    "size": 1305,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/dom_exception_test.ts",
+    "size": 306,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/dom_iterable_test.ts",
+    "size": 2442,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/error_stack_test.ts",
+    "size": 3451,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/event_target_test.ts",
+    "size": 5804,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/event_test.ts",
+    "size": 3021,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/fetch_test.ts",
+    "size": 27799,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/file_test.ts",
+    "size": 2753,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/filereader_test.ts",
+    "size": 5777,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/files_test.ts",
+    "size": 18428,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/filter_function_test.ts",
+    "size": 1176,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/form_data_test.ts",
+    "size": 5996,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/format_error_test.ts",
+    "size": 951,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/fs_events_test.ts",
+    "size": 2276,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/get_random_values_test.ts",
+    "size": 1560,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/globals_test.ts",
+    "size": 3013,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/headers_test.ts",
+    "size": 11228,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/internals_test.ts",
+    "size": 348,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/io_test.ts",
+    "size": 2037,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/link_test.ts",
+    "size": 4182,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/make_temp_test.ts",
+    "size": 5639,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/metrics_test.ts",
+    "size": 2099,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/mkdir_test.ts",
+    "size": 6047,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/net_test.ts",
+    "size": 15637,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/os_test.ts",
+    "size": 5304,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/path_from_url_test.ts",
+    "size": 1508,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/performance_test.ts",
+    "size": 2107,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/permissions_test.ts",
+    "size": 574,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/process_test.ts",
+    "size": 11462,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/progressevent_test.ts",
+    "size": 680,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/read_dir_test.ts",
+    "size": 2016,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/read_file_test.ts",
+    "size": 2312,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/read_link_test.ts",
+    "size": 1706,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/read_text_file_test.ts",
+    "size": 1978,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/real_path_test.ts",
+    "size": 2740,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/remove_test.ts",
+    "size": 9221,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/rename_test.ts",
+    "size": 5409,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/request_test.ts",
+    "size": 1542,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/resources_test.ts",
+    "size": 1650,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/signal_test.ts",
+    "size": 4579,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/stat_test.ts",
+    "size": 10128,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/stdio_test.ts",
+    "size": 952,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/streams_internal_test.ts",
+    "size": 2155,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/streams_piping_test.ts",
+    "size": 3309,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/streams_transform_test.ts",
+    "size": 15191,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/streams_writable_test.ts",
+    "size": 6674,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/symlink_test.ts",
+    "size": 1311,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/sync_test.ts",
+    "size": 2134,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/test_util.ts",
+    "size": 9514,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/testing_test.ts",
+    "size": 640,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/text_encoding_test.ts",
+    "size": 5410,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/timers_test.ts",
+    "size": 9828,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/tls_test.ts",
+    "size": 6372,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/truncate_test.ts",
+    "size": 3040,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/tty_test.ts",
+    "size": 1032,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/umask_test.ts",
+    "size": 426,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/unit_test_runner.ts",
+    "size": 7722,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/unit_tests.ts",
+    "size": 2380,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/url_search_params_test.ts",
+    "size": 9841,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/url_test.ts",
+    "size": 18795,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/utime_test.ts",
+    "size": 6087,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/version_test.ts",
+    "size": 261,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/write_file_test.ts",
+    "size": 8208,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unit/write_text_file_test.ts",
+    "size": 6706,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unstable.js",
+    "size": 27,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unstable.ts",
+    "size": 27,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unstable_disabled.out",
+    "size": 273,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unstable_disabled_js.out",
+    "size": 10,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unstable_disabled_ts2551.out",
+    "size": 422,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unstable_enabled.out",
+    "size": 20,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unstable_enabled_js.out",
+    "size": 20,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unstable_ts2551.ts",
+    "size": 24,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/unsupported_dynamic_import_scheme.out",
+    "size": 131,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/v8_flags.js",
+    "size": 24,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/v8_flags.js.out",
+    "size": 9,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/v8_flags_unrecognized.out",
+    "size": 169,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/v8_help.out",
+    "size": 55,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/wasm.ts",
+    "size": 623,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/wasm.ts.out",
+    "size": 3,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/wasm_async.js",
+    "size": 814,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/wasm_async.out",
+    "size": 10,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/wasm_streaming.js",
+    "size": 831,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/wasm_streaming.out",
+    "size": 10,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/wasm_unreachable.js",
+    "size": 588,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/wasm_unreachable.out",
+    "size": 142,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/workers_round_robin_bench.ts",
+    "size": 2678,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/workers_startup_bench.ts",
+    "size": 939,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/workers_test.ts",
+    "size": 8298,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tests/x_deno_warning.js",
+    "size": 46,
+    "type": "file"
+  },
+  {
+    "path": "/cli/text_encoding.rs",
+    "size": 2677,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tokio_util.rs",
+    "size": 439,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tsc",
+    "type": "dir"
+  },
+  {
+    "path": "/cli/tsc.rs",
+    "size": 51994,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tsc/00_bootstrap_namespace.js",
+    "size": 344,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tsc/01_errors.js",
+    "size": 2677,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tsc/06_util.js",
+    "size": 1181,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tsc/10_dispatch_json.js",
+    "size": 2043,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tsc/40_error_stack.js",
+    "size": 6571,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tsc/99_main_compiler.js",
+    "size": 56426,
+    "type": "file"
+  },
+  {
+    "path": "/cli/tsc/README.md",
+    "size": 327,
+    "type": "file"
+  },
+  {
+    "path": "/cli/upgrade.rs",
+    "size": 8946,
+    "type": "file"
+  },
+  {
+    "path": "/cli/version.rs",
+    "size": 236,
+    "type": "file"
+  },
+  {
+    "path": "/cli/web_worker.rs",
+    "size": 9966,
+    "type": "file"
+  },
+  {
+    "path": "/cli/worker.rs",
+    "size": 14119,
+    "type": "file"
+  },
+  {
+    "path": "/core",
+    "type": "dir"
+  },
+  {
+    "path": "/core/Cargo.toml",
+    "size": 903,
+    "type": "file"
+  },
+  {
+    "path": "/core/README.md",
+    "size": 1300,
+    "type": "file"
+  },
+  {
+    "path": "/core/bindings.rs",
+    "size": 24445,
+    "type": "file"
+  },
+  {
+    "path": "/core/core.js",
+    "size": 7127,
+    "type": "file"
+  },
+  {
+    "path": "/core/core_isolate.rs",
+    "size": 46804,
+    "type": "file"
+  },
+  {
+    "path": "/core/core_test.js",
+    "size": 1979,
+    "type": "file"
+  },
+  {
+    "path": "/core/encode_decode_test.js",
+    "size": 1152,
+    "type": "file"
+  },
+  {
+    "path": "/core/errors.rs",
+    "size": 14513,
+    "type": "file"
+  },
+  {
+    "path": "/core/es_isolate.rs",
+    "size": 29942,
+    "type": "file"
+  },
+  {
+    "path": "/core/examples",
+    "type": "dir"
+  },
+  {
+    "path": "/core/examples/http_bench_bin_ops.js",
+    "size": 3347,
+    "type": "file"
+  },
+  {
+    "path": "/core/examples/http_bench_bin_ops.rs",
+    "size": 7468,
+    "type": "file"
+  },
+  {
+    "path": "/core/examples/http_bench_json_ops.js",
+    "size": 1809,
+    "type": "file"
+  },
+  {
+    "path": "/core/examples/http_bench_json_ops.rs",
+    "size": 5013,
+    "type": "file"
+  },
+  {
+    "path": "/core/flags.rs",
+    "size": 315,
+    "type": "file"
+  },
+  {
+    "path": "/core/lib.rs",
+    "size": 1779,
+    "type": "file"
+  },
+  {
+    "path": "/core/module_specifier.rs",
+    "size": 17435,
+    "type": "file"
+  },
+  {
+    "path": "/core/modules.rs",
+    "size": 30937,
+    "type": "file"
+  },
+  {
+    "path": "/core/normalize_path.rs",
+    "size": 1014,
+    "type": "file"
+  },
+  {
+    "path": "/core/ops.rs",
+    "size": 4736,
+    "type": "file"
+  },
+  {
+    "path": "/core/plugin_api.rs",
+    "size": 846,
+    "type": "file"
+  },
+  {
+    "path": "/core/resources.rs",
+    "size": 4923,
+    "type": "file"
+  },
+  {
+    "path": "/core/shared_queue.rs",
+    "size": 9244,
+    "type": "file"
+  },
+  {
+    "path": "/core/zero_copy_buf.rs",
+    "size": 1854,
+    "type": "file"
+  },
+  {
+    "path": "/docs",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/contributing",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/contributing.md",
+    "size": 2538,
+    "type": "file"
+  },
+  {
+    "path": "/docs/contributing/architecture.md",
+    "size": 2022,
+    "type": "file"
+  },
+  {
+    "path": "/docs/contributing/building_from_source.md",
+    "size": 3301,
+    "type": "file"
+  },
+  {
+    "path": "/docs/contributing/development_tools.md",
+    "size": 56915,
+    "type": "file"
+  },
+  {
+    "path": "/docs/contributing/profiling.md",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/docs/contributing/style_guide.md",
+    "size": 8831,
+    "type": "file"
+  },
+  {
+    "path": "/docs/embedding_deno.md",
+    "size": 396,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/examples.md",
+    "size": 715,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/fetch_data.md",
+    "size": 1255,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/file_server.md",
+    "size": 428,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/file_system_events.md",
+    "size": 436,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/hello_world.md",
+    "size": 1373,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/import_export.md",
+    "size": 2728,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/manage_dependencies.md",
+    "size": 1680,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/os_signals.md",
+    "size": 901,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/read_write_files.md",
+    "size": 4211,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/subprocess.md",
+    "size": 1696,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/tcp_echo.md",
+    "size": 1178,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/testing_if_main.md",
+    "size": 215,
+    "type": "file"
+  },
+  {
+    "path": "/docs/examples/unix_cat.md",
+    "size": 725,
+    "type": "file"
+  },
+  {
+    "path": "/docs/getting_started",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/getting_started.md",
+    "size": 569,
+    "type": "file"
+  },
+  {
+    "path": "/docs/getting_started/command_line_interface.md",
+    "size": 3994,
+    "type": "file"
+  },
+  {
+    "path": "/docs/getting_started/first_steps.md",
+    "size": 4565,
+    "type": "file"
+  },
+  {
+    "path": "/docs/getting_started/installation.md",
+    "size": 1936,
+    "type": "file"
+  },
+  {
+    "path": "/docs/getting_started/permissions.md",
+    "size": 2970,
+    "type": "file"
+  },
+  {
+    "path": "/docs/getting_started/setup_your_environment.md",
+    "size": 4522,
+    "type": "file"
+  },
+  {
+    "path": "/docs/getting_started/typescript.md",
+    "size": 7860,
+    "type": "file"
+  },
+  {
+    "path": "/docs/getting_started/webassembly.md",
+    "size": 713,
+    "type": "file"
+  },
+  {
+    "path": "/docs/images",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/images/debugger1.jpg",
+    "size": 5532,
+    "type": "file"
+  },
+  {
+    "path": "/docs/images/debugger2.jpg",
+    "size": 130599,
+    "type": "file"
+  },
+  {
+    "path": "/docs/images/debugger3.jpg",
+    "size": 108836,
+    "type": "file"
+  },
+  {
+    "path": "/docs/images/debugger4.jpg",
+    "size": 114528,
+    "type": "file"
+  },
+  {
+    "path": "/docs/images/debugger5.jpg",
+    "size": 151098,
+    "type": "file"
+  },
+  {
+    "path": "/docs/images/debugger7.jpg",
+    "size": 113573,
+    "type": "file"
+  },
+  {
+    "path": "/docs/introduction.md",
+    "size": 2702,
+    "type": "file"
+  },
+  {
+    "path": "/docs/linking_to_external_code",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/linking_to_external_code.md",
+    "size": 3892,
+    "type": "file"
+  },
+  {
+    "path": "/docs/linking_to_external_code/import_maps.md",
+    "size": 996,
+    "type": "file"
+  },
+  {
+    "path": "/docs/linking_to_external_code/integrity_checking.md",
+    "size": 2994,
+    "type": "file"
+  },
+  {
+    "path": "/docs/linking_to_external_code/proxies.md",
+    "size": 290,
+    "type": "file"
+  },
+  {
+    "path": "/docs/linking_to_external_code/reloading_modules.md",
+    "size": 975,
+    "type": "file"
+  },
+  {
+    "path": "/docs/runtime",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/runtime.md",
+    "size": 1747,
+    "type": "file"
+  },
+  {
+    "path": "/docs/runtime/compiler_apis.md",
+    "size": 9064,
+    "type": "file"
+  },
+  {
+    "path": "/docs/runtime/permission_apis.md",
+    "size": 5925,
+    "type": "file"
+  },
+  {
+    "path": "/docs/runtime/program_lifecycle.md",
+    "size": 2197,
+    "type": "file"
+  },
+  {
+    "path": "/docs/runtime/stability.md",
+    "size": 1331,
+    "type": "file"
+  },
+  {
+    "path": "/docs/runtime/workers.md",
+    "size": 2864,
+    "type": "file"
+  },
+  {
+    "path": "/docs/standard_library.md",
+    "size": 2605,
+    "type": "file"
+  },
+  {
+    "path": "/docs/testing",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/testing.md",
+    "size": 5432,
+    "type": "file"
+  },
+  {
+    "path": "/docs/testing/assertions.md",
+    "size": 5873,
+    "type": "file"
+  },
+  {
+    "path": "/docs/toc.json",
+    "size": 2360,
+    "type": "file"
+  },
+  {
+    "path": "/docs/tools",
+    "type": "dir"
+  },
+  {
+    "path": "/docs/tools.md",
+    "size": 514,
+    "type": "file"
+  },
+  {
+    "path": "/docs/tools/bundler.md",
+    "size": 1209,
+    "type": "file"
+  },
+  {
+    "path": "/docs/tools/debugger.md",
+    "size": 4728,
+    "type": "file"
+  },
+  {
+    "path": "/docs/tools/dependency_inspector.md",
+    "size": 3959,
+    "type": "file"
+  },
+  {
+    "path": "/docs/tools/documentation_generator.md",
+    "size": 954,
+    "type": "file"
+  },
+  {
+    "path": "/docs/tools/formatter.md",
+    "size": 695,
+    "type": "file"
+  },
+  {
+    "path": "/docs/tools/linter.md",
+    "size": 2808,
+    "type": "file"
+  },
+  {
+    "path": "/docs/tools/script_installer.md",
+    "size": 2558,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates",
+    "type": "dir"
+  },
+  {
+    "path": "/op_crates/web",
+    "type": "dir"
+  },
+  {
+    "path": "/op_crates/web/00_dom_exception.js",
+    "size": 326,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/01_event.js",
+    "size": 24776,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/02_abort_signal.js",
+    "size": 1580,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/08_text_encoding.js",
+    "size": 21393,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/Cargo.toml",
+    "size": 426,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/README.md",
+    "size": 69,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/abort_controller_test.js",
+    "size": 1706,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/event_target_test.js",
+    "size": 5852,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/event_test.js",
+    "size": 3067,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/lib.deno_web.d.ts",
+    "size": 9076,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/lib.rs",
+    "size": 2965,
+    "type": "file"
+  },
+  {
+    "path": "/op_crates/web/text_encoding_test.js",
+    "size": 6695,
+    "type": "file"
+  },
+  {
+    "path": "/std",
+    "type": "dir"
+  },
+  {
+    "path": "/std/README.md",
+    "size": 1681,
+    "type": "file"
+  },
+  {
+    "path": "/std/_util",
+    "type": "dir"
+  },
+  {
+    "path": "/std/_util/assert.ts",
+    "size": 405,
+    "type": "file"
+  },
+  {
+    "path": "/std/_util/assert_test.ts",
+    "size": 600,
+    "type": "file"
+  },
+  {
+    "path": "/std/_util/deep_assign.ts",
+    "size": 1393,
+    "type": "file"
+  },
+  {
+    "path": "/std/_util/deep_assign_test.ts",
+    "size": 819,
+    "type": "file"
+  },
+  {
+    "path": "/std/_util/has_own_property.ts",
+    "size": 950,
+    "type": "file"
+  },
+  {
+    "path": "/std/archive",
+    "type": "dir"
+  },
+  {
+    "path": "/std/archive/README.md",
+    "size": 1343,
+    "type": "file"
+  },
+  {
+    "path": "/std/archive/tar.ts",
+    "size": 15661,
+    "type": "file"
+  },
+  {
+    "path": "/std/archive/tar_test.ts",
+    "size": 10579,
+    "type": "file"
+  },
+  {
+    "path": "/std/archive/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/archive/testdata/deno.tar",
+    "size": 10240,
+    "type": "file"
+  },
+  {
+    "path": "/std/archive/testdata/example.txt",
+    "size": 13,
+    "type": "file"
+  },
+  {
+    "path": "/std/async",
+    "type": "dir"
+  },
+  {
+    "path": "/std/async/deferred.ts",
+    "size": 1058,
+    "type": "file"
+  },
+  {
+    "path": "/std/async/deferred_test.ts",
+    "size": 568,
+    "type": "file"
+  },
+  {
+    "path": "/std/async/delay.ts",
+    "size": 279,
+    "type": "file"
+  },
+  {
+    "path": "/std/async/mod.ts",
+    "size": 202,
+    "type": "file"
+  },
+  {
+    "path": "/std/async/mux_async_iterator.ts",
+    "size": 2032,
+    "type": "file"
+  },
+  {
+    "path": "/std/async/mux_async_iterator_test.ts",
+    "size": 1328,
+    "type": "file"
+  },
+  {
+    "path": "/std/async/pool.ts",
+    "size": 1614,
+    "type": "file"
+  },
+  {
+    "path": "/std/async/pool_test.ts",
+    "size": 484,
+    "type": "file"
+  },
+  {
+    "path": "/std/bytes",
+    "type": "dir"
+  },
+  {
+    "path": "/std/bytes/README.md",
+    "size": 2034,
+    "type": "file"
+  },
+  {
+    "path": "/std/bytes/mod.ts",
+    "size": 4448,
+    "type": "file"
+  },
+  {
+    "path": "/std/bytes/test.ts",
+    "size": 3926,
+    "type": "file"
+  },
+  {
+    "path": "/std/datetime",
+    "type": "dir"
+  },
+  {
+    "path": "/std/datetime/README.md",
+    "size": 2595,
+    "type": "file"
+  },
+  {
+    "path": "/std/datetime/formatter.ts",
+    "size": 14464,
+    "type": "file"
+  },
+  {
+    "path": "/std/datetime/mod.ts",
+    "size": 6945,
+    "type": "file"
+  },
+  {
+    "path": "/std/datetime/test.ts",
+    "size": 11507,
+    "type": "file"
+  },
+  {
+    "path": "/std/datetime/tokenizer.ts",
+    "size": 1628,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding",
+    "type": "dir"
+  },
+  {
+    "path": "/std/encoding/README.md",
+    "size": 10307,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml",
+    "type": "dir"
+  },
+  {
+    "path": "/std/encoding/_yaml/dumper",
+    "type": "dir"
+  },
+  {
+    "path": "/std/encoding/_yaml/dumper/dumper.ts",
+    "size": 26957,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/dumper/dumper_state.ts",
+    "size": 4585,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/error.ts",
+    "size": 629,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/example",
+    "type": "dir"
+  },
+  {
+    "path": "/std/encoding/_yaml/example/dump.ts",
+    "size": 342,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/example/inout.ts",
+    "size": 482,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/example/parse.ts",
+    "size": 455,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/example/sample_document.ts",
+    "size": 656,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/example/sample_document.yml",
+    "size": 5474,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/loader",
+    "type": "dir"
+  },
+  {
+    "path": "/std/encoding/_yaml/loader/loader.ts",
+    "size": 47144,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/loader/loader_state.ts",
+    "size": 2287,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/mark.ts",
+    "size": 1800,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/parse.ts",
+    "size": 1100,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/parse_test.ts",
+    "size": 1114,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/schema",
+    "type": "dir"
+  },
+  {
+    "path": "/std/encoding/_yaml/schema.ts",
+    "size": 2746,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/schema/core.ts",
+    "size": 482,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/schema/default.ts",
+    "size": 649,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/schema/failsafe.ts",
+    "size": 514,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/schema/json.ts",
+    "size": 587,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/schema/mod.ts",
+    "size": 481,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/state.ts",
+    "size": 471,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/stringify.ts",
+    "size": 681,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/stringify_test.ts",
+    "size": 839,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type",
+    "type": "dir"
+  },
+  {
+    "path": "/std/encoding/_yaml/type.ts",
+    "size": 1963,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/binary.ts",
+    "size": 3414,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/bool.ts",
+    "size": 1205,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/float.ts",
+    "size": 3230,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/int.ts",
+    "size": 4430,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/map.ts",
+    "size": 490,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/merge.ts",
+    "size": 509,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/mod.ts",
+    "size": 718,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/nil.ts",
+    "size": 1067,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/omap.ts",
+    "size": 1237,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/pairs.ts",
+    "size": 1265,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/seq.ts",
+    "size": 491,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/set.ts",
+    "size": 849,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/str.ts",
+    "size": 377,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/type/timestamp.ts",
+    "size": 2711,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/_yaml/utils.ts",
+    "size": 2162,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/ascii85.ts",
+    "size": 4339,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/ascii85_test.ts",
+    "size": 8181,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/base32.ts",
+    "size": 6723,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/base32_test.ts",
+    "size": 4156,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/base64.ts",
+    "size": 1012,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/base64_test.ts",
+    "size": 1327,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/base64url.ts",
+    "size": 1380,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/base64url_test.ts",
+    "size": 1181,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/binary.ts",
+    "size": 7861,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/binary_test.ts",
+    "size": 5923,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/csv.ts",
+    "size": 12801,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/csv_test.ts",
+    "size": 13893,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/hex.ts",
+    "size": 3028,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/hex_test.ts",
+    "size": 3973,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/encoding/testdata/CRLF.toml",
+    "size": 36,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/arrayTable.toml",
+    "size": 133,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/arrays.toml",
+    "size": 174,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/boolean.toml",
+    "size": 85,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/cargo.toml",
+    "size": 1142,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/cargoTest.toml",
+    "size": 2611,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/comment.toml",
+    "size": 894,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/datetime.toml",
+    "size": 264,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/float.toml",
+    "size": 516,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/inlineTable.toml",
+    "size": 269,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/integer.toml",
+    "size": 349,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/simple.toml",
+    "size": 114,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/string.toml",
+    "size": 815,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/testdata/table.toml",
+    "size": 243,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/toml.ts",
+    "size": 19034,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/toml_test.ts",
+    "size": 10604,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/utf8.ts",
+    "size": 433,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/yaml.ts",
+    "size": 721,
+    "type": "file"
+  },
+  {
+    "path": "/std/encoding/yaml_test.ts",
+    "size": 180,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples",
+    "type": "dir"
+  },
+  {
+    "path": "/std/examples/README.md",
+    "size": 1526,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/cat.ts",
+    "size": 238,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/catj.ts",
+    "size": 12738,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/chat",
+    "type": "dir"
+  },
+  {
+    "path": "/std/examples/chat/index.html",
+    "size": 2508,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/chat/server.ts",
+    "size": 2137,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/chat/server_test.ts",
+    "size": 1972,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/colors.ts",
+    "size": 222,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/curl.ts",
+    "size": 389,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/echo_server.ts",
+    "size": 285,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/flags.ts",
+    "size": 176,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/gist.ts",
+    "size": 1757,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/test.ts",
+    "size": 695,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/examples/testdata/cat",
+    "type": "dir"
+  },
+  {
+    "path": "/std/examples/testdata/cat/hello.txt",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/testdata/cat/world.txt",
+    "size": 6,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/testdata/catj",
+    "type": "dir"
+  },
+  {
+    "path": "/std/examples/testdata/catj/array.json",
+    "size": 69,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/testdata/catj/object.json",
+    "size": 80,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/testdata/catj/simple-array.json",
+    "size": 7,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/testdata/catj/simple-object.json",
+    "size": 23,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/tests",
+    "type": "dir"
+  },
+  {
+    "path": "/std/examples/tests/cat_test.ts",
+    "size": 665,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/tests/catj_test.ts",
+    "size": 2422,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/tests/colors_test.ts",
+    "size": 628,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/tests/curl_test.ts",
+    "size": 1036,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/tests/echo_server_test.ts",
+    "size": 1365,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/tests/test_test.ts",
+    "size": 96,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/tests/welcome_test.ts",
+    "size": 603,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/tests/xeval_test.ts",
+    "size": 1818,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/welcome.ts",
+    "size": 37,
+    "type": "file"
+  },
+  {
+    "path": "/std/examples/xeval.ts",
+    "size": 2677,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags",
+    "type": "dir"
+  },
+  {
+    "path": "/std/flags/README.md",
+    "size": 2169,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/all_bool_test.ts",
+    "size": 860,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/bool_test.ts",
+    "size": 5282,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/dash_test.ts",
+    "size": 997,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/default_bool_test.ts",
+    "size": 845,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/dotted_test.ts",
+    "size": 722,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/kv_short_test.ts",
+    "size": 444,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/long_test.ts",
+    "size": 641,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/mod.ts",
+    "size": 9768,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/num_test.ts",
+    "size": 957,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/parse_test.ts",
+    "size": 4723,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/short_test.ts",
+    "size": 1297,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/stop_early_test.ts",
+    "size": 431,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/unknown_test.ts",
+    "size": 2960,
+    "type": "file"
+  },
+  {
+    "path": "/std/flags/whitespace_test.ts",
+    "size": 275,
+    "type": "file"
+  },
+  {
+    "path": "/std/fmt",
+    "type": "dir"
+  },
+  {
+    "path": "/std/fmt/README.md",
+    "size": 8435,
+    "type": "file"
+  },
+  {
+    "path": "/std/fmt/TODO",
+    "size": 457,
+    "type": "file"
+  },
+  {
+    "path": "/std/fmt/colors.ts",
+    "size": 7212,
+    "type": "file"
+  },
+  {
+    "path": "/std/fmt/colors_test.ts",
+    "size": 6384,
+    "type": "file"
+  },
+  {
+    "path": "/std/fmt/printf.ts",
+    "size": 19110,
+    "type": "file"
+  },
+  {
+    "path": "/std/fmt/printf_test.ts",
+    "size": 24671,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs",
+    "type": "dir"
+  },
+  {
+    "path": "/std/fs/README.md",
+    "size": 5719,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/_util.ts",
+    "size": 900,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/_util_test.ts",
+    "size": 1873,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/copy.ts",
+    "size": 8648,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/copy_test.ts",
+    "size": 14660,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/empty_dir.ts",
+    "size": 1766,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/empty_dir_test.ts",
+    "size": 6284,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/ensure_dir.ts",
+    "size": 1440,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/ensure_dir_test.ts",
+    "size": 2922,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/ensure_file.ts",
+    "size": 1880,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/ensure_file_test.ts",
+    "size": 2927,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/ensure_link.ts",
+    "size": 1612,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/ensure_link_test.ts",
+    "size": 5351,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/ensure_symlink.ts",
+    "size": 2055,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/ensure_symlink_test.ts",
+    "size": 4084,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/eol.ts",
+    "size": 714,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/eol_test.ts",
+    "size": 1513,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/exists.ts",
+    "size": 708,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/exists_test.ts",
+    "size": 3371,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/expand_glob.ts",
+    "size": 7623,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/expand_glob_test.ts",
+    "size": 3677,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/mod.ts",
+    "size": 480,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/move.ts",
+    "size": 1468,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/move_test.ts",
+    "size": 11611,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/read_json.ts",
+    "size": 798,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/read_json_test.ts",
+    "size": 3070,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/test.ts",
+    "size": 94,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/fs/testdata/0.ts",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/copy_dir",
+    "type": "dir"
+  },
+  {
+    "path": "/std/fs/testdata/copy_dir/0.txt",
+    "size": 4,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/copy_dir/nest",
+    "type": "dir"
+  },
+  {
+    "path": "/std/fs/testdata/copy_dir/nest/0.txt",
+    "size": 4,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/copy_dir_link_file",
+    "type": "dir"
+  },
+  {
+    "path": "/std/fs/testdata/copy_file.txt",
+    "size": 3,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/empty_dir.ts",
+    "size": 237,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/empty_dir_sync.ts",
+    "size": 217,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/exists.ts",
+    "size": 254,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/exists_sync.ts",
+    "size": 252,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/expand_wildcard.js",
+    "size": 182,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/glob",
+    "type": "dir"
+  },
+  {
+    "path": "/std/fs/testdata/glob/abc",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/glob/abcdef",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/glob/abcdefghi",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/glob/subdir",
+    "type": "dir"
+  },
+  {
+    "path": "/std/fs/testdata/glob/subdir/abc",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/json_empty.json",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/json_invalid.json",
+    "size": 45,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/json_valid_array.json",
+    "size": 23,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/testdata/json_valid_obj.json",
+    "size": 42,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/walk.ts",
+    "size": 4463,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/walk_test.ts",
+    "size": 6526,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/write_json.ts",
+    "size": 1574,
+    "type": "file"
+  },
+  {
+    "path": "/std/fs/write_json_test.ts",
+    "size": 5662,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash",
+    "type": "dir"
+  },
+  {
+    "path": "/std/hash/README.md",
+    "size": 1800,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_fnv",
+    "type": "dir"
+  },
+  {
+    "path": "/std/hash/_fnv/fnv32.ts",
+    "size": 1513,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_fnv/fnv64.ts",
+    "size": 2023,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_fnv/util.ts",
+    "size": 1266,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_fnv/util_test.ts",
+    "size": 2319,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_sha3",
+    "type": "dir"
+  },
+  {
+    "path": "/std/hash/_sha3/keccak.ts",
+    "size": 909,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_sha3/keccakf.ts",
+    "size": 22611,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_sha3/sha3.ts",
+    "size": 897,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_sha3/shake.ts",
+    "size": 1107,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_sha3/sponge.ts",
+    "size": 2715,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_wasm",
+    "type": "dir"
+  },
+  {
+    "path": "/std/hash/_wasm/Cargo.lock",
+    "size": 7527,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_wasm/Cargo.toml",
+    "size": 414,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_wasm/README.md",
+    "size": 203,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_wasm/build.ts",
+    "size": 1304,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_wasm/hash.ts",
+    "size": 1849,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_wasm/src",
+    "type": "dir"
+  },
+  {
+    "path": "/std/hash/_wasm/src/lib.rs",
+    "size": 1747,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/_wasm/wasm.js",
+    "size": 146851,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/fnv.ts",
+    "size": 174,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/fnv_test.ts",
+    "size": 3633,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/hash_test.ts",
+    "size": 11203,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/hasher.ts",
+    "size": 293,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/md5.ts",
+    "size": 8449,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/md5_test.ts",
+    "size": 1609,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/mod.ts",
+    "size": 692,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/sha1.ts",
+    "size": 11033,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/sha1_test.ts",
+    "size": 5556,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/sha256.ts",
+    "size": 15998,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/sha256_test.ts",
+    "size": 19915,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/sha3.ts",
+    "size": 285,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/sha3_test.ts",
+    "size": 18920,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/sha512.ts",
+    "size": 31637,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/sha512_test.ts",
+    "size": 31667,
+    "type": "file"
+  },
+  {
+    "path": "/std/hash/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/hash/testdata/hashtest",
+    "size": 4,
+    "type": "file"
+  },
+  {
+    "path": "/std/http",
+    "type": "dir"
+  },
+  {
+    "path": "/std/http/README.md",
+    "size": 1933,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/_io.ts",
+    "size": 11522,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/_io_test.ts",
+    "size": 13647,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/_mock_conn.ts",
+    "size": 562,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/cookie.ts",
+    "size": 3982,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/cookie_test.ts",
+    "size": 5849,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/file_server.ts",
+    "size": 10796,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/file_server_test.ts",
+    "size": 9335,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/http_bench.ts",
+    "size": 506,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/http_status.ts",
+    "size": 6072,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/mod.ts",
+    "size": 92,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/racing_server.ts",
+    "size": 1733,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/racing_server_test.ts",
+    "size": 2085,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/server.ts",
+    "size": 10475,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/server_test.ts",
+    "size": 19432,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/http/testdata/%",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/testdata/file_server_as_library.ts",
+    "size": 294,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/testdata/hello.html",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/testdata/simple_https_server.ts",
+    "size": 553,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/testdata/simple_server.ts",
+    "size": 321,
+    "type": "file"
+  },
+  {
+    "path": "/std/http/testdata/test file.txt",
+    "size": 0,
+    "type": "file"
+  },
+  {
+    "path": "/std/io",
+    "type": "dir"
+  },
+  {
+    "path": "/std/io/README.md",
+    "size": 2943,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/_iotest.ts",
+    "size": 1527,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/bufio.ts",
+    "size": 21660,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/bufio_test.ts",
+    "size": 16068,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/ioutil.ts",
+    "size": 2523,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/ioutil_test.ts",
+    "size": 3352,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/mod.ts",
+    "size": 147,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/readers.ts",
+    "size": 1756,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/readers_test.ts",
+    "size": 2149,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/streams.ts",
+    "size": 802,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/streams_test.ts",
+    "size": 3817,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/util.ts",
+    "size": 831,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/util_test.ts",
+    "size": 539,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/writers.ts",
+    "size": 1097,
+    "type": "file"
+  },
+  {
+    "path": "/std/io/writers_test.ts",
+    "size": 760,
+    "type": "file"
+  },
+  {
+    "path": "/std/log",
+    "type": "dir"
+  },
+  {
+    "path": "/std/log/README.md",
+    "size": 9699,
+    "type": "file"
+  },
+  {
+    "path": "/std/log/handlers.ts",
+    "size": 6310,
+    "type": "file"
+  },
+  {
+    "path": "/std/log/handlers_test.ts",
+    "size": 13415,
+    "type": "file"
+  },
+  {
+    "path": "/std/log/levels.ts",
+    "size": 1573,
+    "type": "file"
+  },
+  {
+    "path": "/std/log/logger.ts",
+    "size": 5237,
+    "type": "file"
+  },
+  {
+    "path": "/std/log/logger_test.ts",
+    "size": 7603,
+    "type": "file"
+  },
+  {
+    "path": "/std/log/mod.ts",
+    "size": 5424,
+    "type": "file"
+  },
+  {
+    "path": "/std/log/mod_test.ts",
+    "size": 6355,
+    "type": "file"
+  },
+  {
+    "path": "/std/log/test.ts",
+    "size": 2501,
+    "type": "file"
+  },
+  {
+    "path": "/std/mime",
+    "type": "dir"
+  },
+  {
+    "path": "/std/mime/mod.ts",
+    "size": 32,
+    "type": "file"
+  },
+  {
+    "path": "/std/mime/multipart.ts",
+    "size": 17627,
+    "type": "file"
+  },
+  {
+    "path": "/std/mime/multipart_test.ts",
+    "size": 7608,
+    "type": "file"
+  },
+  {
+    "path": "/std/mime/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/mime/testdata/sample.txt",
+    "size": 944,
+    "type": "file"
+  },
+  {
+    "path": "/std/node",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/README.md",
+    "size": 1634,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/_fs/_fs_access.ts",
+    "size": 890,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_appendFile.ts",
+    "size": 4025,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_appendFile_test.ts",
+    "size": 6212,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_chmod.ts",
+    "size": 1236,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_chmod_test.ts",
+    "size": 1447,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_chown.ts",
+    "size": 921,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_chown_test.ts",
+    "size": 1860,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_close.ts",
+    "size": 407,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_close_test.ts",
+    "size": 1843,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_common.ts",
+    "size": 5099,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_constants.ts",
+    "size": 656,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_copy.ts",
+    "size": 636,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_copy_test.ts",
+    "size": 903,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_dir.ts",
+    "size": 2536,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_dir_test.ts",
+    "size": 4662,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_dirent.ts",
+    "size": 933,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_dirent_test.ts",
+    "size": 1874,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_exists.ts",
+    "size": 1029,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_exists_test.ts",
+    "size": 907,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_link.ts",
+    "size": 1164,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_link_test.ts",
+    "size": 1661,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_mkdir.ts",
+    "size": 2069,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_mkdir_test.ts",
+    "size": 693,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_readFile.ts",
+    "size": 2834,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_readFile_test.ts",
+    "size": 2961,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_readlink.ts",
+    "size": 1879,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_readlink_test.ts",
+    "size": 1589,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_writeFile.ts",
+    "size": 3194,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/_fs_writeFile_test.ts",
+    "size": 8564,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/promises",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/_fs/promises/_fs_readFile.ts",
+    "size": 865,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/promises/_fs_readFile_test.ts",
+    "size": 1966,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/promises/_fs_writeFile.ts",
+    "size": 555,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/promises/_fs_writeFile_test.ts",
+    "size": 3985,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/promises/mod.ts",
+    "size": 94,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_fs/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/_fs/testdata/hello.txt",
+    "size": 11,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_util",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/_util/_util_callbackify.ts",
+    "size": 4287,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_util/_util_callbackify_test.ts",
+    "size": 12293,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_util/_util_promisify.ts",
+    "size": 4972,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_util/_util_promisify_test.ts",
+    "size": 7149,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_util/_util_types.ts",
+    "size": 7362,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_util/_util_types_test.ts",
+    "size": 18007,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/_utils.ts",
+    "size": 4256,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/assert.ts",
+    "size": 518,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/assert_test.ts",
+    "size": 1539,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/buffer.ts",
+    "size": 15624,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/buffer_test.ts",
+    "size": 14930,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/events.ts",
+    "size": 17677,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/events_test.ts",
+    "size": 18477,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/fs.ts",
+    "size": 1161,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/global.ts",
+    "size": 261,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/module.ts",
+    "size": 35644,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/module_test.ts",
+    "size": 1654,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/os.ts",
+    "size": 7040,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/os_test.ts",
+    "size": 4992,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/path.ts",
+    "size": 32,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/process.ts",
+    "size": 3198,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/process_test.ts",
+    "size": 3285,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/querystring.ts",
+    "size": 3533,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/querystring_test.ts",
+    "size": 520,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/string_decoder.ts",
+    "size": 9099,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/string_decoder_test.ts",
+    "size": 3769,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/tests/cjs",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/tests/cjs/cjs_a.js",
+    "size": 224,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/cjs/cjs_b.js",
+    "size": 66,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/cjs/cjs_builtin.js",
+    "size": 211,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/cjs/cjs_cycle_a.js",
+    "size": 73,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/cjs/cjs_cycle_b.js",
+    "size": 73,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/cjs/cjs_throw.js",
+    "size": 76,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/cjs/index.js",
+    "size": 36,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/cjs/subdir",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/tests/cjs/subdir/cjs_c.js",
+    "size": 22,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/node_modules",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/tests/node_modules/left-pad",
+    "type": "dir"
+  },
+  {
+    "path": "/std/node/tests/node_modules/left-pad/README.md",
+    "size": 871,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/node_modules/left-pad/index.js",
+    "size": 1468,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/node_modules/left-pad/package.json",
+    "size": 1601,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/tests/package.json",
+    "size": 284,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/timers.ts",
+    "size": 727,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/url.ts",
+    "size": 4667,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/url_test.ts",
+    "size": 171,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/util.ts",
+    "size": 2169,
+    "type": "file"
+  },
+  {
+    "path": "/std/node/util_test.ts",
+    "size": 4084,
+    "type": "file"
+  },
+  {
+    "path": "/std/path",
+    "type": "dir"
+  },
+  {
+    "path": "/std/path/README.md",
+    "size": 496,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/_constants.ts",
+    "size": 2402,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/_interface.ts",
+    "size": 657,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/_util.ts",
+    "size": 3383,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/basename_test.ts",
+    "size": 3752,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/common.ts",
+    "size": 1170,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/common_test.ts",
+    "size": 959,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/dirname_test.ts",
+    "size": 2716,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/extname_test.ts",
+    "size": 2605,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/from_file_url_test.ts",
+    "size": 2203,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/glob.ts",
+    "size": 8319,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/glob_test.ts",
+    "size": 18554,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/isabsolute_test.ts",
+    "size": 1561,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/join_test.ts",
+    "size": 4096,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/mod.ts",
+    "size": 717,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/parse_format_test.ts",
+    "size": 5423,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/posix.ts",
+    "size": 12979,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/relative_test.ts",
+    "size": 2558,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/resolve_test.ts",
+    "size": 1711,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/separator.ts",
+    "size": 264,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/win32.ts",
+    "size": 28017,
+    "type": "file"
+  },
+  {
+    "path": "/std/path/zero_length_strings_test.ts",
+    "size": 1732,
+    "type": "file"
+  },
+  {
+    "path": "/std/permissions",
+    "type": "dir"
+  },
+  {
+    "path": "/std/permissions/mod.ts",
+    "size": 4390,
+    "type": "file"
+  },
+  {
+    "path": "/std/permissions/test.ts",
+    "size": 901,
+    "type": "file"
+  },
+  {
+    "path": "/std/signal",
+    "type": "dir"
+  },
+  {
+    "path": "/std/signal/mod.ts",
+    "size": 2014,
+    "type": "file"
+  },
+  {
+    "path": "/std/signal/test.ts",
+    "size": 2329,
+    "type": "file"
+  },
+  {
+    "path": "/std/testing",
+    "type": "dir"
+  },
+  {
+    "path": "/std/testing/README.md",
+    "size": 6845,
+    "type": "file"
+  },
+  {
+    "path": "/std/testing/asserts.ts",
+    "size": 13687,
+    "type": "file"
+  },
+  {
+    "path": "/std/testing/asserts_test.ts",
+    "size": 16170,
+    "type": "file"
+  },
+  {
+    "path": "/std/testing/bench.ts",
+    "size": 11276,
+    "type": "file"
+  },
+  {
+    "path": "/std/testing/bench_example.ts",
+    "size": 645,
+    "type": "file"
+  },
+  {
+    "path": "/std/testing/bench_test.ts",
+    "size": 11071,
+    "type": "file"
+  },
+  {
+    "path": "/std/testing/diff.ts",
+    "size": 5473,
+    "type": "file"
+  },
+  {
+    "path": "/std/testing/diff_test.ts",
+    "size": 2573,
+    "type": "file"
+  },
+  {
+    "path": "/std/textproto",
+    "type": "dir"
+  },
+  {
+    "path": "/std/textproto/mod.ts",
+    "size": 4626,
+    "type": "file"
+  },
+  {
+    "path": "/std/textproto/test.ts",
+    "size": 5322,
+    "type": "file"
+  },
+  {
+    "path": "/std/tsconfig_test.json",
+    "size": 59,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid",
+    "type": "dir"
+  },
+  {
+    "path": "/std/uuid/README.md",
+    "size": 240,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/_common.ts",
+    "size": 1207,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/mod.ts",
+    "size": 601,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/test.ts",
+    "size": 384,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/tests",
+    "type": "dir"
+  },
+  {
+    "path": "/std/uuid/tests/isNil.ts",
+    "size": 359,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/tests/v1",
+    "type": "dir"
+  },
+  {
+    "path": "/std/uuid/tests/v1/generate.ts",
+    "size": 954,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/tests/v1/validate.ts",
+    "size": 558,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/tests/v4",
+    "type": "dir"
+  },
+  {
+    "path": "/std/uuid/tests/v4/generate.ts",
+    "size": 612,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/tests/v4/validate.ts",
+    "size": 548,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/tests/v5",
+    "type": "dir"
+  },
+  {
+    "path": "/std/uuid/tests/v5/generate.ts",
+    "size": 1595,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/tests/v5/validate.ts",
+    "size": 651,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/v1.ts",
+    "size": 2545,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/v4.ts",
+    "size": 542,
+    "type": "file"
+  },
+  {
+    "path": "/std/uuid/v5.ts",
+    "size": 1340,
+    "type": "file"
+  },
+  {
+    "path": "/std/version.ts",
+    "size": 295,
+    "type": "file"
+  },
+  {
+    "path": "/std/wasi",
+    "type": "dir"
+  },
+  {
+    "path": "/std/wasi/README.md",
+    "size": 1860,
+    "type": "file"
+  },
+  {
+    "path": "/std/wasi/snapshot_preview1.ts",
+    "size": 38285,
+    "type": "file"
+  },
+  {
+    "path": "/std/wasi/snapshot_preview1_test.ts",
+    "size": 2728,
+    "type": "file"
+  },
+  {
+    "path": "/std/wasi/snapshot_preview1_test_runner.ts",
+    "size": 513,
+    "type": "file"
+  },
+  {
+    "path": "/std/wasi/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/std/ws",
+    "type": "dir"
+  },
+  {
+    "path": "/std/ws/README.md",
+    "size": 4525,
+    "type": "file"
+  },
+  {
+    "path": "/std/ws/example_client.ts",
+    "size": 1790,
+    "type": "file"
+  },
+  {
+    "path": "/std/ws/example_server.ts",
+    "size": 1572,
+    "type": "file"
+  },
+  {
+    "path": "/std/ws/example_test.ts",
+    "size": 60,
+    "type": "file"
+  },
+  {
+    "path": "/std/ws/mod.ts",
+    "size": 15335,
+    "type": "file"
+  },
+  {
+    "path": "/std/ws/test.ts",
+    "size": 13892,
+    "type": "file"
+  },
+  {
+    "path": "/test_plugin",
+    "type": "dir"
+  },
+  {
+    "path": "/test_plugin/Cargo.toml",
+    "size": 269,
+    "type": "file"
+  },
+  {
+    "path": "/test_plugin/src",
+    "type": "dir"
+  },
+  {
+    "path": "/test_plugin/src/lib.rs",
+    "size": 1563,
+    "type": "file"
+  },
+  {
+    "path": "/test_plugin/tests",
+    "type": "dir"
+  },
+  {
+    "path": "/test_plugin/tests/integration_tests.rs",
+    "size": 1384,
+    "type": "file"
+  },
+  {
+    "path": "/test_plugin/tests/test.js",
+    "size": 2345,
+    "type": "file"
+  },
+  {
+    "path": "/test_util",
+    "type": "dir"
+  },
+  {
+    "path": "/test_util/Cargo.toml",
+    "size": 444,
+    "type": "file"
+  },
+  {
+    "path": "/test_util/src",
+    "type": "dir"
+  },
+  {
+    "path": "/test_util/src/lib.rs",
+    "size": 35095,
+    "type": "file"
+  },
+  {
+    "path": "/test_util/src/test_server.rs",
+    "size": 46,
+    "type": "file"
+  },
+  {
+    "path": "/test_util/src/testdata",
+    "type": "dir"
+  },
+  {
+    "path": "/test_util/src/testdata/strace_summary.out",
+    "size": 2338,
+    "type": "file"
+  },
+  {
+    "path": "/test_util/src/testdata/strace_summary2.out",
+    "size": 2197,
+    "type": "file"
+  },
+  {
+    "path": "/test_util/src/testdata/time.out",
+    "size": 683,
+    "type": "file"
+  },
+  {
+    "path": "/test_util/src/testdata/wrk1.txt",
+    "size": 475,
+    "type": "file"
+  },
+  {
+    "path": "/test_util/src/testdata/wrk2.txt",
+    "size": 417,
+    "type": "file"
+  },
+  {
+    "path": "/test_util/src/testdata/wrk3.txt",
+    "size": 418,
+    "type": "file"
+  },
+  {
+    "path": "/third_party",
+    "type": "dir"
+  },
+  {
+    "path": "/tools",
+    "type": "dir"
+  },
+  {
+    "path": "/tools/README.md",
+    "size": 467,
+    "type": "file"
+  },
+  {
+    "path": "/tools/build_benchmark_jsons.py",
+    "size": 831,
+    "type": "file"
+  },
+  {
+    "path": "/tools/format.py",
+    "size": 2204,
+    "type": "file"
+  },
+  {
+    "path": "/tools/hash_benchmark.py",
+    "size": 1034,
+    "type": "file"
+  },
+  {
+    "path": "/tools/lint.py",
+    "size": 3717,
+    "type": "file"
+  },
+  {
+    "path": "/tools/package.json",
+    "size": 278,
+    "type": "file"
+  },
+  {
+    "path": "/tools/pylintrc",
+    "size": 9080,
+    "type": "file"
+  },
+  {
+    "path": "/tools/sync_node_modules.py",
+    "size": 176,
+    "type": "file"
+  },
+  {
+    "path": "/tools/sync_python_modules.py",
+    "size": 175,
+    "type": "file"
+  },
+  {
+    "path": "/tools/test_format.py",
+    "size": 460,
+    "type": "file"
+  },
+  {
+    "path": "/tools/test_util.py",
+    "size": 3999,
+    "type": "file"
+  },
+  {
+    "path": "/tools/third_party.py",
+    "size": 3602,
+    "type": "file"
+  },
+  {
+    "path": "/tools/util.py",
+    "size": 13209,
+    "type": "file"
+  },
+  {
+    "path": "/tools/util_test.py",
+    "size": 978,
+    "type": "file"
+  }
+]
