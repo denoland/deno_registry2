@@ -11,6 +11,10 @@ async function handleRequest(request) {
   });
   const resp2 = new Response(resp.body, resp);
   resp2.headers.set("Access-Control-Allow-Origin", "*");
+  resp2.headers.set(
+    "Content-Security-Policy",
+    "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+  );
   return resp2;
 }
 
