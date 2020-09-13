@@ -1,6 +1,6 @@
 import { assertEquals } from "../test_deps.ts";
 import { isForbidden } from "./moderation.ts";
-import { assert } from "https://deno.land/std@0.63.0/_util/assert.ts";
+
 Deno.test({
   name: "test valid name",
   async fn() {

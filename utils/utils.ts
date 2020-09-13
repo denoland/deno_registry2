@@ -1,4 +1,4 @@
-import { DirectoryListingFile } from "./types.ts";
+import type { DirectoryListingFile } from "./types.ts";
 
 export async function collectAsyncIterable<T>(
   iterator: AsyncIterable<T>,

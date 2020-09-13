@@ -5,16 +5,19 @@ import {
   createContext,
 } from "../../utils/test_utils.ts";
 import { Database } from "../../utils/database.ts";
-import { assertEquals, readJson } from "../../test_deps.ts";
+import { assert, assertEquals } from "../../test_deps.ts";
 import { getMeta, s3 } from "../../utils/storage.ts";
-import { assert } from "https://deno.land/std@0.67.0/testing/asserts.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
-const pingevent = await readJson("./api/webhook/testdata/pingevent.json");
-const pingeventforbiddent = await readJson(
-  "./api/webhook/testdata/pingeventforbidden.json",
+const pingevent = JSON.parse(
+  await Deno.readTextFile("./api/webhook/testdata/pingevent.json"),
+);
+const pingeventforbiddent = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/pingeventforbidden.json",
+  ),
 );
 const urlendodedpingevent = await Deno.readTextFile(
   "./api/webhook/testdata/pingevent.txt",

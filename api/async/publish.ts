@@ -9,7 +9,7 @@
  * the module name, GitHub repository, version, subdirectory ect.
  */
 
-import { join, walk, SQSEvent, Context, pooledMap } from "../../deps.ts";
+import { join, walk, pooledMap, SQSEvent, Context } from "../../deps.ts";
 import { Build, Database, BuildStats } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {

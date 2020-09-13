@@ -5,25 +5,25 @@ import {
   createContext,
 } from "../../utils/test_utils.ts";
 import { Database } from "../../utils/database.ts";
-import { assertEquals, assert, readJson } from "../../test_deps.ts";
+import { assertEquals, assert } from "../../test_deps.ts";
 import { getMeta, s3, uploadMetaJson } from "../../utils/storage.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
-const createevent = await readJson("./api/webhook/testdata/createevent.json");
-const createeventforbidden = await readJson(
+const createevent = JSON.parse(await Deno.readTextFile("./api/webhook/testdata/createevent.json"));
+const createeventforbidden = JSON.parse(await Deno.readTextFile(
   "./api/webhook/testdata/createeventforbidden.json",
-);
-const urlencodedcreateevent = await await Deno.readTextFile(
+));
+const urlencodedcreateevent = await Deno.readTextFile(
   "./api/webhook/testdata/createevent.txt",
 );
-const createeventBranch = await readJson(
+const createeventBranch = JSON.parse(await Deno.readTextFile(
   "./api/webhook/testdata/createevent_branch.json",
-);
-const createeventVersionPrefix = await readJson(
+));
+const createeventVersionPrefix = JSON.parse(await Deno.readTextFile(
   "./api/webhook/testdata/createevent_versionprefix.json",
-);
+));
 
 Deno.test({
   name: "create event no name",

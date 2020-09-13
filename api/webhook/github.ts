@@ -8,7 +8,7 @@
  * build is added to the AWS SQS build queue to be processed asynchronously.
  */
 
-import {
+import type {
   APIGatewayProxyEventV2,
   Context,
   APIGatewayProxyResultV2,

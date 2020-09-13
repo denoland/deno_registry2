@@ -7,7 +7,7 @@
  * information in API.md. 
  */
 
-import {
+import type {
   APIGatewayProxyEventV2,
   Context,
   APIGatewayProxyResultV2,
