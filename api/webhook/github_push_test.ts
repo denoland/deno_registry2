@@ -1,25 +1,32 @@
 import { handler } from "./github.ts";
 import {
   createJSONWebhookEvent,
-  createJSONWebhookWebFormEvent,
   createContext,
 } from "../../utils/test_utils.ts";
 import { Database } from "../../utils/database.ts";
-import { assertEquals, assert, readJson } from "../../test_deps.ts";
+import { assertEquals, assert } from "../../test_deps.ts";
 import { getMeta, s3, uploadMetaJson } from "../../utils/storage.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
-const pushevent = await readJson("./api/webhook/testdata/pushevent.json");
-const pusheventforbidden = await readJson(
-  "./api/webhook/testdata/pusheventforbidden.json",
+const pushevent = JSON.parse(
+  await Deno.readTextFile("./api/webhook/testdata/pushevent.json"),
 );
-const pusheventBranch = await readJson(
-  "./api/webhook/testdata/pushevent_branch.json",
+const pusheventforbidden = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/pusheventforbidden.json",
+  ),
 );
-const pusheventVersionPrefix = await readJson(
-  "./api/webhook/testdata/pushevent_versionprefix.json",
+const pusheventBranch = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/pushevent_branch.json",
+  ),
+);
+const pusheventVersionPrefix = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/pushevent_versionprefix.json",
+  ),
 );
 
 Deno.test({

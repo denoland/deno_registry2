@@ -5,7 +5,7 @@
  *  by a HTTP GET call to /builds/{id}.
  */
 
-import {
+import type {
   APIGatewayProxyEventV2,
   Context,
   APIGatewayProxyResultV2,

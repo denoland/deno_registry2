@@ -5,7 +5,7 @@
  * The function is triggered by a HTTP GET call to /stats.
  */
 
-import {
+import type {
   APIGatewayProxyEventV2,
   Context,
   APIGatewayProxyResultV2,

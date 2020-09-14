@@ -9,7 +9,7 @@
  * the module name, GitHub repository, version, subdirectory ect.
  */
 
-import { join, walk, SQSEvent, Context, pooledMap } from "../../deps.ts";
+import { join, walk, pooledMap, SQSEvent, Context } from "../../deps.ts";
 import { Build, Database, BuildStats } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
@@ -266,14 +266,14 @@ async function analyzeDependencies(build: Build): Promise<void> {
 }
 
 function treeToGraph(graph: DependencyGraph, dep: Dep) {
-  const url = dep[0];
+  const url = dep.name;
   if (!graph.nodes[url]) {
     graph.nodes[url] = { imports: [] };
   }
-  dep[1].forEach((dep) => {
-    if (!graph.nodes[url].imports.includes(dep[0])) {
-      graph.nodes[url].imports.push(dep[0]);
+  dep.deps.forEach((dep) => {
+    if (!graph.nodes[url].imports.includes(dep.name)) {
+      graph.nodes[url].imports.push(dep.name);
     }
   });
-  dep[1].forEach((dep) => treeToGraph(graph, dep));
+  dep.deps.forEach((dep) => treeToGraph(graph, dep));
 }
