@@ -11,19 +11,27 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
-const createevent = JSON.parse(await Deno.readTextFile("./api/webhook/testdata/createevent.json"));
-const createeventforbidden = JSON.parse(await Deno.readTextFile(
-  "./api/webhook/testdata/createeventforbidden.json",
-));
+const createevent = JSON.parse(
+  await Deno.readTextFile("./api/webhook/testdata/createevent.json"),
+);
+const createeventforbidden = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/createeventforbidden.json",
+  ),
+);
 const urlencodedcreateevent = await Deno.readTextFile(
   "./api/webhook/testdata/createevent.txt",
 );
-const createeventBranch = JSON.parse(await Deno.readTextFile(
-  "./api/webhook/testdata/createevent_branch.json",
-));
-const createeventVersionPrefix = JSON.parse(await Deno.readTextFile(
-  "./api/webhook/testdata/createevent_versionprefix.json",
-));
+const createeventBranch = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/createevent_branch.json",
+  ),
+);
+const createeventVersionPrefix = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/createevent_versionprefix.json",
+  ),
+);
 
 Deno.test({
   name: "create event no name",

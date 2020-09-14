@@ -10,16 +10,24 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
-const pushevent = JSON.parse(await Deno.readTextFile("./api/webhook/testdata/pushevent.json"));
-const pusheventforbidden = JSON.parse(await Deno.readTextFile(
-  "./api/webhook/testdata/pusheventforbidden.json",
-));
-const pusheventBranch = JSON.parse(await Deno.readTextFile(
-  "./api/webhook/testdata/pushevent_branch.json",
-));
-const pusheventVersionPrefix = JSON.parse(await Deno.readTextFile(
-  "./api/webhook/testdata/pushevent_versionprefix.json",
-));
+const pushevent = JSON.parse(
+  await Deno.readTextFile("./api/webhook/testdata/pushevent.json"),
+);
+const pusheventforbidden = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/pusheventforbidden.json",
+  ),
+);
+const pusheventBranch = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/pushevent_branch.json",
+  ),
+);
+const pusheventVersionPrefix = JSON.parse(
+  await Deno.readTextFile(
+    "./api/webhook/testdata/pushevent_versionprefix.json",
+  ),
+);
 
 Deno.test({
   name: "push event no name",
