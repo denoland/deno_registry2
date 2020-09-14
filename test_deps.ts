@@ -4,8 +4,5 @@ export {
   assert,
   assertEquals,
   assertThrows,
-} from "https://deno.land/std@0.69.0/testing/asserts.ts";
-export {
-  runBenchmarks,
-  bench,
-} from "https://deno.land/std@0.69.0/testing/bench.ts";
+} from "https://deno.land/std@0.67.0/testing/asserts.ts";
+export { readJson, readJsonSync } from "https://deno.land/std@0.67.0/fs/mod.ts";

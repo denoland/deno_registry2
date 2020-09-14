@@ -6,7 +6,7 @@
  * to /modules/{name}. More information in API.md. 
  */
 
-import type {
+import {
   APIGatewayProxyEventV2,
   Context,
   APIGatewayProxyResultV2,

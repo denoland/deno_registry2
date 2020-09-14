@@ -1,6 +1,6 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import type {
+import {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
   APIGatewayProxyStructuredResultV2,

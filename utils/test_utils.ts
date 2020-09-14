@@ -1,4 +1,4 @@
-import type { APIGatewayProxyEventV2, SQSEvent, Context } from "../deps.ts";
+import { APIGatewayProxyEventV2, SQSEvent, Context } from "../deps.ts";
 interface KV {
   [key: string]: string;
 }

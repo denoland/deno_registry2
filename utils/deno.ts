@@ -1,10 +1,6 @@
 const decoder = new TextDecoder();
 
-export interface Dep {
-  name: string;
-  size: string;
-  deps: Dep[];
-}
+export type Dep = [string, Dep[]];
 
 export async function runDenoInfo(
   options: { entrypoint: string; denoDir: string },
