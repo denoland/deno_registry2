@@ -6,6 +6,7 @@
  */
 async function handleRequest(request) {
   const url = new URL(request.url);
+  // deno-lint-ignore no-undef
   const resp = await fetch(`${S3_BUCKET}${url.pathname}`, {
     cf: { cacheEverything: true },
   });
