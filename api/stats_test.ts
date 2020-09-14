@@ -119,7 +119,7 @@ Deno.test({
       res,
       {
         body:
-          '{"success":true,"data":{"total_count":3,"recently_added_modules":[{"name":"ltest1","description":"ltest1 repo","star_count":50,"created_at":"2020-02-03T00:00:00.000Z"},{"name":"ltest3","description":"ltest3 repo","star_count":50,"created_at":"2020-02-02T00:00:00.000Z"},{"name":"ltest2","description":"ltest2 repo","star_count":50,"created_at":"2020-02-01T00:00:00.000Z"}],"recently_uploaded_versions":[{"name":"ltest","version":"0.2.0","created_at":"2020-02-04T00:00:00.000Z"},{"name":"ltest3","version":"0.3.0","created_at":"2020-02-03T00:00:00.000Z"},{"name":"ltest2","version":"0.1.0","created_at":"2020-02-02T00:00:00.000Z"},{"name":"ltest","version":"0.1.0","created_at":"2020-02-01T00:00:00.000Z"}]}}',
+          '{"success":true,"data":{"total_count":3,"total_versions":4,"recently_added_modules":[{"name":"ltest1","description":"ltest1 repo","star_count":50,"created_at":"2020-02-03T00:00:00.000Z"},{"name":"ltest3","description":"ltest3 repo","star_count":50,"created_at":"2020-02-02T00:00:00.000Z"},{"name":"ltest2","description":"ltest2 repo","star_count":50,"created_at":"2020-02-01T00:00:00.000Z"}],"recently_uploaded_versions":[{"name":"ltest","version":"0.2.0","created_at":"2020-02-04T00:00:00.000Z"},{"name":"ltest3","version":"0.3.0","created_at":"2020-02-03T00:00:00.000Z"},{"name":"ltest2","version":"0.1.0","created_at":"2020-02-02T00:00:00.000Z"},{"name":"ltest","version":"0.1.0","created_at":"2020-02-01T00:00:00.000Z"}]}}',
         headers: {
           "content-type": "application/json",
         },

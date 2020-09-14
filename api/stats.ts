@@ -20,6 +20,7 @@ export async function handler(
   context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   const total_count = await database.countModules();
+  const total_versions = await database.countAllVersions();
   const recently_added_modules = await database.listRecentlyAddedModules();
   const recently_uploaded_versions = await database
     .listRecentlyUploadedVersions();
@@ -30,6 +31,7 @@ export async function handler(
       success: true,
       data: {
         total_count,
+        total_versions,
         recently_added_modules,
         recently_uploaded_versions,
       },

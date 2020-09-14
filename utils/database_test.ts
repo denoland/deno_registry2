@@ -76,6 +76,19 @@ const build1: Omit<Omit<Build, "id">, "created_at"> = {
   message: "bla bla bla",
 };
 
+const build2: Omit<Omit<Build, "id">, "created_at"> = {
+  options: {
+    moduleName: "wtest",
+    type: "github",
+    repository: "wperron-rand/testing",
+    ref: "v0.4.0",
+    version: "0.4.0",
+    subdir: "subdir1",
+  },
+  status: "success",
+  message: "bla bla bla",
+};
+
 Deno.test({
   name: "add, update, and get builds in database",
   async fn() {
@@ -90,6 +103,39 @@ Deno.test({
       build,
       { ...build1, id, created_at: undefined, stats: undefined },
     );
+
+    // Cleanup
+    await database._builds.deleteMany({});
+  },
+});
+
+Deno.test({
+  name: "count builds",
+  async fn() {
+    // check there are no versions in a clean database
+    let count = await database.countAllVersions();
+    assertEquals(count, 0);
+
+    // check count after adding 1 build
+    const id = await database.createBuild(build1);
+    const build = await database.getBuild(id) as Build;
+    count = await database.countAllVersions();
+    assertEquals(count, 1);
+
+    // check count after adding 5 new versions
+    for (let i = 5; i < 10; i++) {
+      build.options.ref = `v.0.${i}.0`;
+      build.options.version = `0.${i}.0`;
+      await database.createBuild(build);
+    }
+
+    count = await database.countAllVersions();
+    assertEquals(count, 6);
+
+    // check count after adding second module
+    await database.createBuild(build2);
+    count = await database.countAllVersions();
+    assertEquals(count, 7);
 
     // Cleanup
     await database._builds.deleteMany({});
