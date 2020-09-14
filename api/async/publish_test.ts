@@ -169,7 +169,7 @@ Deno.test({
     );
 
     let deps = await s3.getObject("ltest/versions/0.0.9/meta/deps_v2.json");
-    assertEquals(deps?.cacheControl, "public, max-age=31536000, immutable");
+    assertEquals(deps?.cacheControl, "max-age=10, must-revalidate");
     assertEquals(deps?.contentType, "application/json");
     // Check that meta file exists
     assertEquals(
@@ -182,97 +182,106 @@ Deno.test({
         graph: {
           nodes: {
             "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts": {
-              "imports": [
-                "https://deno.land/std@0.64.0/uuid/mod.ts",
-              ],
+              deps: ["https://deno.land/std@0.64.0/uuid/mod.ts"],
+              size: 63,
             },
             "https://deno.land/std@0.64.0/uuid/mod.ts": {
-              "imports": [
+              deps: [
                 "https://deno.land/std@0.64.0/uuid/v1.ts",
                 "https://deno.land/std@0.64.0/uuid/v4.ts",
                 "https://deno.land/std@0.64.0/uuid/v5.ts",
               ],
+              size: 601,
             },
             "https://deno.land/std@0.64.0/uuid/v1.ts": {
-              "imports": [
-                "https://deno.land/std@0.64.0/uuid/_common.ts",
-              ],
+              deps: ["https://deno.land/std@0.64.0/uuid/_common.ts"],
+              size: 2545,
             },
             "https://deno.land/std@0.64.0/uuid/_common.ts": {
-              "imports": [],
+              deps: [],
+              size: 1207,
             },
             "https://deno.land/std@0.64.0/uuid/v4.ts": {
-              "imports": [
-                "https://deno.land/std@0.64.0/uuid/_common.ts",
-              ],
+              deps: ["https://deno.land/std@0.64.0/uuid/_common.ts"],
+              size: 542,
             },
             "https://deno.land/std@0.64.0/uuid/v5.ts": {
-              "imports": [
+              deps: [
                 "https://deno.land/std@0.64.0/uuid/_common.ts",
                 "https://deno.land/std@0.64.0/hash/sha1.ts",
                 "https://deno.land/std@0.64.0/node/util.ts",
                 "https://deno.land/std@0.64.0/_util/assert.ts",
               ],
+              size: 1340,
             },
             "https://deno.land/std@0.64.0/hash/sha1.ts": {
-              "imports": [],
+              deps: [],
+              size: 11033,
             },
             "https://deno.land/std@0.64.0/node/util.ts": {
-              "imports": [
+              deps: [
                 "https://deno.land/std@0.64.0/node/_util/_util_promisify.ts",
                 "https://deno.land/std@0.64.0/node/_util/_util_callbackify.ts",
                 "https://deno.land/std@0.64.0/node/_util/_util_types.ts",
                 "https://deno.land/std@0.64.0/node/_utils.ts",
               ],
+              size: 2298,
             },
             "https://deno.land/std@0.64.0/node/_util/_util_promisify.ts": {
-              "imports": [],
+              deps: [],
+              size: 4839,
             },
             "https://deno.land/std@0.64.0/node/_util/_util_callbackify.ts": {
-              "imports": [],
+              deps: [],
+              size: 4287,
             },
             "https://deno.land/std@0.64.0/node/_util/_util_types.ts": {
-              "imports": [],
+              deps: [],
+              size: 7362,
             },
             "https://deno.land/std@0.64.0/node/_utils.ts": {
-              "imports": [],
+              deps: [],
+              size: 3807,
             },
             "https://deno.land/std@0.64.0/_util/assert.ts": {
-              "imports": [],
+              deps: [],
+              size: 405,
             },
             "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/example.ts":
               {
-                "imports": [
+                deps: [
                   "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts",
                 ],
+                size: 50,
               },
             "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts": {
-              "imports": [
+              deps: [
                 "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts",
               ],
+              size: 139,
             },
             "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/mod_test.ts":
               {
-                "imports": [
-                  "https://deno.land/std@0.64.0/testing/asserts.ts",
-                ],
+                deps: ["https://deno.land/std@0.64.0/testing/asserts.ts"],
+                size: 227,
               },
             "https://deno.land/std@0.64.0/testing/asserts.ts": {
-              "imports": [
+              deps: [
                 "https://deno.land/std@0.64.0/fmt/colors.ts",
                 "https://deno.land/std@0.64.0/testing/diff.ts",
               ],
+              size: 12246,
             },
             "https://deno.land/std@0.64.0/fmt/colors.ts": {
-              "imports": [],
+              deps: [],
+              size: 5774,
             },
             "https://deno.land/std@0.64.0/testing/diff.ts": {
-              "imports": [],
+              deps: [],
+              size: 5473,
             },
             "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/subproject/mod.ts":
-              {
-                "imports": [],
-              },
+              { deps: [], size: 71 },
           },
         },
       },

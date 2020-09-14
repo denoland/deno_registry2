@@ -112,9 +112,6 @@ Deno.test({
       createContext(),
     );
 
-    // @ts-ignore asd
-    console.log(res.body);
-
     assertEquals(
       res,
       {
