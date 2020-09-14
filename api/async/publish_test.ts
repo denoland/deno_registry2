@@ -168,7 +168,7 @@ Deno.test({
       },
     );
 
-    let deps = await s3.getObject("ltest/versions/0.0.9/meta/deps.json");
+    let deps = await s3.getObject("ltest/versions/0.0.9/meta/deps_v2.json");
     assertEquals(deps?.cacheControl, "public, max-age=31536000, immutable");
     assertEquals(deps?.contentType, "application/json");
     // Check that meta file exists
@@ -304,7 +304,7 @@ Deno.test({
     await database._builds.deleteMany({});
     await s3.deleteObject("ltest/meta/versions.json");
     await s3.deleteObject("ltest/versions/0.0.9/meta/meta.json");
-    await s3.deleteObject("ltest/versions/0.0.9/meta/deps.json");
+    await s3.deleteObject("ltest/versions/0.0.9/meta/deps_v2.json");
     await s3.deleteObject("ltest/versions/0.0.9/raw/.github/workflows/ci.yml");
     await s3.deleteObject("ltest/versions/0.0.9/raw/.vscode/settings.json");
     await s3.deleteObject("ltest/versions/0.0.9/raw/LICENCE");

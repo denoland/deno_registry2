@@ -101,14 +101,17 @@ export async function uploadVersionMetaJson(
   version: string,
   file: string,
   data: unknown,
+  immutable: boolean,
 ): Promise<{ etag: string }> {
   const resp = await s3.putObject(
     join(module, "versions", version, "meta", file),
     encoder.encode(JSON.stringify(data)),
     {
       acl: "public-read",
-      // Versioned files can be cached indefinitely. (1 year)
-      cacheControl: "public, max-age=31536000, immutable",
+      // Immutable files can be cached indefinitely. (1 year)
+      cacheControl: immutable
+        ? "public, max-age=31536000, immutable"
+        : "max-age=10, must-revalidate",
       contentType: "application/json",
     },
   );
