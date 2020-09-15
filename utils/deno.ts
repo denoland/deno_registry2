@@ -2,7 +2,7 @@ const decoder = new TextDecoder();
 
 export interface Dep {
   name: string;
-  size: string;
+  size: number;
   deps: Dep[];
 }
 

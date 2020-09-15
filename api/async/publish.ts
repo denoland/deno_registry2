@@ -188,6 +188,7 @@ async function publishGithub(
           ref,
         },
       },
+      true,
     );
 
     return {
@@ -204,7 +205,8 @@ async function publishGithub(
 interface DependencyGraph {
   nodes: {
     [url: string]: {
-      imports: string[];
+      size: number;
+      deps: string[];
     };
   };
 }
@@ -260,19 +262,20 @@ async function analyzeDependencies(build: Build): Promise<void> {
   await uploadVersionMetaJson(
     build.options.moduleName,
     build.options.version,
-    "deps.json",
+    "deps_v2.json",
     { graph },
+    false,
   );
 }
 
 function treeToGraph(graph: DependencyGraph, dep: Dep) {
   const url = dep.name;
   if (!graph.nodes[url]) {
-    graph.nodes[url] = { imports: [] };
+    graph.nodes[url] = { deps: [], size: dep.size };
   }
   dep.deps.forEach((dep) => {
-    if (!graph.nodes[url].imports.includes(dep.name)) {
-      graph.nodes[url].imports.push(dep.name);
+    if (!graph.nodes[url].deps.includes(dep.name)) {
+      graph.nodes[url].deps.push(dep.name);
     }
   });
   dep.deps.forEach((dep) => treeToGraph(graph, dep));
