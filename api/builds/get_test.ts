@@ -69,6 +69,27 @@ Deno.test({
 });
 
 Deno.test({
+  name: "`/builds/:id` invalid id",
+  async fn() {
+    assertEquals(
+      await handler(
+        createAPIGatewayProxyEventV2("GET", `/builds/xdxdxd`, {
+          pathParameters: {},
+        }),
+        createContext(),
+      ),
+      {
+        body: `{"success":false,"error":"invalid build id"}`,
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      },
+    );
+  },
+});
+
+Deno.test({
   name: "`/builds/:id` not found",
   async fn() {
     assertEquals(
