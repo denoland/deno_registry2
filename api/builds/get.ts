@@ -10,6 +10,9 @@ import type {
   Context,
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
+import {
+  ObjectId,
+} from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
 
@@ -25,6 +28,15 @@ export async function handler(
     return respondJSON({
       statusCode: 400,
       body: JSON.stringify({ success: false, error: "no build id provided" }),
+    });
+  }
+
+  try {
+    ObjectId(id);
+  } catch (err) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({ success: false, error: "invalid build id" }),
     });
   }
 
