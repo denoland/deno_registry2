@@ -66,7 +66,7 @@ export async function handler(
 
     await analyzeDependencies(build).catch((err) => {
       console.error("failed dependency analysis", build, err, err?.response);
-      message += " Failed to run dependency analysis.";
+      message += " Failed to run dependency analysis v2.";
     });
 
     await database.saveBuild({
@@ -211,7 +211,7 @@ interface DependencyGraph {
   };
 }
 
-async function analyzeDependencies(build: Build): Promise<void> {
+export async function analyzeDependencies(build: Build): Promise<void> {
   console.log(
     `Analyzing dependencies for ${build.options.moduleName}@${build.options.version}`,
   );
@@ -232,30 +232,45 @@ async function analyzeDependencies(build: Build): Promise<void> {
     decoder.decode(rawMeta),
   );
 
-  const depsTrees = [];
+  let total = 0;
+  let skipped = 0;
+
+  const graph: DependencyGraph = { nodes: {} };
 
   for await (const file of meta.directory_listing) {
     if (file.type !== "file") {
       continue;
     }
+
+    // Skip non code files
     if (
       !(file.path.endsWith(".js") || file.path.endsWith(".jsx") ||
         file.path.endsWith(".ts") || file.path.endsWith(".tsx"))
     ) {
       continue;
     }
-    const entrypoint = join(
-      prefix,
+
+    const url = new URL(prefix);
+    url.pathname = join(
+      url.pathname,
       file.path,
     );
-    depsTrees.push(await runDenoInfo({ entrypoint, denoDir }));
-  }
+    const entrypoint = url.toString();
 
-  const graph: DependencyGraph = { nodes: {} };
+    total++;
 
-  for (const dep of depsTrees) {
+    // We can skip analyzing a module if we have already analyzed
+    // and this already in the dependency graph.
+    if (graph.nodes[entrypoint]) {
+      skipped++;
+      continue;
+    }
+
+    const dep = await runDenoInfo({ entrypoint, denoDir });
     treeToGraph(graph, dep);
   }
+
+  console.log(">>>>>> total", total, "skipped", skipped);
 
   await Deno.remove(denoDir, { recursive: true });
 
