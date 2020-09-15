@@ -74,7 +74,9 @@ Deno.test({
     assertEquals(
       await handler(
         createAPIGatewayProxyEventV2("GET", `/builds/xdxdxd`, {
-          pathParameters: {},
+          pathParameters: {
+            id: "xdxdxd",
+          },
         }),
         createContext(),
       ),
