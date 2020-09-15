@@ -254,6 +254,10 @@ export class Database {
     };
   }
 
+  async countAllVersions(): Promise<number> {
+    return this._builds.count({});
+  }
+
   async createBuild(
     build: Omit<Omit<Build, "id">, "created_at">,
   ): Promise<string> {
