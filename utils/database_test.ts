@@ -41,10 +41,14 @@ Deno.test({
     await database.saveModule(utest);
 
     assertEquals(await database.listModules(10, 1), [{
-      name: ltest.name,
-      description: ltest.description,
-      star_count: ltest.star_count,
-      search_score: undefined,
+      _id: "ltest",
+      created_at: new Date("2020-02-01T00:00:00.000Z"),
+      description: "Testing all the things!",
+      is_unlisted: false,
+      owner: "luca-rand",
+      repo: "testing",
+      star_count: 5,
+      type: "github",
     }]);
     assertEquals(await database.countModules(), 1);
     assertEquals(await database.getModule(ltest.name), ltest);
