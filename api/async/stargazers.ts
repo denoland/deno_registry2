@@ -19,11 +19,13 @@ const ssm = new SSM({
   secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
   sessionToken: Deno.env.get("AWS_SESSION_TOKEN")!,
 });
-const API_TOKEN = await ssm.getParameter({
+const param = await ssm.getParameter({
   Name: Deno.env.get("GITHUB_TOKEN_SSM") ?? "",
   WithDecryption: true,
 });
-const gh = new GitHub(API_TOKEN);
+const API_TOKEN = param?.Parameter?.Value as string;
+const API_USER = Deno.env.get("GITHUB_USERNAME") ?? "";
+const gh = new GitHub({ username: API_USER, token: API_TOKEN });
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
