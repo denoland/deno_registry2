@@ -46,6 +46,11 @@ data "aws_iam_policy_document" "lambda_permissions" {
       aws_sqs_queue.build_dlq.arn,
     ]
   }
+
+  statement {
+    actions   = ["ssm:GetParameter"]
+    resources = [aws_ssm_parameter.github_token.arn]
+  }
 }
 
 data "aws_iam_policy" "basic_lambda" {

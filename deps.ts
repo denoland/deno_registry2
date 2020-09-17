@@ -9,6 +9,7 @@ export type {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
   APIGatewayProxyStructuredResultV2,
+  ScheduledEvent,
   SQSEvent,
   Context,
 } from "https://deno.land/x/lambda@1.4.0/types.d.ts";
@@ -18,5 +19,6 @@ export {
 } from "https://raw.githubusercontent.com/lucacasonato/deno_mongo_lambda/v0.12.1/mod.ts";
 export { S3Bucket } from "https://deno.land/x/s3@0.1.2/mod.ts";
 export { SQSQueue } from "https://deno.land/x/sqs@0.3.3/mod.ts";
+export { SSM } from "https://deno.land/x/ssm@0.1.1/mod.ts";
 export { lookup } from "https://deno.land/x/media_types@v2.4.6/mod.ts";
 export { pooledMap } from "https://deno.land/std@0.69.0/async/mod.ts";

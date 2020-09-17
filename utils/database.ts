@@ -2,7 +2,8 @@
 
 import { MongoClient, ObjectId } from "../deps.ts";
 
-type DBModule = Omit<Module, "name"> & { _id: string };
+export type DBModule = Omit<Module, "name"> & { _id: string };
+export type ScoredModule = DBModule & { search_score: number };
 
 export interface Module {
   name: string;
@@ -125,7 +126,7 @@ export class Database {
     limit: number,
     page: number,
     query?: string,
-  ): Promise<SearchResult[]> {
+  ): Promise<ScoredModule[]> {
     if (typeof limit !== "number") {
       throw new Error("limit must be a number");
     }
@@ -191,15 +192,9 @@ export class Database {
       {
         $limit: limit,
       },
-    ])) as (DBModule & { search_score: number })[];
+    ])) as ScoredModule[];
 
-    // Transform the results
-    return docs.map((doc) => ({
-      name: doc._id,
-      description: doc.description,
-      star_count: doc.star_count,
-      search_score: doc.search_score,
-    }));
+    return docs;
   }
 
   async listAllModuleNames(): Promise<string[]> {

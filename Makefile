@@ -13,6 +13,9 @@ package:
 	mkdir -p ./.terraform/tmp/async_publish/.deno_plugins && \
 	deno bundle --unstable ../api/async/publish.ts > ./.terraform/tmp/async_publish/bundle.js && \
 	cp ./.terraform/dl/deno_mongo_a79a4be6f465f12a177649c69941b66b.so ./.terraform/tmp/async_publish/.deno_plugins/ && \
+	mkdir -p ./.terraform/tmp/stargazers/.deno_plugins && \
+	deno bundle --unstable ../api/async/stargazers.ts > ./.terraform/tmp/stargazers/bundle.js && \
+	cp ./.terraform/dl/deno_mongo_a79a4be6f465f12a177649c69941b66b.so ./.terraform/tmp/stargazers/.deno_plugins/ && \
 	mkdir -p ./.terraform/tmp/modules_get/.deno_plugins && \
 	deno bundle --unstable ../api/modules/get.ts > ./.terraform/tmp/modules_get/bundle.js && \
 	cp ./.terraform/dl/deno_mongo_a79a4be6f465f12a177649c69941b66b.so ./.terraform/tmp/modules_get/.deno_plugins/ && \
