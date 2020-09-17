@@ -34,6 +34,7 @@ resource "aws_lambda_function" "stargazers" {
       "MONGO_URI"        = var.mongodb_uri
       "STORAGE_BUCKET"   = aws_s3_bucket.storage_bucket.id
       "REMOTE_URL"       = "https://deno.land/x/%m@%v"
+      "GITHUB_USERNAME"  = var.github_username
       "GITHUB_TOKEN_SSM" = aws_ssm_parameter.github_token.name
     }
   }

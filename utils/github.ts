@@ -53,17 +53,20 @@ export class GitHub {
   }
 
   private _updateRateLimit(h: Headers): void {
-    if (h.has("X-RateLimit-Limit")) {
-      this.rateLimit = parseInt(h.get("X-RateLimit-Limit") as string);
+    h.forEach((v, k) => {
+      console.log(`${k}: ${v}`);
+    });
+    if (h.has("x-ratelimit-limit")) {
+      this.rateLimit = parseInt(h.get("x-ratelimit-limit") as string);
     }
-    if (h.has("X-RateLimit-Remaining")) {
-      this.rateRemaining = parseInt(h.get("X-RateLimit-Remaining") as string);
+    if (h.has("x-ratelimit-remaining")) {
+      this.rateRemaining = parseInt(h.get("x-ratelimit-remaining") as string);
     }
-    if (h.has("X-RateLimit-Reset")) {
+    if (h.has("x-ratelimit-reset")) {
       this.rateLimitReset = new Date(
         // as per the docs
         // https://developer.github.com/v3/#rate-limiting
-        parseInt(h.get("X-RateLimit-Reset") as string) * 1000,
+        parseInt(h.get("x-ratelimit-reset") as string) * 1000,
       );
     }
   }
