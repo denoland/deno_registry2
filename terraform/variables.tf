@@ -54,3 +54,8 @@ variable "github_token" {
   description = "GitHub personal access token"
   type        = string
 }
+
+variable "ssh_key_name" {
+  description = "Name of the AWS EC2 key pair"
+  type        = string
+}
