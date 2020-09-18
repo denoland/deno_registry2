@@ -5,6 +5,12 @@ export interface GitHubAuth {
   token: string;
 }
 
+export type RateLimit = {
+  rateLimit: number | undefined;
+  rateRemaining: number | undefined;
+  rateLimitReset: Date | undefined;
+};
+
 export class GitHub {
   private auth: GitHubAuth | undefined;
   private rateLimit: number | undefined;
@@ -53,9 +59,6 @@ export class GitHub {
   }
 
   private _updateRateLimit(h: Headers): void {
-    h.forEach((v, k) => {
-      console.log(`${k}: ${v}`);
-    });
     if (h.has("x-ratelimit-limit")) {
       this.rateLimit = parseInt(h.get("x-ratelimit-limit") as string);
     }
@@ -73,5 +76,13 @@ export class GitHub {
 
   async getRepo(owner: string, repo: string): Promise<Response> {
     return this._doRequest(new Request(`${base}/repos/${owner}/${repo}`));
+  }
+
+  getRateLimits(): RateLimit {
+    return {
+      rateLimit: this.rateLimit,
+      rateRemaining: this.rateRemaining,
+      rateLimitReset: this.rateLimitReset,
+    };
   }
 }
