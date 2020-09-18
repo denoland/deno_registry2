@@ -10,7 +10,7 @@ import type { ScheduledEvent, Context } from "../../deps.ts";
 import { SSM } from "../../deps.ts";
 import type { ScoredModule, SearchResult } from "../../utils/database.ts";
 import { Database, Module } from "../../utils/database.ts";
-import { GitHub } from "../../utils/github.ts";
+import { GitHub, GitHubAuth } from "../../utils/github.ts";
 
 // Declaring outside of the handler so they can be cached between invocations.
 const ssm = new SSM({
@@ -19,13 +19,18 @@ const ssm = new SSM({
   secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
   sessionToken: Deno.env.get("AWS_SESSION_TOKEN")!,
 });
-const param = await ssm.getParameter({
+const secret = await ssm.getParameter({
   Name: Deno.env.get("GITHUB_TOKEN_SSM") ?? "",
   WithDecryption: true,
 });
-const API_TOKEN = param?.Parameter?.Value as string;
+
+const API_TOKEN = secret?.Parameter?.Value;
 const API_USER = Deno.env.get("GITHUB_USERNAME") ?? "";
-const gh = new GitHub({ username: API_USER, token: API_TOKEN });
+const auth: GitHubAuth | undefined = secret
+  ? { username: API_USER as string, token: API_TOKEN as string }
+  : undefined;
+
+const gh = new GitHub(auth);
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(

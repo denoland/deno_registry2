@@ -30,15 +30,11 @@ export class GitHub {
     while (this.rateRemaining === 0) {
       console.log("WARNING: rate limit reached, waiting before proceeding.");
       setTimeout(
-        () => {
-          return new Promise((resolve, reject) => {
-            let req = new Request(`${base}/rate_limit`);
-            req = this._auth(req);
-            fetch(req).then(async (res) => {
-              this._updateRateLimit(res.headers);
-              resolve();
-            }).catch((err) => reject(err));
-          });
+        async () => {
+          let req = new Request(`${base}/rate_limit`);
+          req = this._auth(req);
+          const res = await fetch(req);
+          this._updateRateLimit(res.headers);
         },
         new Date().getTime() -
           (this.rateLimitReset?.getTime() ?? new Date().getTime() + 100),
