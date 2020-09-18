@@ -14,6 +14,10 @@ export class GitHub {
   constructor(auth?: GitHubAuth) {
     if (auth) {
       this.auth = auth;
+    } else {
+      console.warn(
+        "no credentials provided, fetching from GitHub as an anonymous user",
+      );
     }
   }
 
