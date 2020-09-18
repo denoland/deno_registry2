@@ -23,6 +23,7 @@ export BUILD_QUEUE=http://sqs:9324/000000000000/builds
 export STORAGE_BUCKET=deno-registry2
 export MODERATION_BUCKET=deno-registry2-moderation
 export S3_ENDPOINT_URL=http://s3:9000
+export SSM_ENDPOINT_URL=http://localstack:4566
 export REMOTE_URL=http://s3:9000/deno-registry2/%m/versions/%v/raw
 
 deno test --unstable -A

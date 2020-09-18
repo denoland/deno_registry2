@@ -34,12 +34,19 @@ services:
       - 27017:27017
     logging:
       driver: none
+  localstack:
+    image: localstack/localstack
+    environment:
+      - "SERVICES=ssm:4566"
+    ports:
+      - "4566-4584:4566-4584"
   tests:
     build: .
     links:
       - s3
       - sqs
       - mongo
+      - localstack
     environment:
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY

@@ -1,3 +1,4 @@
+import type { ScheduledEvent } from "https://deno.land/x/lambda@1.4.0/types.d.ts";
 import type { APIGatewayProxyEventV2, SQSEvent, Context } from "../deps.ts";
 interface KV {
   [key: string]: string;
@@ -90,6 +91,22 @@ export function createSQSEvent(body: unknown): SQSEvent {
         receiptHandle: "",
       },
     ],
+  };
+}
+
+export function createScheduledEvent(): ScheduledEvent {
+  return {
+    id: "cdc73f9d-aea9-11e3-9d5a-835b769c0d9c",
+    version: "1",
+    "detail-type": "Scheduled Event",
+    source: "aws.events",
+    account: "123456789012",
+    time: "1970-01-01T00:00:00Z",
+    region: "ca-central-1",
+    resources: [
+      "arn:aws:events:ca-central-1:123456789012:rule/ExampleRule",
+    ],
+    detail: {},
   };
 }
 

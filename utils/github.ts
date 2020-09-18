@@ -38,7 +38,7 @@ export class GitHub {
 
   private async _doRequest(r: Request): Promise<Response> {
     while (this.rateRemaining === 0) {
-      console.log("WARNING: rate limit reached, waiting before proceeding.");
+      console.log("rate limit reached, waiting before proceeding.");
       setTimeout(
         async () => {
           let req = new Request(`${base}/rate_limit`);

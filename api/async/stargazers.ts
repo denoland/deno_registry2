@@ -18,6 +18,7 @@ const ssm = new SSM({
   accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
   secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
   sessionToken: Deno.env.get("AWS_SESSION_TOKEN")!,
+  endpointURL: Deno.env.get("SSM_ENDPOINT_URL")!,
 });
 const secret = await ssm.getParameter({
   Name: Deno.env.get("GITHUB_TOKEN_SSM") ?? "",
@@ -44,7 +45,6 @@ export async function handler(
     for (let mod of results) {
       try {
         const repo = await (await gh.getRepo(mod.owner, mod.repo)).json();
-        console.log(`repo: ${JSON.stringify(repo)}`);
         if (repo.stargazers_count !== mod.star_count) {
           mod.star_count = repo.stargazers_count;
           await database.saveModule(mod as unknown as Module);
@@ -55,7 +55,6 @@ export async function handler(
     }
 
     results = await database.listModules(100, page);
-    console.log(`found ${results.length} results at page ${page}`);
     page++;
   } while (results.length > 0);
 }
