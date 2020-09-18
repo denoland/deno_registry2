@@ -43,6 +43,24 @@ Deno.test({
 
     assertEquals(
       await handler(
+        createAPIGatewayProxyEventV2("GET", "/modules?simple=1", {
+          queryStringParameters: {
+            simple: "1",
+          },
+        }),
+        createContext(),
+      ),
+      {
+        body: '["ltest0","ltest1","ltest2","ltest3","ltest4"]',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 200,
+      },
+    );
+
+    assertEquals(
+      await handler(
         createAPIGatewayProxyEventV2("GET", "/modules", {
           queryStringParameters: {
             page: "2",
