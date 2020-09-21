@@ -27,6 +27,9 @@ export async function handler(
     return respondJSON({
       statusCode: 200,
       body: JSON.stringify(results),
+      headers: {
+        "cache-control": "max-age=60, must-revalidate",
+      },
     });
   }
 
