@@ -60,7 +60,7 @@ jobs:
             -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
             -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
             -var github_username=lucacasonato \
-            -var github_toke=${{ secrets.PERSONAL_TOKEN }} \
+            -var github_token=${{ secrets.PERSONAL_TOKEN }} \
             -out plan.tfplan
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
