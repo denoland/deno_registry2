@@ -53,6 +53,7 @@ Deno.test({
       {
         body: '["ltest0","ltest1","ltest2","ltest3","ltest4"]',
         headers: {
+          "cache-control": "max-age=60, must-revalidate",
           "content-type": "application/json",
         },
         statusCode: 200,
