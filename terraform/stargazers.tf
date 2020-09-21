@@ -22,7 +22,7 @@ resource "aws_lambda_function" "stargazers" {
   source_code_hash = filebase64sha256(data.archive_file.stargazers_zip.output_path)
 
   runtime = "provided"
-  layers  = [aws_lambda_layer_version.deno_layer.arn, "arn:aws:lambda:${var.region}:553035198032:layer:git-lambda2:6"]
+  layers  = [aws_lambda_layer_version.deno_layer.arn]
 
   timeout     = 300
   memory_size = 1024
