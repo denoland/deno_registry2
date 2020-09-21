@@ -37,7 +37,7 @@ services:
   localstack:
     image: localstack/localstack:0.11.5
     environment:
-      - "SERVICES=ssm:4566"
+      - "SERVICES=ssm"
     ports:
       - "4566-4584:4566-4584"
   tests:
