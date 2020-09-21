@@ -4,7 +4,7 @@
  * This function is responsible for listing the modules stored in the
  * database. It can be filtered with a search query and is paginated.
  * The function is triggered by a HTTP GET call to /modules. More
- * information in API.md. 
+ * information in API.md.
  */
 
 import type {
@@ -21,6 +21,15 @@ export async function handler(
   event: APIGatewayProxyEventV2,
   context: Context,
 ): Promise<APIGatewayProxyResultV2> {
+  const simple = event.queryStringParameters?.simple === "1";
+  if (simple) {
+    const results = await database.listAllModuleNames();
+    return respondJSON({
+      statusCode: 200,
+      body: JSON.stringify(results),
+    });
+  }
+
   const limit = parseInt(event.queryStringParameters?.limit || "20");
   const page = parseInt(event.queryStringParameters?.page || "1");
   const query = event.queryStringParameters?.query || undefined;

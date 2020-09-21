@@ -202,6 +202,22 @@ export class Database {
     }));
   }
 
+  async listAllModuleNames(): Promise<string[]> {
+    const results = await this._modules.aggregate([
+      {
+        $match: {
+          is_unlisted: { $not: { $eq: true } },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+        },
+      },
+    ]) as { _id: string }[];
+    return results.map((o) => o._id);
+  }
+
   async countModules(): Promise<number> {
     return this._modules.count({
       is_unlisted: { $not: { $eq: true } },
