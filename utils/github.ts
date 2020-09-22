@@ -30,8 +30,7 @@ export class GitHub {
   private _auth(r: Request): Request {
     const req = new Request(r);
     if (this.auth) {
-      const enc = btoa(`${this.auth.username}:${this.auth.token}`);
-      req.headers.set("Authorization", `Basic ${enc}`);
+      req.headers.set("Authorization", `Bearer ${this.auth.token}`);
     }
     return req;
   }

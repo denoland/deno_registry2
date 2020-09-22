@@ -50,11 +50,6 @@ variable "cloudflare_zone_id" {
   type        = string
 }
 
-variable "github_username" {
-  description = "GitHub username associated with the access token"
-  type        = string
-}
-
 variable "github_token" {
   description = "GitHub personal access token"
   type        = string
