@@ -1,4 +1,4 @@
-import type { ScheduledEvent } from "https://deno.land/x/lambda@1.4.0/types.d.ts";
+import type { ScheduledEvent } from "https://deno.land/x/lambda@1.4.1/types.d.ts";
 import type { APIGatewayProxyEventV2, SQSEvent, Context } from "../deps.ts";
 interface KV {
   [key: string]: string;

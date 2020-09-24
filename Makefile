@@ -1,7 +1,7 @@
 download:
 	cd terraform/ && \
 	mkdir -p ./.terraform/dl && \
-	curl -L https://github.com/hayd/deno-lambda/releases/download/1.4.0/deno-lambda-layer.zip > ./.terraform/dl/deno-lambda-layer.zip && \
+	curl -L https://github.com/hayd/deno-lambda/releases/download/1.4.1/deno-lambda-layer.zip > ./.terraform/dl/deno-lambda-layer.zip && \
 	curl -L https://github.com/lucacasonato/deno_mongo_lambda/releases/download/v0.12.1/libdeno_mongo.so > ./.terraform/dl/deno_mongo_a79a4be6f465f12a177649c69941b66b.so
 
 package:
