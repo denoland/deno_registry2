@@ -38,23 +38,16 @@ export async function handler(
   _: ScheduledEvent,
   __: Context,
 ): Promise<void> {
-  let page = 1;
-  let results: ScoredModule[] = [];
-
-  do {
-    for (let mod of results) {
-      try {
-        const repo = await (await gh.getRepo(mod.owner, mod.repo)).json();
-        if (repo.stargazers_count !== mod.star_count) {
-          mod.star_count = repo.stargazers_count;
-          await database.saveModule(mod as unknown as Module);
-        }
-      } catch (err) {
-        console.log(`failed to fetch repo from github api: ${err}`);
+  const modules = await database.listAll();
+  for (let mod of modules) {
+    try {
+      const repo = await (await gh.getRepo(mod.owner, mod.repo)).json();
+      if (repo.stargazers_count !== mod.star_count) {
+        mod.star_count = repo.stargazers_count;
+        await database.saveModule(mod as unknown as Module);
       }
+    } catch (err) {
+      console.log(`failed to fetch repo from github api: ${err}`);
     }
-
-    results = await database.listModules(100, page);
-    page++;
-  } while (results.length > 0);
+  }
 }

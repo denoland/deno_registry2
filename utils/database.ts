@@ -82,11 +82,7 @@ export class Database {
     }
   }
 
-  async getModule(name: string): Promise<Module | null> {
-    // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-    // deno-lint-ignore no-explicit-any
-    const entry = await this._modules.findOne({ _id: name.toString() } as any);
-    if (entry === null) return null;
+  _entryToModule(entry: DBModule): Module {
     return {
       name: entry._id,
       type: entry.type,
@@ -97,6 +93,14 @@ export class Database {
       is_unlisted: entry.is_unlisted ?? false,
       created_at: entry.created_at,
     };
+  }
+
+  async getModule(name: string): Promise<Module | null> {
+    // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+    // deno-lint-ignore no-explicit-any
+    const entry = await this._modules.findOne({ _id: name.toString() } as any);
+    if (entry === null) return null;
+    return this._entryToModule(entry);
   }
 
   async saveModule(module: Module): Promise<void> {
@@ -195,6 +199,11 @@ export class Database {
     ])) as ScoredModule[];
 
     return docs;
+  }
+
+  async listAll(): Promise<Module[]> {
+    const entries = await this._modules.find({});
+    return entries.map(this._entryToModule);
   }
 
   async listAllModuleNames(): Promise<string[]> {
