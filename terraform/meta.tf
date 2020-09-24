@@ -11,9 +11,9 @@ terraform {
       source = "terraform-providers/cloudflare"
     }
   }
-  backend "s3" {
-    key = "terraform.tfstate"
-  }
+  # backend "s3" {
+  #   key = "terraform.tfstate"
+  # }
 }
 
 resource "aws_s3_bucket" "terraform_state" {

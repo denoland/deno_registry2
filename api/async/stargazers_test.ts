@@ -6,6 +6,7 @@ import {
 import { handler } from "./stargazers.ts";
 import { Database, Module } from "../../utils/database.ts";
 import { GitHub } from "../../utils/github.ts";
+import { assertEquals } from "https://deno.land/std@0.69.0/testing/asserts.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 const gh = new GitHub();
@@ -45,6 +46,7 @@ Deno.test({
 
     const updated = await database.getModule(ltest.name);
     assert(updated?.star_count ?? 0 >= 1);
+    assertEquals(updated?.created_at, ltest.created_at);
 
     // Cleanup
     await database._modules.deleteMany({});
