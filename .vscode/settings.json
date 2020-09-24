@@ -8,10 +8,5 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
   },
-  "terraform-ls.rootModules": [
-    "terraform/"
-  ],
-  "deno.import_intellisense_origins": {
-    "https://deno.land": true
-  }
+  "terraform-ls.rootModules": ["terraform/"]
 }
