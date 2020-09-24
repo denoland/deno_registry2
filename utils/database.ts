@@ -2,7 +2,8 @@
 
 import { MongoClient, ObjectId } from "../deps.ts";
 
-type DBModule = Omit<Module, "name"> & { _id: string };
+export type DBModule = Omit<Module, "name"> & { _id: string };
+export type ScoredModule = DBModule & { search_score: number };
 
 export interface Module {
   name: string;
@@ -81,11 +82,7 @@ export class Database {
     }
   }
 
-  async getModule(name: string): Promise<Module | null> {
-    // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-    // deno-lint-ignore no-explicit-any
-    const entry = await this._modules.findOne({ _id: name.toString() } as any);
-    if (entry === null) return null;
+  _entryToModule(entry: DBModule): Module {
     return {
       name: entry._id,
       type: entry.type,
@@ -96,6 +93,14 @@ export class Database {
       is_unlisted: entry.is_unlisted ?? false,
       created_at: entry.created_at,
     };
+  }
+
+  async getModule(name: string): Promise<Module | null> {
+    // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+    // deno-lint-ignore no-explicit-any
+    const entry = await this._modules.findOne({ _id: name.toString() } as any);
+    if (entry === null) return null;
+    return this._entryToModule(entry);
   }
 
   async saveModule(module: Module): Promise<void> {
@@ -125,7 +130,7 @@ export class Database {
     limit: number,
     page: number,
     query?: string,
-  ): Promise<SearchResult[]> {
+  ): Promise<ScoredModule[]> {
     if (typeof limit !== "number") {
       throw new Error("limit must be a number");
     }
@@ -191,15 +196,14 @@ export class Database {
       {
         $limit: limit,
       },
-    ])) as (DBModule & { search_score: number })[];
+    ])) as ScoredModule[];
 
-    // Transform the results
-    return docs.map((doc) => ({
-      name: doc._id,
-      description: doc.description,
-      star_count: doc.star_count,
-      search_score: doc.search_score,
-    }));
+    return docs;
+  }
+
+  async listAllModules(): Promise<Module[]> {
+    const entries = await this._modules.find({});
+    return entries.map(this._entryToModule);
   }
 
   async listAllModuleNames(): Promise<string[]> {

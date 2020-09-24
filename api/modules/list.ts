@@ -13,7 +13,8 @@ import type {
   APIGatewayProxyResultV2,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { Database } from "../../utils/database.ts";
+import { Database, SearchResult } from "../../utils/database.ts";
+import type { ScoredModule } from "../../utils/database.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -58,7 +59,17 @@ export async function handler(
   }
 
   const [results, count] = await Promise.all([
-    database.listModules(limit, page, query),
+    database.listModules(limit, page, query).then(
+      (results: ScoredModule[]): SearchResult[] => {
+        // Transform the results
+        return results.map((doc: ScoredModule) => ({
+          name: doc._id,
+          description: doc.description,
+          star_count: doc.star_count,
+          search_score: doc.search_score,
+        }));
+      },
+    ),
     database.countModules(),
   ]);
 

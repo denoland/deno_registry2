@@ -59,6 +59,7 @@ jobs:
             -var backup_region=$AWS_BACKUP_REGION \
             -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
             -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
+            -var github_token=${{ secrets.GH_TOKEN }} \
             -out plan.tfplan
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}

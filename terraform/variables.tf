@@ -49,3 +49,8 @@ variable "cloudflare_zone_id" {
   description = "The zone id for the Cloudflare zone for this domain."
   type        = string
 }
+
+variable "github_token" {
+  description = "GitHub personal access token"
+  type        = string
+}
