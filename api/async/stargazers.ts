@@ -38,7 +38,7 @@ export async function handler(
   _: ScheduledEvent,
   __: Context,
 ): Promise<void> {
-  const modules = await database.listAll();
+  const modules = await database.listAllModules();
   for (let mod of modules) {
     try {
       const repo = await (await gh.getRepo(mod.owner, mod.repo)).json();

@@ -201,7 +201,7 @@ export class Database {
     return docs;
   }
 
-  async listAll(): Promise<Module[]> {
+  async listAllModules(): Promise<Module[]> {
     const entries = await this._modules.find({});
     return entries.map(this._entryToModule);
   }
