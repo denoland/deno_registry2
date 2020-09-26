@@ -71,5 +71,5 @@ You can then run `terraform destroy` to completely remove your staging environme
 To run tests locally, make sure you have Docker and docker-compose installed. Then run:
 
 ```sh
-docker-compose up --abort-on-container-exit --build
+make test
 ```
