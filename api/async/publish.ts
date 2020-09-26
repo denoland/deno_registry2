@@ -20,8 +20,7 @@ import {
   getVersionMetaJson,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
-import { runDenoInfo } from "../../utils/deno.ts";
-import type { Dep } from "../../utils/deno.ts";
+import { DepGraph, runDenoInfo } from "../../utils/deno.ts";
 import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -202,15 +201,6 @@ async function publishGithub(
   }
 }
 
-interface DependencyGraph {
-  nodes: {
-    [url: string]: {
-      size: number;
-      deps: string[];
-    };
-  };
-}
-
 export async function analyzeDependencies(build: Build): Promise<void> {
   console.log(
     `Analyzing dependencies for ${build.options.moduleName}@${build.options.version}`,
@@ -235,7 +225,7 @@ export async function analyzeDependencies(build: Build): Promise<void> {
   let total = 0;
   let skipped = 0;
 
-  const graph: DependencyGraph = { nodes: {} };
+  const totalGraph: DepGraph = {};
 
   for await (const file of meta.directory_listing) {
     if (file.type !== "file") {
@@ -261,13 +251,18 @@ export async function analyzeDependencies(build: Build): Promise<void> {
 
     // We can skip analyzing a module if we have already analyzed
     // and this already in the dependency graph.
-    if (graph.nodes[entrypoint]) {
+    if (totalGraph[entrypoint]) {
       skipped++;
       continue;
     }
 
-    const dep = await runDenoInfo({ entrypoint, denoDir });
-    treeToGraph(graph, dep);
+    const graphToJoin = await runDenoInfo({ entrypoint, denoDir });
+    for (const url in graphToJoin) {
+      totalGraph[url] = {
+        ...graphToJoin[url],
+        deps: [...new Set(graphToJoin[url].deps)],
+      };
+    }
   }
 
   console.log(">>>>>> total", total, "skipped", skipped);
@@ -278,20 +273,7 @@ export async function analyzeDependencies(build: Build): Promise<void> {
     build.options.moduleName,
     build.options.version,
     "deps_v2.json",
-    { graph },
+    { graph: { nodes: totalGraph } },
     false,
   );
-}
-
-function treeToGraph(graph: DependencyGraph, dep: Dep) {
-  const url = dep.name;
-  if (!graph.nodes[url]) {
-    graph.nodes[url] = { deps: [], size: dep.size };
-  }
-  dep.deps.forEach((dep) => {
-    if (!graph.nodes[url].deps.includes(dep.name)) {
-      graph.nodes[url].deps.push(dep.name);
-    }
-  });
-  dep.deps.forEach((dep) => treeToGraph(graph, dep));
 }
