@@ -1,5 +1,6 @@
 import { assert } from "../../test_deps.ts";
 import {
+  cleanupDatabase,
   createContext,
   createScheduledEvent,
 } from "../../utils/test_utils.ts";
@@ -36,19 +37,20 @@ const utest: Module = {
 Deno.test({
   name: "crawl stargazers",
   async fn() {
-    await database.saveModule(ltest);
-    await database.saveModule(utest);
+    try {
+      await database.saveModule(ltest);
+      await database.saveModule(utest);
 
-    await handler(
-      createScheduledEvent(),
-      createContext(),
-    );
+      await handler(
+        createScheduledEvent(),
+        createContext(),
+      );
 
-    const updated = await database.getModule(ltest.name);
-    assert(updated?.star_count ?? 0 >= 1);
-    assertEquals(updated?.created_at, ltest.created_at);
-
-    // Cleanup
-    await database._modules.deleteMany({});
+      const updated = await database.getModule(ltest.name);
+      assert(updated?.star_count ?? 0 >= 1);
+      assertEquals(updated?.created_at, ltest.created_at);
+    } finally {
+      await cleanupDatabase(database);
+    }
   },
 });

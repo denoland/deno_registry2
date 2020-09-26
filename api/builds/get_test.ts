@@ -1,5 +1,6 @@
 import { handler } from "./get.ts";
 import {
+  cleanupDatabase,
   createAPIGatewayProxyEventV2,
   createContext,
 } from "../../utils/test_utils.ts";
@@ -11,39 +12,43 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 Deno.test({
   name: "`/builds/:id`success",
   async fn() {
-    const id = await database.createBuild({
-      options: {
-        moduleName: "ltest",
-        ref: "0.0.7",
-        repository: "luca-rand/testing",
-        type: "github",
-        version: "0.0.7",
-      },
-      status: "queued",
-    });
-
-    assertEquals(
-      await handler(
-        createAPIGatewayProxyEventV2("GET", `/builds/${id}`, {
-          pathParameters: {
-            id,
-          },
-        }),
-        createContext(),
-      ),
-      {
-        body: `{"success":true,"data":${
-          JSON.stringify({ build: await database.getBuild(id) })
-        }}`,
-        headers: {
-          "content-type": "application/json",
+    try {
+      const id = await database.createBuild({
+        options: {
+          moduleName: "ltest",
+          ref: "0.0.7",
+          repository: "luca-rand/testing",
+          type: "github",
+          version: "0.0.7",
         },
-        statusCode: 200,
-      },
-    );
+        status: "queued",
+      });
 
-    // Cleanup
-    await database._builds.deleteMany({});
+      assertEquals(
+        await handler(
+          createAPIGatewayProxyEventV2("GET", `/builds/${id}`, {
+            pathParameters: {
+              id,
+            },
+          }),
+          createContext(),
+        ),
+        {
+          body: `{"success":true,"data":${
+            JSON.stringify({ build: await database.getBuild(id) })
+          }}`,
+          headers: {
+            "content-type": "application/json",
+          },
+          statusCode: 200,
+        },
+      );
+
+      // Cleanup
+      await database._builds.deleteMany({});
+    } finally {
+      await cleanupDatabase(database);
+    }
   },
 });
 
