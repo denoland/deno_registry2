@@ -1,5 +1,11 @@
-import type { ScheduledEvent } from "https://deno.land/x/lambda@1.4.1/types.d.ts";
-import type { APIGatewayProxyEventV2, SQSEvent, Context } from "../deps.ts";
+import type {
+  APIGatewayProxyEventV2,
+  SQSEvent,
+  Context,
+  S3Bucket,
+  ScheduledEvent,
+} from "../deps.ts";
+import type { Database } from "./database.ts";
 interface KV {
   [key: string]: string;
 }
@@ -147,4 +153,23 @@ export function createContext(): Context {
     getRemainingTimeInMillis: () => 0,
     succeed() {},
   };
+}
+
+export async function cleanupDatabase(db: Database): Promise<void> {
+  await Promise.all([
+    db._builds.deleteMany({}),
+    db._modules.deleteMany({}),
+    db._owner_quotas.deleteMany({}),
+  ]);
+}
+
+export async function cleanupStorage(
+  s: S3Bucket,
+  ...objects: string[]
+): Promise<void> {
+  const p = [];
+  for (let o of objects) {
+    p.push(s.deleteObject(o));
+  }
+  await Promise.all(p);
 }

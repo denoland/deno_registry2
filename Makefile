@@ -28,3 +28,6 @@ package:
 	mkdir -p ./.terraform/tmp/stats/.deno_plugins && \
 	deno bundle --unstable ../api/stats.ts > ./.terraform/tmp/stats/bundle.js && \
 	cp ./.terraform/dl/deno_mongo_a79a4be6f465f12a177649c69941b66b.so ./.terraform/tmp/stats/.deno_plugins/
+
+test:
+	docker-compose up --build --abort-on-container-exit
