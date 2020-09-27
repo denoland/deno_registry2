@@ -1,14 +1,17 @@
 const decoder = new TextDecoder();
 
+export interface DepGraph {
+  [file: string]: Dep;
+}
+
 export interface Dep {
-  name: string;
   size: number;
-  deps: Dep[];
+  deps: string[];
 }
 
 export async function runDenoInfo(
   options: { entrypoint: string; denoDir: string },
-): Promise<Dep> {
+): Promise<DepGraph> {
   const p = Deno.run({
     cmd: [
       "deno",
@@ -31,6 +34,6 @@ export async function runDenoInfo(
     throw new Error(`Failed to run deno info for ${options.entrypoint}`);
   }
   const text = decoder.decode(file);
-  const { deps } = JSON.parse(text);
-  return deps;
+  const { files } = JSON.parse(text);
+  return files;
 }
