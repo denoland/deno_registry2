@@ -58,7 +58,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest-2"), null);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -96,7 +96,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest-2"), null);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -134,7 +134,7 @@ Deno.test({
       assertEquals(await database.getModule("frisbee"), null);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -190,7 +190,7 @@ Deno.test({
       assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -246,7 +246,7 @@ Deno.test({
       assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -318,10 +318,7 @@ Deno.test({
       assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
-      await s3.deleteObject("ltest3/meta/versions.json");
-      await s3.deleteObject("ltest4/meta/versions.json");
-      await s3.deleteObject("ltest5/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -386,7 +383,7 @@ Deno.test({
       });
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -453,7 +450,7 @@ Deno.test({
       assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });

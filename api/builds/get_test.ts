@@ -6,6 +6,7 @@ import {
 } from "../../utils/test_utils.ts";
 import { assertEquals } from "../../test_deps.ts";
 import { Database } from "../../utils/database.ts";
+import { s3 } from "../../utils/storage.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -48,6 +49,7 @@ Deno.test({
       await database._builds.deleteMany({});
     } finally {
       await cleanupDatabase(database);
+      await s3.empty();
     }
   },
 });
