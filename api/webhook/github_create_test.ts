@@ -96,7 +96,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest-2"), null);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -134,7 +134,7 @@ Deno.test({
       assertEquals(await database.getModule("frisbee"), null);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("frisbee/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -206,10 +206,7 @@ Deno.test({
       assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
-      await s3.deleteObject("ltest3/meta/versions.json");
-      await s3.deleteObject("ltest4/meta/versions.json");
-      await s3.deleteObject("ltest5/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -266,22 +263,7 @@ Deno.test({
       await database._modules.deleteMany({});
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
-      await s3.deleteObject("ltest3/meta/versions.json");
-      await s3.deleteObject("ltest4/meta/versions.json");
-      await s3.deleteObject("ltest5/meta/versions.json");
-      await s3.deleteObject("ltest6/meta/versions.json");
-      await s3.deleteObject("ltest7/meta/versions.json");
-      await s3.deleteObject("ltest8/meta/versions.json");
-      await s3.deleteObject("ltest9/meta/versions.json");
-      await s3.deleteObject("ltest10/meta/versions.json");
-      await s3.deleteObject("ltest11/meta/versions.json");
-      await s3.deleteObject("ltest12/meta/versions.json");
-      await s3.deleteObject("ltest13/meta/versions.json");
-      await s3.deleteObject("ltest14/meta/versions.json");
-      await s3.deleteObject("ltest15/meta/versions.json");
-      await s3.deleteObject("ltest16/meta/versions.json");
-      await s3.deleteObject("ltest17/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -341,14 +323,7 @@ Deno.test({
       assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
-      await s3.deleteObject("ltest3/meta/versions.json");
-      await s3.deleteObject("ltest4/meta/versions.json");
-      await s3.deleteObject("ltest5/meta/versions.json");
-      await s3.deleteObject("ltest6/meta/versions.json");
-      await s3.deleteObject("ltest7/meta/versions.json");
-      await s3.deleteObject("ltest8/meta/versions.json");
-      await s3.deleteObject("ltest9/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -421,7 +396,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -494,7 +469,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -532,7 +507,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest2"), null);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -571,7 +546,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest2"), null);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -644,7 +619,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -707,7 +682,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest2"), null);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -781,7 +756,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -840,13 +815,9 @@ Deno.test({
 
       // Check that no new build was queued
       assertEquals(await database._builds.find({}), []);
-
-      // Clean up
-      await s3.deleteObject("ltest2/meta/versions.json");
-      await database._modules.deleteMany({});
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });
@@ -903,12 +874,9 @@ Deno.test({
         is_unlisted: false,
         created_at: new Date(2020, 1, 1),
       });
-
-      // Clean up
-      await s3.deleteObject("ltest2/meta/versions.json");
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest2/meta/versions.json");
+      await s3.empty();
     }
   },
 });

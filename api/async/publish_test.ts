@@ -313,20 +313,7 @@ Deno.test({
       assertEquals(readme?.body.length, 304);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest/meta/versions.json");
-      await s3.deleteObject("ltest/versions/0.0.9/meta/meta.json");
-      await s3.deleteObject("ltest/versions/0.0.9/meta/deps_v2.json");
-      await s3.deleteObject(
-        "ltest/versions/0.0.9/raw/.github/workflows/ci.yml",
-      );
-      await s3.deleteObject("ltest/versions/0.0.9/raw/.vscode/settings.json");
-      await s3.deleteObject("ltest/versions/0.0.9/raw/LICENCE");
-      await s3.deleteObject("ltest/versions/0.0.9/raw/deps.ts");
-      await s3.deleteObject("ltest/versions/0.0.9/raw/fixtures/%");
-      await s3.deleteObject("ltest/versions/0.0.9/raw/mod.ts");
-      await s3.deleteObject("ltest/versions/0.0.9/raw/mod_test.md");
-      await s3.deleteObject("ltest/versions/0.0.9/raw/subproject/README.md");
-      await s3.deleteObject("ltest/versions/0.0.9/raw/subproject/mod.ts");
+      await s3.empty();
     }
   },
 });
@@ -435,10 +422,7 @@ Deno.test({
       assertEquals(readme?.body.length, 354);
     } finally {
       await cleanupDatabase(database);
-      await s3.deleteObject("ltest/meta/versions.json");
-      await s3.deleteObject("ltest/versions/0.0.7/meta/meta.json");
-      await s3.deleteObject("ltest/versions/0.0.7/raw/mod.ts");
-      await s3.deleteObject("ltest/versions/0.0.7/raw/README.md");
+      await s3.empty();
     }
   },
 });

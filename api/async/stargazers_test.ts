@@ -8,6 +8,7 @@ import { handler } from "./stargazers.ts";
 import { Database, Module } from "../../utils/database.ts";
 import { GitHub } from "../../utils/github.ts";
 import { assertEquals } from "https://deno.land/std@0.69.0/testing/asserts.ts";
+import { s3 } from "../../utils/storage.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 const gh = new GitHub();
@@ -51,6 +52,7 @@ Deno.test({
       assertEquals(updated?.created_at, ltest.created_at);
     } finally {
       await cleanupDatabase(database);
+      await s3.empty();
     }
   },
 });
