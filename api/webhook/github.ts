@@ -10,19 +10,19 @@
 
 import type {
   APIGatewayProxyEventV2,
-  Context,
   APIGatewayProxyResultV2,
+  Context,
 } from "../../deps.ts";
-import { respondJSON, parseRequestBody } from "../../utils/http.ts";
+import { parseRequestBody, respondJSON } from "../../utils/http.ts";
 import { Database, Module } from "../../utils/database.ts";
 import {
+  getForbiddenWords,
   getMeta,
   uploadMetaJson,
-  getForbiddenWords,
 } from "../../utils/storage.ts";
 import type {
-  WebhookPayloadPing,
   WebhookPayloadCreate,
+  WebhookPayloadPing,
   WebhookPayloadPush,
 } from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
@@ -124,13 +124,14 @@ async function pingEvent(
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
   const [owner, repo] = webhook.repository.full_name.split("/");
+  const repoId = webhook.repository.id;
   const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
   const sender = webhook.sender.login;
 
   const entry = await database.getModule(moduleName);
 
-  const resp = await checkAvailable(entry, moduleName, owner, repo, sender);
+  const resp = await checkAvailable(entry, moduleName, owner, sender, repoId);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
@@ -142,6 +143,7 @@ async function pingEvent(
         created_at: new Date(),
         is_unlisted: false,
       },
+    repoId,
     owner,
     repo,
     description,
@@ -189,6 +191,7 @@ async function pushEvent(
   const webhook = JSON.parse(event.body) as WebhookPayloadPush;
   const { ref: rawRef } = webhook;
   const [owner, repo] = webhook.repository.full_name.split("/");
+  const repoId = webhook.repository.id;
   if (!rawRef.startsWith("refs/tags/")) {
     return respondJSON({
       statusCode: 200,
@@ -211,6 +214,7 @@ async function pushEvent(
 
   return initiateBuild({
     moduleName,
+    repoId,
     owner,
     repo,
     sender,
@@ -243,6 +247,7 @@ async function createEvent(
   const { ref } = webhook;
   const [owner, repo] = webhook.repository.full_name.split("/");
   const sender = webhook.sender.login;
+  const repoId = webhook.repository.id;
   if (webhook.ref_type !== "tag") {
     return respondJSON({
       statusCode: 200,
@@ -263,6 +268,7 @@ async function createEvent(
 
   return initiateBuild({
     moduleName,
+    repoId,
     owner,
     repo,
     ref,
@@ -285,8 +291,8 @@ async function checkAvailable(
   entry: Module | null,
   moduleName: string,
   owner: string,
-  repo: string,
   sender: string,
+  repoId: number,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
   const blocked = await checkBlocked(owner) || await checkBlocked(sender);
   if (blocked) {
@@ -303,8 +309,7 @@ async function checkAvailable(
     // Check that entry matches repo
     if (
       !(entry.type === "github" &&
-        entry.owner.toLowerCase() === owner.toLowerCase() &&
-        entry.repo.toLowerCase() === repo.toLowerCase())
+        entry.repoId === repoId)
     ) {
       return respondJSON({
         statusCode: 409,
@@ -318,7 +323,7 @@ async function checkAvailable(
     // If this entry doesn't exist yet check how many modules this repo
     // already has.
     if (
-      await database.countModulesForRepository(owner, repo) >=
+      await database.countModulesForRepository(repoId) >=
         MAX_MODULES_PER_REPOSITORY
     ) {
       return respondJSON({
@@ -381,6 +386,7 @@ async function checkAvailable(
 async function initiateBuild(
   options: {
     moduleName: string;
+    repoId: number;
     owner: string;
     repo: string;
     sender: string;
@@ -393,6 +399,7 @@ async function initiateBuild(
 ): Promise<APIGatewayProxyResultV2> {
   const {
     moduleName,
+    repoId,
     owner,
     repo,
     sender,
@@ -438,7 +445,7 @@ async function initiateBuild(
 
   const entry = await database.getModule(moduleName);
 
-  const resp = await checkAvailable(entry, moduleName, owner, repo, sender);
+  const resp = await checkAvailable(entry, moduleName, owner, sender, repoId);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
@@ -450,6 +457,7 @@ async function initiateBuild(
         created_at: new Date(),
         is_unlisted: false,
       },
+    repoId,
     owner,
     repo,
     description,

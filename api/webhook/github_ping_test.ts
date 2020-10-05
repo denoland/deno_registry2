@@ -1,9 +1,9 @@
 import { handler } from "./github.ts";
 import {
+  cleanupDatabase,
+  createContext,
   createJSONWebhookEvent,
   createJSONWebhookWebFormEvent,
-  createContext,
-  cleanupDatabase,
 } from "../../utils/test_utils.ts";
 import { Database } from "../../utils/database.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
@@ -172,6 +172,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repoId: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -228,6 +229,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repoId: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -258,6 +260,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest2",
         type: "github",
+        repoId: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -268,6 +271,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest3",
         type: "github",
+        repoId: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -278,6 +282,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest4",
         type: "github",
+        repoId: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -324,12 +329,63 @@ Deno.test({
 });
 
 Deno.test({
+  name: "ping event rename repository",
+  async fn() {
+    try {
+      const repoId = 274939732;
+
+      await database.saveModule({
+        name: "ltest",
+        description: "testing things",
+        repoId: repoId,
+        owner: "luca-rand",
+        repo: "testing-oldname",
+        star_count: 4,
+        type: "github",
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Send ping event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "ping",
+          "/webhook/gh/ltest",
+          pingevent,
+          { name: "ltest" },
+          {},
+        ),
+        createContext(),
+      );
+      assertEquals(resp, {
+        body:
+          '{"success":true,"data":{"module":"ltest","repository":"luca-rand/testing"}}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 200,
+      });
+
+      const ltest2 = await database.getModule("ltest");
+      assert(ltest2);
+      assertEquals(ltest2.repoId, repoId);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
   name: "ping event wrong repository",
   async fn() {
     try {
+      const repoId = 123456789;
+
       database.saveModule({
         name: "ltest",
         description: "testing things",
+        repoId: repoId,
         owner: "luca-rand",
         repo: "testing2",
         star_count: 4,
@@ -365,15 +421,16 @@ Deno.test({
       // Check that no builds are queued
       assertEquals(await database._builds.find({}), []);
 
-      const ltest2 = await database.getModule("ltest");
-      assert(ltest2);
-      assert(ltest2.created_at <= new Date());
-      ltest2.created_at = new Date(2020, 1, 1);
+      const ltest = await database.getModule("ltest");
+      assert(ltest);
+      assert(ltest.created_at <= new Date());
+      ltest.created_at = new Date(2020, 1, 1);
 
-      // Check that the database entry
-      assertEquals(ltest2, {
+      // Check that the database entry did not change
+      assertEquals(ltest, {
         name: "ltest",
         description: "testing things",
+        repoId: repoId,
         owner: "luca-rand",
         repo: "testing2",
         star_count: 4,
@@ -395,6 +452,7 @@ Deno.test({
       database.saveModule({
         name: "ltest2",
         description: "testing things",
+        repoId: 274939732,
         owner: "lUca-rand",
         repo: "Testing",
         star_count: 4,
@@ -432,6 +490,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repoId: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",

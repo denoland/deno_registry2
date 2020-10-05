@@ -1,6 +1,6 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-import { S3Bucket, join, lookup } from "../deps.ts";
+import { join, lookup, S3Bucket } from "../deps.ts";
 
 export const s3 = new S3Bucket(
   {

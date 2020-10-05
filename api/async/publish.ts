@@ -9,15 +9,15 @@
  * the module name, GitHub repository, version, subdirectory ect.
  */
 
-import { join, walk, pooledMap, SQSEvent, Context } from "../../deps.ts";
-import { Build, Database, BuildStats } from "../../utils/database.ts";
+import { Context, join, pooledMap, SQSEvent, walk } from "../../deps.ts";
+import { Build, BuildStats, Database } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
-  uploadVersionMetaJson,
-  uploadVersionRaw,
-  uploadMetaJson,
   getMeta,
   getVersionMetaJson,
+  uploadMetaJson,
+  uploadVersionMetaJson,
+  uploadVersionRaw,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
 import { DepGraph, runDenoInfo } from "../../utils/deno.ts";

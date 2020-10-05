@@ -1,9 +1,9 @@
 import type {
   APIGatewayProxyEventV2,
-  SQSEvent,
   Context,
   S3Bucket,
   ScheduledEvent,
+  SQSEvent,
 } from "../deps.ts";
 import type { Database } from "./database.ts";
 interface KV {

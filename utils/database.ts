@@ -8,6 +8,7 @@ export type ScoredModule = DBModule & { search_score: number };
 export interface Module {
   name: string;
   type: string;
+  repoId: number;
   owner: string;
   repo: string;
   description: string;
@@ -87,6 +88,7 @@ export class Database {
     return {
       name: entry._id,
       type: entry.type,
+      repoId: entry.repoId,
       owner: entry.owner,
       repo: entry.repo,
       description: entry.description,
@@ -116,6 +118,7 @@ export class Database {
         // deno-lint-ignore no-explicit-any
         _id: module.name as any,
         type: module.type,
+        repoId: module.repoId,
         owner: module.owner,
         repo: module.repo,
         description: module.description,
@@ -230,10 +233,9 @@ export class Database {
   }
 
   async countModulesForRepository(
-    owner: string,
-    repo: string,
+    repoId: number,
   ): Promise<number> {
-    const modules = await this._modules.find({ owner, repo });
+    const modules = await this._modules.find({ repoId });
     return modules.length;
   }
 
