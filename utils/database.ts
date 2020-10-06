@@ -260,6 +260,7 @@ export class Database {
     version: string,
   ): Promise<Build | null> {
     const build = await this._builds.findOne({
+      // @ts-ignore because the deno_mongo typings are incorrect
       "options.moduleName": name,
       "options.version": version,
     });

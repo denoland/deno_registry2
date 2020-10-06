@@ -454,3 +454,93 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name: "ping event blocked owner",
+  async fn() {
+    try {
+      database.saveOwnerQuota({
+        type: "github",
+        owner: "luca-rand",
+        max_modules: 0,
+        blocked: true,
+      });
+
+      // Send ping event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "ping",
+          "/webhook/gh/ltest2",
+          pingevent,
+          { name: "ltest2" },
+          {},
+        ),
+        createContext(),
+      );
+      assertEquals(resp, {
+        body: '{"success":false,"error":"found forbidden word in module name"}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      });
+
+      // Check that no versions.json file exists
+      assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+
+      // Check that no builds are queued
+      assertEquals(await database._builds.find({}), []);
+
+      // Check that there is no module entry in the database
+      assertEquals(await database.getModule("ltest2"), null);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
+  name: "ping event blocked sender",
+  async fn() {
+    try {
+      database.saveOwnerQuota({
+        type: "github",
+        owner: "lucacasonato",
+        max_modules: 0,
+        blocked: true,
+      });
+
+      // Send ping event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "ping",
+          "/webhook/gh/ltest2",
+          pingevent,
+          { name: "ltest2" },
+          {},
+        ),
+        createContext(),
+      );
+      assertEquals(resp, {
+        body: '{"success":false,"error":"found forbidden word in module name"}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      });
+
+      // Check that no versions.json file exists
+      assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+
+      // Check that no builds are queued
+      assertEquals(await database._builds.find({}), []);
+
+      // Check that there is no module entry in the database
+      assertEquals(await database.getModule("ltest2"), null);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
