@@ -478,7 +478,7 @@ Deno.test({
         createContext(),
       );
       assertEquals(resp, {
-        body: '{"success":false,"error":"found forbidden word in module name"}',
+        body: '{"success":false,"error":"Publishing your module failed. Please contact ry@deno.land."}',
         headers: {
           "content-type": "application/json",
         },
@@ -523,7 +523,7 @@ Deno.test({
         createContext(),
       );
       assertEquals(resp, {
-        body: '{"success":false,"error":"found forbidden word in module name"}',
+        body: '{"success":false,"error":"Publishing your module failed. Please contact ry@deno.land."}',
         headers: {
           "content-type": "application/json",
         },
