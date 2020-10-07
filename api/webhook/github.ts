@@ -126,10 +126,11 @@ async function pingEvent(
   const [owner, repo] = webhook.repository.full_name.split("/");
   const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
+  const sender = webhook.sender.login;
 
   const entry = await database.getModule(moduleName);
 
-  const resp = await checkAvailable(entry, moduleName, owner, repo);
+  const resp = await checkAvailable(entry, moduleName, owner, repo, sender);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
@@ -206,11 +207,13 @@ async function pushEvent(
   );
   const subdir =
     decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+  const sender = webhook.sender.login;
 
   return initiateBuild({
     moduleName,
     owner,
     repo,
+    sender,
     ref,
     description,
     starCount,
@@ -239,6 +242,7 @@ async function createEvent(
   const webhook = JSON.parse(event.body) as WebhookPayloadCreate;
   const { ref } = webhook;
   const [owner, repo] = webhook.repository.full_name.split("/");
+  const sender = webhook.sender.login;
   if (webhook.ref_type !== "tag") {
     return respondJSON({
       statusCode: 200,
@@ -266,7 +270,15 @@ async function createEvent(
     starCount,
     versionPrefix,
     subdir,
+    sender,
   });
+}
+
+async function checkBlocked(
+  userName: string,
+): Promise<boolean> {
+  const user = await database.getOwnerQuota(userName);
+  return user?.blocked ?? false;
 }
 
 async function checkAvailable(
@@ -274,7 +286,19 @@ async function checkAvailable(
   moduleName: string,
   owner: string,
   repo: string,
+  sender: string,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
+  const blocked = await checkBlocked(owner) || await checkBlocked(sender);
+  if (blocked) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: `Publishing your module failed. Please contact ry@deno.land.`,
+      }),
+    });
+  }
+
   if (entry) {
     // Check that entry matches repo
     if (
@@ -359,6 +383,7 @@ async function initiateBuild(
     moduleName: string;
     owner: string;
     repo: string;
+    sender: string;
     ref: string;
     description: string;
     starCount: number;
@@ -370,6 +395,7 @@ async function initiateBuild(
     moduleName,
     owner,
     repo,
+    sender,
     ref,
     description,
     starCount,
@@ -412,7 +438,7 @@ async function initiateBuild(
 
   const entry = await database.getModule(moduleName);
 
-  const resp = await checkAvailable(entry, moduleName, owner, repo);
+  const resp = await checkAvailable(entry, moduleName, owner, repo, sender);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)

@@ -62,6 +62,7 @@ export interface OwnerQuota {
   owner: string;
   type: string;
   max_modules: number;
+  blocked: boolean;
 }
 
 export type DBOwnerQuota = Omit<OwnerQuota, "owner"> & {
@@ -259,7 +260,7 @@ export class Database {
     version: string,
   ): Promise<Build | null> {
     const build = await this._builds.findOne({
-      // @ts-expect-error because the deno_mongo typings are incorrect
+      // @ts-ignore because the deno_mongo typings are incorrect
       "options.moduleName": name,
       "options.version": version,
     });
@@ -322,6 +323,7 @@ export class Database {
       owner: ownerQuota._id as string,
       type: ownerQuota.type,
       max_modules: ownerQuota.max_modules,
+      blocked: ownerQuota.blocked,
     };
   }
 
@@ -340,6 +342,7 @@ export class Database {
         _id: ownerQuota.owner as any,
         type: ownerQuota.type,
         max_modules: ownerQuota.max_modules,
+        blocked: ownerQuota.blocked,
       },
       { upsert: true },
     );

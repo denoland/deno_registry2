@@ -276,6 +276,7 @@ Deno.test({
         owner: "luca-rand",
         type: "github",
         max_modules: 7,
+        blocked: false,
       });
 
       for (let i = 0; i < 7; i++) {

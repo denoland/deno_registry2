@@ -150,6 +150,7 @@ const ownerQuota1: OwnerQuota = {
   owner: "luca-rand",
   type: "github",
   max_modules: 5,
+  blocked: false,
 };
 
 Deno.test({
