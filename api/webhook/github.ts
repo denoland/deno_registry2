@@ -124,14 +124,14 @@ async function pingEvent(
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
   const [owner, repo] = webhook.repository.full_name.split("/");
-  const repoId = webhook.repository.id;
+  const repo_id = webhook.repository.id;
   const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
   const sender = webhook.sender.login;
 
   const entry = await database.getModule(moduleName);
 
-  const resp = await checkAvailable(entry, moduleName, owner, sender, repoId);
+  const resp = await checkAvailable(entry, moduleName, owner, sender, repo_id);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
@@ -143,7 +143,7 @@ async function pingEvent(
         created_at: new Date(),
         is_unlisted: false,
       },
-    repoId,
+    repo_id,
     owner,
     repo,
     description,
@@ -191,7 +191,7 @@ async function pushEvent(
   const webhook = JSON.parse(event.body) as WebhookPayloadPush;
   const { ref: rawRef } = webhook;
   const [owner, repo] = webhook.repository.full_name.split("/");
-  const repoId = webhook.repository.id;
+  const repo_id = webhook.repository.id;
   if (!rawRef.startsWith("refs/tags/")) {
     return respondJSON({
       statusCode: 200,
@@ -214,7 +214,7 @@ async function pushEvent(
 
   return initiateBuild({
     moduleName,
-    repoId,
+    repo_id,
     owner,
     repo,
     sender,
@@ -247,7 +247,7 @@ async function createEvent(
   const { ref } = webhook;
   const [owner, repo] = webhook.repository.full_name.split("/");
   const sender = webhook.sender.login;
-  const repoId = webhook.repository.id;
+  const repo_id = webhook.repository.id;
   if (webhook.ref_type !== "tag") {
     return respondJSON({
       statusCode: 200,
@@ -268,7 +268,7 @@ async function createEvent(
 
   return initiateBuild({
     moduleName,
-    repoId,
+    repo_id,
     owner,
     repo,
     ref,
@@ -292,7 +292,7 @@ async function checkAvailable(
   moduleName: string,
   owner: string,
   sender: string,
-  repoId: number,
+  repo_id: number,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
   const blocked = await checkBlocked(owner) || await checkBlocked(sender);
   if (blocked) {
@@ -309,7 +309,7 @@ async function checkAvailable(
     // Check that entry matches repo
     if (
       !(entry.type === "github" &&
-        entry.repoId === repoId)
+        entry.repo_id === repo_id)
     ) {
       return respondJSON({
         statusCode: 409,
@@ -323,7 +323,7 @@ async function checkAvailable(
     // If this entry doesn't exist yet check how many modules this repo
     // already has.
     if (
-      await database.countModulesForRepository(repoId) >=
+      await database.countModulesForRepository(repo_id) >=
         MAX_MODULES_PER_REPOSITORY
     ) {
       return respondJSON({
@@ -386,7 +386,7 @@ async function checkAvailable(
 async function initiateBuild(
   options: {
     moduleName: string;
-    repoId: number;
+    repo_id: number;
     owner: string;
     repo: string;
     sender: string;
@@ -399,7 +399,7 @@ async function initiateBuild(
 ): Promise<APIGatewayProxyResultV2> {
   const {
     moduleName,
-    repoId,
+    repo_id,
     owner,
     repo,
     sender,
@@ -445,7 +445,7 @@ async function initiateBuild(
 
   const entry = await database.getModule(moduleName);
 
-  const resp = await checkAvailable(entry, moduleName, owner, sender, repoId);
+  const resp = await checkAvailable(entry, moduleName, owner, sender, repo_id);
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
@@ -457,7 +457,7 @@ async function initiateBuild(
         created_at: new Date(),
         is_unlisted: false,
       },
-    repoId,
+    repo_id,
     owner,
     repo,
     description,

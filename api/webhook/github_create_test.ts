@@ -146,7 +146,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest2",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -157,7 +157,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest3",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -168,7 +168,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest4",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -222,7 +222,7 @@ Deno.test({
         await database.saveModule({
           name: `ltest${i + 2}`,
           type: "github",
-          repoId: i,
+          repo_id: i,
           owner: "luca-rand",
           repo: `testing${i + 2}`,
           description: "",
@@ -287,7 +287,7 @@ Deno.test({
         await database.saveModule({
           name: `ltest${i + 2}`,
           type: "github",
-          repoId: i,
+          repo_id: i,
           owner: "luca-rand",
           repo: `testing${i + 2}`,
           description: "",
@@ -390,7 +390,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -464,7 +464,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -615,7 +615,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -753,7 +753,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -809,7 +809,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -878,7 +878,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
-        repoId: 274939732,
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -897,12 +897,12 @@ Deno.test({
   name: "create event rename repository",
   async fn() {
     try {
-      const repoId = 274939732;
+      const repo_id = 274939732;
 
       await database.saveModule({
         name: "ltest",
         description: "testing things",
-        repoId: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing-oldname",
         star_count: 4,
@@ -963,7 +963,7 @@ Deno.test({
       assertEquals(ltest, {
         name: "ltest",
         type: "github",
-        repoId: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -991,12 +991,12 @@ Deno.test({
         { latest: "0.0.7", versions: ["0.0.7"] },
       );
 
-      const repoId = 274939732;
+      const repo_id = 274939732;
 
       await database.saveModule({
         name: "ltest",
         description: "testing things",
-        repoId: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing-oldname",
         star_count: 4,
@@ -1034,7 +1034,7 @@ Deno.test({
       assertEquals(ltest, {
         name: "ltest",
         type: "github",
-        repoId: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -1073,12 +1073,12 @@ Deno.test({
         status: "queued",
       });
 
-      const repoId = 274939732;
+      const repo_id = 274939732;
 
       await database.saveModule({
         name: "ltest",
         description: "testing things",
-        repoId: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing-oldname",
         star_count: 4,
@@ -1118,7 +1118,7 @@ Deno.test({
       assertEquals(ltest, {
         name: "ltest",
         type: "github",
-        repoId: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
