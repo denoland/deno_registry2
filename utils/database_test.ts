@@ -1,7 +1,7 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
 import { assert, assertEquals } from "../test_deps.ts";
-import { Database, Module, Build, OwnerQuota } from "./database.ts";
+import { Build, Database, Module, OwnerQuota } from "./database.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -13,6 +13,7 @@ const ltest: Module = {
   name: "ltest",
   description: "Testing all the things!",
   type: "github",
+  repo_id: 123,
   owner: "luca-rand",
   repo: "testing",
   star_count: 5,
@@ -24,6 +25,7 @@ const utest: Module = {
   name: "unlisted_module",
   description: "Testing all the things! -- unlisted",
   type: "github",
+  repo_id: 124,
   owner: "wperron",
   repo: "testing-unlisted",
   star_count: 5,
@@ -45,6 +47,7 @@ Deno.test({
       created_at: new Date("2020-02-01T00:00:00.000Z"),
       description: "Testing all the things!",
       is_unlisted: false,
+      repo_id: 123,
       owner: "luca-rand",
       repo: "testing",
       star_count: 5,

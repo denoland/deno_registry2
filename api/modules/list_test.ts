@@ -17,6 +17,7 @@ Deno.test({
         await database.saveModule({
           name: `ltest${i}`,
           description: "ltest repo",
+          repo_id: 274939732,
           owner: "luca-rand",
           repo: "testing",
           star_count: i,
@@ -114,6 +115,7 @@ Deno.test({
         await database.saveModule({
           name: `ltest${i}`,
           description: "ltest repo",
+          repo_id: 274939732,
           owner: "luca-rand",
           repo: "testing",
           star_count: i,

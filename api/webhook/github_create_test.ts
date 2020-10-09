@@ -1,12 +1,12 @@
 import { handler } from "./github.ts";
 import {
+  cleanupDatabase,
+  createContext,
   createJSONWebhookEvent,
   createJSONWebhookWebFormEvent,
-  createContext,
-  cleanupDatabase,
 } from "../../utils/test_utils.ts";
 import { Database } from "../../utils/database.ts";
-import { assertEquals, assert } from "../../test_deps.ts";
+import { assert, assertEquals } from "../../test_deps.ts";
 import { getMeta, s3, uploadMetaJson } from "../../utils/storage.ts";
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -146,6 +146,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest2",
         type: "github",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -156,6 +157,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest3",
         type: "github",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -166,6 +168,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest4",
         type: "github",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "",
@@ -219,6 +222,7 @@ Deno.test({
         await database.saveModule({
           name: `ltest${i + 2}`,
           type: "github",
+          repo_id: i,
           owner: "luca-rand",
           repo: `testing${i + 2}`,
           description: "",
@@ -283,6 +287,7 @@ Deno.test({
         await database.saveModule({
           name: `ltest${i + 2}`,
           type: "github",
+          repo_id: i,
           owner: "luca-rand",
           repo: `testing${i + 2}`,
           description: "",
@@ -385,6 +390,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -458,6 +464,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -608,6 +615,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -745,6 +753,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -800,6 +809,7 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -868,6 +878,247 @@ Deno.test({
       assertEquals(ltest2, {
         name: "ltest2",
         type: "github",
+        repo_id: 274939732,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
+  name: "create event rename repository",
+  async fn() {
+    try {
+      const repo_id = 274939732;
+
+      await database.saveModule({
+        name: "ltest",
+        description: "testing things",
+        repo_id: repo_id,
+        owner: "luca-rand",
+        repo: "testing-oldname",
+        star_count: 4,
+        type: "github",
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Send push event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest",
+          createevent,
+          { name: "ltest" },
+          {},
+        ),
+        createContext(),
+      );
+
+      const builds = await database._builds.find({});
+
+      // Check that a new build was queued
+      assertEquals(builds.length, 1);
+      assertEquals(
+        builds[0],
+        {
+          _id: builds[0]._id,
+          created_at: builds[0].created_at,
+          options: {
+            moduleName: "ltest",
+            type: "github",
+            repository: "luca-rand/testing", // <- new name
+            ref: "0.0.7",
+            version: "0.0.7",
+          },
+          status: "queued",
+        },
+      );
+
+      assertEquals(resp, {
+        body:
+          `{"success":true,"data":{"module":"ltest","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+            builds[0]._id.$oid
+          }"}}`,
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 200,
+      });
+
+      const ltest = await database.getModule("ltest");
+      assert(ltest);
+      assert(ltest.created_at <= new Date());
+      ltest.created_at = new Date(2020, 1, 1);
+
+      // Check that the database entry
+      assertEquals(ltest, {
+        name: "ltest",
+        type: "github",
+        repo_id: repo_id,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Check that no versions.json file was created
+      assertEquals(await getMeta("ltest", "versions.json"), undefined);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
+  name: "create event rename repository already exists",
+  async fn() {
+    try {
+      await uploadMetaJson(
+        "ltest",
+        "versions.json",
+        { latest: "0.0.7", versions: ["0.0.7"] },
+      );
+
+      const repo_id = 274939732;
+
+      await database.saveModule({
+        name: "ltest",
+        description: "testing things",
+        repo_id: repo_id,
+        owner: "luca-rand",
+        repo: "testing-oldname",
+        star_count: 4,
+        type: "github",
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Send push event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest",
+          createevent,
+          { name: "ltest" },
+          {},
+        ),
+        createContext(),
+      );
+
+      assertEquals(resp, {
+        body: '{"success":false,"error":"version already exists"}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      });
+
+      const ltest = await database.getModule("ltest");
+      assert(ltest);
+      assert(ltest.created_at <= new Date());
+      ltest.created_at = new Date(2020, 1, 1);
+
+      // Check that the database entry
+      assertEquals(ltest, {
+        name: "ltest",
+        type: "github",
+        repo_id: repo_id,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Check that versions.json was not changed
+      assertEquals(
+        JSON.parse(decoder.decode(await getMeta("ltest", "versions.json"))),
+        { latest: "0.0.7", versions: ["0.0.7"] },
+      );
+
+      // Check that no new build was queued
+      assertEquals(await database._builds.find({}), []);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
+  name: "create event rename repository already queued",
+  async fn() {
+    try {
+      await database.createBuild({
+        options: {
+          moduleName: "ltest",
+          ref: "0.0.7",
+          repository: "luca-rand/testing",
+          type: "github",
+          version: "0.0.7",
+        },
+        status: "queued",
+      });
+
+      const repo_id = 274939732;
+
+      await database.saveModule({
+        name: "ltest",
+        description: "testing things",
+        repo_id: repo_id,
+        owner: "luca-rand",
+        repo: "testing-oldname",
+        star_count: 4,
+        type: "github",
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Send push event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest",
+          createevent,
+          { name: "ltest" },
+          {},
+        ),
+        createContext(),
+      );
+
+      assertEquals(resp, {
+        body:
+          '{"success":false,"error":"this module version is already being published"}',
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 400,
+      });
+
+      // Check that the database entry was created
+      const ltest = await database.getModule("ltest");
+      assert(ltest);
+      assert(ltest.created_at <= new Date());
+      ltest.created_at = new Date(2020, 1, 1);
+
+      // Check that the database entry
+      assertEquals(ltest, {
+        name: "ltest",
+        type: "github",
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",

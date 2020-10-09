@@ -6,7 +6,7 @@
  * CloudWatch Event on a cron schedule set to trigger once every day.
  */
 
-import type { ScheduledEvent, Context } from "../../deps.ts";
+import type { Context, ScheduledEvent } from "../../deps.ts";
 import { SSM } from "../../deps.ts";
 import type { ScoredModule, SearchResult } from "../../utils/database.ts";
 import { Database, Module } from "../../utils/database.ts";

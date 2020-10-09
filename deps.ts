@@ -1,17 +1,14 @@
 // Copyright 2020 the Deno authors. All rights reserved. MIT license.
 
-export {
-  expandGlob,
-  walk,
-} from "https://deno.land/std@0.71.0/fs/mod.ts";
+export { expandGlob, walk } from "https://deno.land/std@0.71.0/fs/mod.ts";
 export { join } from "https://deno.land/std@0.71.0/path/mod.ts";
 export type {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
   APIGatewayProxyStructuredResultV2,
+  Context,
   ScheduledEvent,
   SQSEvent,
-  Context,
 } from "https://deno.land/x/lambda@1.4.2/types.d.ts";
 export {
   MongoClient,

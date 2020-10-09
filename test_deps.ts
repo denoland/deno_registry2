@@ -6,6 +6,6 @@ export {
   assertThrows,
 } from "https://deno.land/std@0.71.0/testing/asserts.ts";
 export {
-  runBenchmarks,
   bench,
+  runBenchmarks,
 } from "https://deno.land/std@0.71.0/testing/bench.ts";

@@ -1,8 +1,8 @@
 import { handler } from "./stats.ts";
 import {
+  cleanupDatabase,
   createAPIGatewayProxyEventV2,
   createContext,
-  cleanupDatabase,
 } from "../utils/test_utils.ts";
 import { assertEquals } from "../test_deps.ts";
 import { Database } from "../utils/database.ts";
@@ -16,6 +16,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest1",
         description: "ltest1 repo",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         star_count: 50,
@@ -27,6 +28,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest2",
         description: "ltest2 repo",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         star_count: 50,
@@ -38,6 +40,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest3",
         description: "ltest3 repo",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         star_count: 50,
@@ -49,6 +52,7 @@ Deno.test({
       await database.saveModule({
         name: "ltest4",
         description: "ltest4 repo",
+        repo_id: 274939732,
         owner: "luca-rand",
         repo: "testing",
         star_count: 50,

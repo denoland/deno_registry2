@@ -9,8 +9,8 @@
 
 import type {
   APIGatewayProxyEventV2,
-  Context,
   APIGatewayProxyResultV2,
+  Context,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { Database, SearchResult } from "../../utils/database.ts";
