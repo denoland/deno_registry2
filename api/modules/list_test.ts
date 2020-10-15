@@ -4,7 +4,7 @@ import {
   createAPIGatewayProxyEventV2,
   createContext,
 } from "../../utils/test_utils.ts";
-import { assertEquals } from "../../test_deps.ts";
+import { assert, assertEquals } from "../../test_deps.ts";
 import { Database } from "../../utils/database.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
@@ -341,6 +341,42 @@ Deno.test({
 });
 
 Deno.test({
+  name: "`/modules` random sort order",
+  async fn() {
+    try {
+      for (let i = 0; i < 5; i++) {
+        await database.saveModule({
+          name: `ltest${i}`,
+          description: "ltest repo",
+          repo_id: 274939732,
+          owner: "luca-rand",
+          repo: "testing",
+          star_count: i,
+          type: "github",
+          is_unlisted: false,
+          created_at: new Date(2020, 1, 1),
+        });
+
+        const res = await handler(
+          createAPIGatewayProxyEventV2("GET", "/modules", {
+            queryStringParameters: {
+              sort: "random",
+            },
+          }),
+          createContext(),
+          // deno-lint-ignore no-explicit-any
+        ) as any;
+
+        assert(res);
+        assertEquals(res.statusCode, 200);
+      }
+    } finally {
+      await cleanupDatabase(database);
+    }
+  },
+});
+
+Deno.test({
   name: "`/modules` unknow sort order",
   async fn() {
     try {
@@ -369,7 +405,7 @@ Deno.test({
         ),
         {
           body:
-            '{"success":false,"error":"the sort order must be one of stars, newest, oldest"}',
+            '{"success":false,"error":"the sort order must be one of stars, newest, oldest, random"}',
           headers: {
             "content-type": "application/json",
           },
