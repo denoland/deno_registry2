@@ -17,6 +17,23 @@ export interface Module {
   created_at: Date;
 }
 
+export interface SearchOptions {
+  limit: number;
+  page: number;
+  query?: string;
+  sort?: Sort;
+}
+
+export type Sort = "stars" | "newest" | "oldest";
+
+const sort = {
+  stars: { "star_count": -1 },
+  newest: { "created_at": -1 },
+  oldest: { "created_at": 1 },
+};
+
+export const SortValues = Object.keys(sort);
+
 export interface SearchResult {
   name: string;
   description: string;
@@ -130,31 +147,27 @@ export class Database {
     );
   }
 
-  async listModules(
-    limit: number,
-    page: number,
-    query?: string,
-  ): Promise<ScoredModule[]> {
-    if (typeof limit !== "number") {
+  async listModules(options: SearchOptions): Promise<ScoredModule[]> {
+    if (typeof options.limit !== "number") {
       throw new Error("limit must be a number");
     }
-    if (typeof page !== "number") {
+    if (typeof options.page !== "number") {
       throw new Error("page must be a number");
     }
-    if (page <= 0) {
+    if (options.page <= 0) {
       throw new Error("page must be 1 or larger");
     }
-    if (query !== undefined && typeof query !== "string") {
-      throw new Error("query value must be undefined or a string");
+    if (options.sort === undefined) {
+      options.sort = "stars";
     }
 
     // If search is present, add a search step to the aggregation pipeline
-    const searchAggregation = query
+    const searchAggregation = options.query
       ? [
         {
           $search: {
             text: {
-              query: query,
+              query: options.query,
               path: ["_id", "description"],
               fuzzy: {},
             },
@@ -185,9 +198,7 @@ export class Database {
           },
         },
         {
-          $sort: {
-            star_count: -1,
-          },
+          $sort: sort[options.sort],
         },
       ];
 
@@ -195,10 +206,10 @@ export class Database {
     const docs = (await this._modules.aggregate([
       ...searchAggregation,
       {
-        $skip: (page - 1) * limit,
+        $skip: (options.page - 1) * options.limit,
       },
       {
-        $limit: limit,
+        $limit: options.limit,
       },
     ])) as ScoredModule[];
 
