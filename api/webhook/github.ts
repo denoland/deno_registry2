@@ -30,9 +30,10 @@ import { queueBuild } from "../../utils/queue.ts";
 import type { VersionInfo } from "../../utils/types.ts";
 import { isForbidden } from "../../utils/moderation.ts";
 
-const VALID_NAME = /^[a-z0-9_]{3,40}$/;
-const MAX_MODULES_PER_REPOSITORY = 3;
-const MAX_MODULES_PER_OWNER_DEFAULT = 15;
+interface WebhookEvent {
+  moduleName: string;
+  event: APIGatewayProxyEventV2;
+}
 
 const decoder = new TextDecoder();
 
@@ -89,11 +90,11 @@ export async function handler(
 
   switch (ghEvent) {
     case "ping":
-      return pingEvent({ headers, moduleName, event });
+      return pingEvent({ moduleName, event });
     case "push":
-      return pushEvent({ headers, moduleName, event });
+      return pushEvent({ moduleName, event });
     case "create":
-      return createEvent({ headers, moduleName, event });
+      return createEvent({ moduleName, event });
     default:
       return respondJSON({
         statusCode: 200,
@@ -105,12 +106,13 @@ export async function handler(
   }
 }
 
+/**
+ * Ping event is triggered when the webhook is first registered. It is used to
+ * first register the module on deno.land/x but does not upload any versions
+ * along with it.
+ */
 async function pingEvent(
-  { moduleName, event }: {
-    headers: Headers;
-    moduleName: string;
-    event: APIGatewayProxyEventV2;
-  },
+  { moduleName, event }: WebhookEvent,
 ): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
   if (!event.body) {
@@ -128,10 +130,19 @@ async function pingEvent(
   const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
   const sender = webhook.sender.login;
+  const subdir =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
 
   const entry = await database.getModule(moduleName);
 
-  const resp = await checkAvailable(entry, moduleName, owner, sender, repo_id);
+  const resp = await checkModuleInfo(
+    entry,
+    moduleName,
+    owner,
+    sender,
+    repo_id,
+    subdir,
+  );
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
@@ -171,12 +182,11 @@ async function pingEvent(
   });
 }
 
+/**
+ * Push event is triggered when one or more commits are pushed to a ref.
+ */
 async function pushEvent(
-  { headers, moduleName, event }: {
-    headers: Headers;
-    moduleName: string;
-    event: APIGatewayProxyEventV2;
-  },
+  { moduleName, event }: WebhookEvent,
 ): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
   if (!event.body) {
@@ -226,12 +236,11 @@ async function pushEvent(
   });
 }
 
+/**
+ * Create event is triggered when a new branch or tag is created.
+ */
 async function createEvent(
-  { headers, moduleName, event }: {
-    headers: Headers;
-    moduleName: string;
-    event: APIGatewayProxyEventV2;
-  },
+  { moduleName, event }: WebhookEvent,
 ): Promise<APIGatewayProxyResultV2> {
   // Get version, version type, and repository from event
   if (!event.body) {
@@ -280,109 +289,6 @@ async function createEvent(
   });
 }
 
-async function checkBlocked(
-  userName: string,
-): Promise<boolean> {
-  const user = await database.getOwnerQuota(userName);
-  return user?.blocked ?? false;
-}
-
-async function checkAvailable(
-  entry: Module | null,
-  moduleName: string,
-  owner: string,
-  sender: string,
-  repo_id: number,
-): Promise<APIGatewayProxyResultV2 | undefined> {
-  const blocked = await checkBlocked(owner) || await checkBlocked(sender);
-  if (blocked) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: `Publishing your module failed. Please contact ry@deno.land.`,
-      }),
-    });
-  }
-
-  if (entry) {
-    // Check that entry matches repo
-    if (
-      !(entry.type === "github" &&
-        entry.repo_id === repo_id)
-    ) {
-      return respondJSON({
-        statusCode: 409,
-        body: JSON.stringify({
-          success: false,
-          error: "module name is registered to a different repository",
-        }),
-      });
-    }
-  } else {
-    // If this entry doesn't exist yet check how many modules this repo
-    // already has.
-    if (
-      await database.countModulesForRepository(repo_id) >=
-        MAX_MODULES_PER_REPOSITORY
-    ) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error:
-            `Max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached. Please contact ry@deno.land if you need more.`,
-        }),
-      });
-    }
-
-    const ownerQuota = await database.getOwnerQuota(owner);
-    const maxModuleQuota = ownerQuota?.max_modules ??
-      MAX_MODULES_PER_OWNER_DEFAULT;
-
-    // If this entry doesn't exist yet check how many modules this user
-    // or org has already registered.
-    if (
-      await database.countModulesForOwner(owner) >= (maxModuleQuota)
-    ) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error:
-            `Max number of modules for one user/org (${maxModuleQuota}) has been reached. Please contact ry@deno.land if you need more.`,
-        }),
-      });
-    }
-
-    // If module does not exist and limit has not been reached, check if
-    // name is valid.
-    if (!VALID_NAME.test(moduleName)) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "module name is not valid",
-        }),
-      });
-    }
-
-    // If the name is valid, check if it does not contain offensive words.
-    const encoder = new TextDecoder("utf8");
-    const res = await getForbiddenWords();
-    const badwords = encoder.decode(res).split("\n");
-    if (isForbidden(moduleName, badwords)) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "found forbidden word in module name",
-        }),
-      });
-    }
-  }
-}
-
 async function initiateBuild(
   options: {
     moduleName: string;
@@ -420,32 +326,16 @@ async function initiateBuild(
     });
   }
 
-  const version = ref.substring(versionPrefix.length);
-
-  if (subdir !== null) {
-    if (subdir.startsWith("/")) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "provided sub directory is not valid as it starts with a /",
-        }),
-      });
-    } else if (!subdir.endsWith("/")) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error:
-            "provided sub directory is not valid as it does not end with a /",
-        }),
-      });
-    }
-  }
-
   const entry = await database.getModule(moduleName);
 
-  const resp = await checkAvailable(entry, moduleName, owner, sender, repo_id);
+  const resp = await checkModuleInfo(
+    entry,
+    moduleName,
+    owner,
+    sender,
+    repo_id,
+    subdir,
+  );
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
@@ -464,32 +354,9 @@ async function initiateBuild(
     star_count: starCount,
   });
 
-  // Check that version doesn't already exist
-  const versionInfoBody = await getMeta(moduleName, "versions.json");
-  const versionInfo: VersionInfo = versionInfoBody
-    ? JSON.parse(decoder.decode(versionInfoBody))
-    : { versions: [], latest: "" };
-  if (versionInfo.versions.includes(version)) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: "version already exists",
-      }),
-    });
-  }
-
-  // Check that a build has not already been queued
-  const build = await database.getBuildForVersion(moduleName, version);
-  if (build !== null) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify({
-        success: false,
-        error: "this module version is already being published",
-      }),
-    });
-  }
+  const version = ref.substring(versionPrefix.length);
+  const invalidVersion = await checkVersion(moduleName, version);
+  if (invalidVersion) return invalidVersion;
 
   const buildID = await database.createBuild({
     options: {
@@ -517,6 +384,220 @@ async function initiateBuild(
       },
     }),
   });
+}
+
+/**
+ * CheckModuleInfo performs a series of general validation on the module such as
+ * validating that the module name complies with the naming convention enforced
+ * on deno.land/x, whether or not the sender or owner have been blocked etc...
+ *
+ * These verifications are meant to be performed before the module is registered
+ * or updated in the database to prevent "bad" modules from being pushed to the
+ * build queue and subsequently published.
+ *
+ * @param entry database entry for the module
+ * @param moduleName module name as shown on deno.land/x
+ * @param owner username of the GH repository owner
+ * @param sender username of the user triggering the webhoo
+ * @param repo_id numerical id of the GH repository
+ */
+async function checkModuleInfo(
+  entry: Module | null,
+  moduleName: string,
+  owner: string,
+  sender: string,
+  repo_id: number,
+  subdir: string | null,
+): Promise<APIGatewayProxyResultV2 | undefined> {
+  return await checkBlocked(sender) ??
+    await checkBlocked(owner) ??
+    checkSubdir(subdir) ??
+    checkMatchesRepo(entry, repo_id) ??
+    await checkModulesInRepo(entry, repo_id) ??
+    await hasReachedQuota(entry, owner) ??
+    await checkName(entry, moduleName);
+}
+
+function checkSubdir(
+  subdir: string | null,
+): APIGatewayProxyResultV2 | undefined {
+  if (subdir !== null) {
+    if (subdir.startsWith("/")) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error: "provided sub directory is not valid as it starts with a /",
+        }),
+      });
+    } else if (!subdir.endsWith("/")) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error:
+            "provided sub directory is not valid as it does not end with a /",
+        }),
+      });
+    }
+  }
+  return;
+}
+
+async function checkBlocked(
+  userName: string,
+): Promise<APIGatewayProxyResultV2 | undefined> {
+  const user = await database.getOwnerQuota(userName);
+  if (user?.blocked ?? false) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: `Publishing your module failed. Please contact ry@deno.land.`,
+      }),
+    });
+  }
+  return;
+}
+
+function checkMatchesRepo(
+  entry: Module | null,
+  repo_id: number,
+): APIGatewayProxyResultV2 | undefined {
+  if (
+    entry && !(entry.type === "github" && entry.repo_id === repo_id)
+  ) {
+    return respondJSON({
+      statusCode: 409,
+      body: JSON.stringify({
+        success: false,
+        error: "module name is registered to a different repository",
+      }),
+    });
+  }
+  return;
+}
+
+const MAX_MODULES_PER_REPOSITORY = 3;
+const MAX_MODULES_PER_OWNER_DEFAULT = 15;
+
+async function checkModulesInRepo(
+  entry: Module | null,
+  repo_id: number,
+): Promise<APIGatewayProxyResultV2 | undefined> {
+  if (
+    !entry && await database.countModulesForRepository(repo_id) >=
+      MAX_MODULES_PER_REPOSITORY
+  ) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error:
+          `Max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached. Please contact ry@deno.land if you need more.`,
+      }),
+    });
+  }
+  return;
+}
+
+async function hasReachedQuota(
+  entry: Module | null,
+  owner: string,
+): Promise<APIGatewayProxyResultV2 | undefined> {
+  const ownerQuota = await database.getOwnerQuota(owner);
+  const maxModuleQuota = ownerQuota?.max_modules ??
+    MAX_MODULES_PER_OWNER_DEFAULT;
+  if (
+    !entry && await database.countModulesForOwner(owner) >= (maxModuleQuota)
+  ) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error:
+          `Max number of modules for one user/org (${maxModuleQuota}) has been reached. Please contact ry@deno.land if you need more.`,
+      }),
+    });
+  }
+  return;
+}
+
+const VALID_NAME = /^[a-z0-9_]{3,40}$/;
+
+async function checkName(
+  entry: Module | null,
+  moduleName: string,
+): Promise<APIGatewayProxyResultV2 | undefined> {
+  if (!entry) {
+    if (!VALID_NAME.test(moduleName)) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error: "module name is not valid",
+        }),
+      });
+    }
+
+    const encoder = new TextDecoder("utf8");
+    const res = await getForbiddenWords();
+    const badwords = encoder.decode(res).split("\n");
+    if (isForbidden(moduleName, badwords)) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error: "found forbidden word in module name",
+        }),
+      });
+    }
+  }
+  return;
+}
+
+/**
+ * CheckVersion compares the version number being pushed to existing versions or
+ * builds for that module.
+ *
+ * This step is used to avoid re-publishing existing versions of a module. For
+ * more context around this design choice, please refer to the
+ * [announcement post](https://deno.land/posts/registry2)
+ *
+ * @param moduleName module name as shown on deno.land/x
+ * @param version module version being pushed, stripped of its prefix
+ */
+async function checkVersion(
+  moduleName: string,
+  version: string,
+): Promise<APIGatewayProxyResultV2 | undefined> {
+  // Check that version doesn't already exist
+  const versionInfoBody = await getMeta(moduleName, "versions.json");
+  const versionInfo: VersionInfo = versionInfoBody
+    ? JSON.parse(decoder.decode(versionInfoBody))
+    : { versions: [], latest: "" };
+  if (versionInfo.versions.includes(version)) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "version already exists",
+      }),
+    });
+  }
+
+  // Check that a build has not already been queued
+  const build = await database.getBuildForVersion(moduleName, version);
+  if (build !== null) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: "this module version is already being published",
+      }),
+    });
+  }
+  return;
 }
 
 // From https://api.github.com/meta
