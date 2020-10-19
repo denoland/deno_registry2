@@ -224,3 +224,160 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name: "`/modules` sort order",
+  async fn() {
+    try {
+      for (let i = 0; i < 5; i++) {
+        await database.saveModule({
+          name: `ltest${i}`,
+          description: "ltest repo",
+          repo_id: 274939732,
+          owner: "luca-rand",
+          repo: "testing",
+          star_count: i, // varying number of stars
+          type: "github",
+          is_unlisted: false,
+          created_at: new Date(2020, 1, i),
+        } // varying creation dates
+        );
+      }
+
+      let res = await handler(
+        createAPIGatewayProxyEventV2("GET", "/modules", {
+          queryStringParameters: {
+            limit: "1",
+          },
+        }),
+        createContext(),
+      );
+
+      // default value
+      assertEquals(
+        res,
+        {
+          body:
+            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
+          headers: {
+            "content-type": "application/json",
+          },
+          statusCode: 200,
+        },
+      );
+
+      res = await handler(
+        createAPIGatewayProxyEventV2("GET", "/modules", {
+          queryStringParameters: {
+            limit: "1",
+            sort: "stars",
+          },
+        }),
+        createContext(),
+      );
+
+      // star count
+      assertEquals(
+        res,
+        {
+          body:
+            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
+          headers: {
+            "content-type": "application/json",
+          },
+          statusCode: 200,
+        },
+      );
+
+      res = await handler(
+        createAPIGatewayProxyEventV2("GET", "/modules", {
+          queryStringParameters: {
+            limit: "1",
+            sort: "oldest",
+          },
+        }),
+        createContext(),
+      );
+
+      // oldest modules
+      assertEquals(
+        res,
+        {
+          body:
+            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest0","description":"ltest repo","star_count":0}]}}',
+          headers: {
+            "content-type": "application/json",
+          },
+          statusCode: 200,
+        },
+      );
+
+      res = await handler(
+        createAPIGatewayProxyEventV2("GET", "/modules", {
+          queryStringParameters: {
+            limit: "1",
+            sort: "newest",
+          },
+        }),
+        createContext(),
+      );
+
+      // newest modules
+      assertEquals(
+        res,
+        {
+          body:
+            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
+          headers: {
+            "content-type": "application/json",
+          },
+          statusCode: 200,
+        },
+      );
+    } finally {
+      await cleanupDatabase(database);
+    }
+  },
+});
+
+Deno.test({
+  name: "`/modules` unknow sort order",
+  async fn() {
+    try {
+      for (let i = 0; i < 5; i++) {
+        await database.saveModule({
+          name: `ltest${i}`,
+          description: "ltest repo",
+          repo_id: 274939732,
+          owner: "luca-rand",
+          repo: "testing",
+          star_count: i,
+          type: "github",
+          is_unlisted: false,
+          created_at: new Date(2020, 1, 1),
+        });
+      }
+
+      assertEquals(
+        await handler(
+          createAPIGatewayProxyEventV2("GET", "/modules", {
+            queryStringParameters: {
+              sort: "foobar",
+            },
+          }),
+          createContext(),
+        ),
+        {
+          body:
+            '{"success":false,"error":"the sort order must be one of stars, newest, oldest"}',
+          headers: {
+            "content-type": "application/json",
+          },
+          statusCode: 400,
+        },
+      );
+    } finally {
+      await cleanupDatabase(database);
+    }
+  },
+});

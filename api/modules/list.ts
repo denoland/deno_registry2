@@ -13,7 +13,12 @@ import type {
   Context,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { Database, SearchResult } from "../../utils/database.ts";
+import {
+  Database,
+  SearchResult,
+  Sort,
+  SortValues,
+} from "../../utils/database.ts";
 import type { ScoredModule } from "../../utils/database.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
@@ -37,6 +42,7 @@ export async function handler(
   const limit = parseInt(event.queryStringParameters?.limit || "20");
   const page = parseInt(event.queryStringParameters?.page || "1");
   const query = event.queryStringParameters?.query || undefined;
+  const sort = event.queryStringParameters?.sort || undefined;
 
   if (limit > 100 || limit < 1) {
     return respondJSON({
@@ -58,8 +64,18 @@ export async function handler(
     });
   }
 
+  if (sort !== undefined && !SortValues.includes(sort)) {
+    return respondJSON({
+      statusCode: 400,
+      body: JSON.stringify({
+        success: false,
+        error: `the sort order must be one of ${SortValues.join(", ")}`,
+      }),
+    });
+  }
+
   const [results, count] = await Promise.all([
-    database.listModules(limit, page, query).then(
+    database.listModules({ limit, page, query, sort: sort as Sort }).then(
       (results: ScoredModule[]): SearchResult[] => {
         // Transform the results
         return results.map((doc: ScoredModule) => ({

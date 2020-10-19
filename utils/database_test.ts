@@ -36,13 +36,13 @@ const utest: Module = {
 Deno.test({
   name: "add, remove, list and count modules in database",
   async fn() {
-    assertEquals(await database.listModules(10, 1), []);
+    assertEquals(await database.listModules({ limit: 10, page: 1 }), []);
     assertEquals(await database.countModules(), 0);
 
     await database.saveModule(ltest);
     await database.saveModule(utest);
 
-    assertEquals(await database.listModules(10, 1), [{
+    assertEquals(await database.listModules({ limit: 10, page: 1 }), [{
       _id: "ltest",
       created_at: new Date("2020-02-01T00:00:00.000Z"),
       description: "Testing all the things!",
