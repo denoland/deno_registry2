@@ -1132,3 +1132,159 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name: "push event at max registered to repository",
+  async fn() {
+    try {
+      await database.saveModule({
+        name: "ltest2",
+        type: "github",
+        repo_id: 274939732,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "",
+        star_count: 4,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+      await database.saveModule({
+        name: "ltest3",
+        type: "github",
+        repo_id: 274939732,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "",
+        star_count: 4,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+      await database.saveModule({
+        name: "ltest4",
+        type: "github",
+        repo_id: 274939732,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "",
+        star_count: 4,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      const res = await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/lest4",
+          createevent,
+          { name: "ltest4" },
+          {},
+        ),
+        createContext(),
+      );
+
+      const builds = await database._builds.find({});
+
+      // Check that a new build was queued
+      assertEquals(builds.length, 1);
+      assertEquals(
+        builds[0],
+        {
+          _id: builds[0]._id,
+          created_at: builds[0].created_at,
+          options: {
+            moduleName: "ltest4",
+            type: "github",
+            repository: "luca-rand/testing",
+            ref: "0.0.7",
+            version: "0.0.7",
+          },
+          status: "queued",
+        },
+      );
+
+      // Send push event for ltest5
+      assertEquals(
+        res,
+        {
+          body:
+            `{"success":true,"data":{"module":"ltest4","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+              builds[0]._id.$oid
+            }"}}`,
+          headers: {
+            "content-type": "application/json",
+          },
+          statusCode: 200,
+        },
+      );
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
+  name: "push event grandfathered forbidden name",
+  async fn() {
+    try {
+      // grandfathered module with a forbidden name
+      await database.saveModule({
+        name: "frisbee",
+        description: "Move along, just for frisbee",
+        repo_id: 274939733,
+        owner: "luca-rand",
+        repo: "frisbee",
+        star_count: 4,
+        type: "github",
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Send push event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/frisbee",
+          createeventforbidden,
+          { name: "frisbee" },
+          {},
+        ),
+        createContext(),
+      );
+
+      const builds = await database._builds.find({});
+
+      // Check that a new build was queued
+      assertEquals(builds.length, 1);
+      assertEquals(
+        builds[0],
+        {
+          _id: builds[0]._id,
+          created_at: builds[0].created_at,
+          options: {
+            moduleName: "frisbee",
+            type: "github",
+            repository: "luca-rand/frisbee",
+            ref: "0.0.7",
+            version: "0.0.7",
+          },
+          status: "queued",
+        },
+      );
+
+      assertEquals(resp, {
+        body:
+          `{"success":true,"data":{"module":"frisbee","version":"0.0.7","repository":"luca-rand/frisbee","status_url":"https://deno.land/status/${
+            builds[0]._id.$oid
+          }"}}`,
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 200,
+      });
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
