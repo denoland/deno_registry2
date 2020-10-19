@@ -29,7 +29,7 @@ export function directorySize(d: DirectoryListingFile[]): number {
   for (let i = 1; i < len; i++) { // start at one to skip the root directory
     while (!d[i].path.startsWith(d[curr].path)) {
       // current element is out of the curr directory, popping the stack
-      let s = d[curr].size ?? 0;
+      const s = d[curr].size ?? 0;
       curr = stack.pop() as number;
       d[curr].size = (d[curr].size ?? 0) + s;
     }

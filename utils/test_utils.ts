@@ -168,8 +168,8 @@ export async function cleanupStorage(
   ...objects: string[]
 ): Promise<void> {
   const p = [];
-  for (let o of objects) {
-    p.push(s.deleteObject(o));
+  for (const object of objects) {
+    p.push(s.deleteObject(object));
   }
   await Promise.all(p);
 }

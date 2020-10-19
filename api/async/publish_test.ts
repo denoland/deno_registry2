@@ -52,7 +52,7 @@ Deno.test({
       });
 
       // Check that versions.json file exists
-      let versions = await s3.getObject("ltest/meta/versions.json");
+      const versions = await s3.getObject("ltest/meta/versions.json");
       assertEquals(versions?.cacheControl, "max-age=10, must-revalidate");
       assertEquals(versions?.contentType, "application/json");
       assertEquals(
@@ -60,7 +60,7 @@ Deno.test({
         { latest: "0.0.9", versions: ["0.0.9"] },
       );
 
-      let meta = await s3.getObject("ltest/versions/0.0.9/meta/meta.json");
+      const meta = await s3.getObject("ltest/versions/0.0.9/meta/meta.json");
       assertEquals(meta?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(meta?.contentType, "application/json");
       // Check that meta file exists
@@ -170,7 +170,7 @@ Deno.test({
         },
       );
 
-      let deps = await s3.getObject("ltest/versions/0.0.9/meta/deps_v2.json");
+      const deps = await s3.getObject("ltest/versions/0.0.9/meta/deps_v2.json");
       assertEquals(deps?.cacheControl, "max-age=10, must-revalidate");
       assertEquals(deps?.contentType, "application/json");
       // Check that meta file exists
@@ -291,7 +291,7 @@ Deno.test({
       );
 
       // Check the yml file was uploaded
-      let yml = await s3.getObject(
+      const yml = await s3.getObject(
         "ltest/versions/0.0.9/raw/.github/workflows/ci.yml",
       );
       assertEquals(yml?.cacheControl, "public, max-age=31536000, immutable");
@@ -299,13 +299,13 @@ Deno.test({
       assertEquals(yml?.body.length, 412);
 
       // Check the ts file was uploaded
-      let ts = await s3.getObject("ltest/versions/0.0.9/raw/mod.ts");
+      const ts = await s3.getObject("ltest/versions/0.0.9/raw/mod.ts");
       assertEquals(ts?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(ts?.contentType, "application/typescript; charset=utf-8");
       assertEquals(ts?.body.length, 139);
 
       // Check the ts file was uploaded
-      let readme = await s3.getObject(
+      const readme = await s3.getObject(
         "ltest/versions/0.0.9/raw/.github/README.md",
       );
       assertEquals(readme?.cacheControl, "public, max-age=31536000, immutable");
@@ -360,7 +360,7 @@ Deno.test({
       });
 
       // Check that versions.json file exists
-      let versions = await s3.getObject("ltest/meta/versions.json");
+      const versions = await s3.getObject("ltest/meta/versions.json");
       assertEquals(versions?.cacheControl, "max-age=10, must-revalidate");
       assertEquals(versions?.contentType, "application/json");
       assertEquals(
@@ -368,7 +368,7 @@ Deno.test({
         { latest: "0.0.7", versions: ["0.0.7"] },
       );
 
-      let meta = await s3.getObject("ltest/versions/0.0.7/meta/meta.json");
+      const meta = await s3.getObject("ltest/versions/0.0.7/meta/meta.json");
       assertEquals(meta?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(meta?.contentType, "application/json");
       // Check that meta file exists
@@ -410,13 +410,13 @@ Deno.test({
       );
 
       // Check the ts file was uploaded
-      let ts = await s3.getObject("ltest/versions/0.0.7/raw/mod.ts");
+      const ts = await s3.getObject("ltest/versions/0.0.7/raw/mod.ts");
       assertEquals(ts?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(ts?.contentType, "application/typescript; charset=utf-8");
       assertEquals(ts?.body.length, 71);
 
       // Check the ts file was uploaded
-      let readme = await s3.getObject("ltest/versions/0.0.7/raw/README.md");
+      const readme = await s3.getObject("ltest/versions/0.0.7/raw/README.md");
       assertEquals(readme?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(readme?.contentType, "text/markdown");
       assertEquals(readme?.body.length, 354);

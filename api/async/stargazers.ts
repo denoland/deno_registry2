@@ -39,12 +39,12 @@ export async function handler(
   __: Context,
 ): Promise<void> {
   const modules = await database.listAllModules();
-  for (let mod of modules) {
+  for (const module of modules) {
     try {
-      const repo = await (await gh.getRepo(mod.owner, mod.repo)).json();
-      if (repo.stargazers_count !== mod.star_count) {
-        mod.star_count = repo.stargazers_count;
-        await database.saveModule(mod as unknown as Module);
+      const repo = await (await gh.getRepo(module.owner, module.repo)).json();
+      if (repo.stargazers_count !== module.star_count) {
+        module.star_count = repo.stargazers_count;
+        await database.saveModule(module as unknown as Module);
       }
     } catch (err) {
       console.log(`failed to fetch repo from github api: ${err}`);
