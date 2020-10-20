@@ -21,7 +21,7 @@ export interface SearchOptions {
   limit: number;
   page: number;
   query?: string;
-  sort?: Sort;
+  sort?: Sort | "random";
 }
 
 export type Sort = "stars" | "newest" | "oldest";
@@ -30,6 +30,7 @@ const sort = {
   stars: { "star_count": -1 },
   newest: { "created_at": -1 },
   oldest: { "created_at": 1 },
+  random: null,
 };
 
 export const SortValues = Object.keys(sort);
@@ -159,6 +160,23 @@ export class Database {
     }
     if (options.sort === undefined) {
       options.sort = "stars";
+    }
+
+    // The random sort option is not compatible with the 'search' and 'page'
+    // options.
+    if (options.sort === "random") {
+      return (await this._modules.aggregate([
+        {
+          $match: {
+            is_unlisted: { $not: { $eq: true } },
+          },
+        },
+        {
+          $sample: {
+            size: options.limit,
+          },
+        },
+      ]) as ScoredModule[]);
     }
 
     // If search is present, add a search step to the aggregation pipeline
