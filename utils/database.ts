@@ -26,6 +26,13 @@ export interface SearchOptions {
 
 export type Sort = "stars" | "newest" | "oldest";
 
+export type BuildStatus =
+  | "queued"
+  | "success"
+  | "error"
+  | "publishing"
+  | "analyzing_dependencies";
+
 const sort = {
   stars: { "star_count": -1 },
   newest: { "created_at": -1 },
@@ -66,7 +73,7 @@ export interface Build {
     version: string;
     subdir?: string;
   };
-  status: string;
+  status: BuildStatus;
   message?: string;
   stats?: BuildStats;
 }
