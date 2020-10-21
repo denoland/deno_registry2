@@ -132,16 +132,16 @@ async function publishGithub(
       if (entry.isFile) {
         const stat = await Deno.stat(entry.path);
         directory.push({ path: filename, size: stat.size, type: "file" });
+      } else {
+        directory.push({ path: filename, size: undefined, type: "dir" });
       }
-
-      directory.push({ path: filename, size: undefined, type: "dir" });
     }));
 
     const totalSize = directorySize(directory);
 
     if (totalSize > DEFAULT_MAX_TOTAL_SIZE) {
       const message =
-        `Module too large. Total maximum allowed size is ${DEFAULT_MAX_TOTAL_SIZE} bytes.`;
+        `Module too large (${totalSize} bytes). Maximum allowed size is ${DEFAULT_MAX_TOTAL_SIZE} bytes.`;
       console.log(message);
       throw new Error(message);
     }
