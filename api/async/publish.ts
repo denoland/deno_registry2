@@ -22,11 +22,12 @@ import {
 import type { DirectoryListingFile } from "../../utils/types.ts";
 import { DepGraph, runDenoInfo } from "../../utils/deno.ts";
 import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
+
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const remoteURL = Deno.env.get("REMOTE_URL")!;
 
-const MAX_FILE_SIZE = 2_500_000;
+const DEFAULT_MAX_TOTAL_SIZE = 1024 * 1024 * 20; // 20 mb in total
 
 const decoder = new TextDecoder();
 
@@ -81,7 +82,6 @@ async function publishGithub(
   build: Build,
 ): Promise<{
   total_files: number;
-  skipped_due_to_size: string[];
   total_size: number;
 }> {
   console.log(
@@ -101,10 +101,6 @@ async function publishGithub(
   console.log("Finished clone");
 
   try {
-    // Upload files to S3
-    const skippedFiles: string[] = [];
-    const directory: DirectoryListingFile[] = [];
-
     // Create path that has possible subdir prefix
     const path = (subdir === undefined ? clonePath : join(clonePath, subdir))
       .replace(
@@ -125,36 +121,43 @@ async function publishGithub(
 
     console.log("Total files in repo", entries.length);
 
-    // Pool requests because of https://github.com/denoland/deno_registry2/issues/15
-    await collectAsyncIterable(pooledMap(65, entries, async (entry) => {
-      // If this is a file in the .git folder, ignore it
-      if (
-        entry.path.startsWith(join(path, ".git/")) ||
-        entry.path === join(path, ".git")
-      ) {
-        return;
-      }
+    const directory: DirectoryListingFile[] = [];
 
+    await collectAsyncIterable(pooledMap(100, entries, async (entry) => {
       const filename = entry.path.substring(path.length);
+
+      // If this is a file in the .git folder, ignore it
+      if (filename.startsWith("/.git/") || filename === "/.git") return;
+
       if (entry.isFile) {
-        const file = await Deno.open(entry.path);
+        const stat = await Deno.stat(entry.path);
+        directory.push({ path: filename, size: stat.size, type: "file" });
+      } else {
+        directory.push({ path: filename, size: undefined, type: "dir" });
+      }
+    }));
+
+    const totalSize = directorySize(directory);
+
+    if (totalSize > DEFAULT_MAX_TOTAL_SIZE) {
+      const message =
+        `Module too large (${totalSize} bytes). Maximum allowed size is ${DEFAULT_MAX_TOTAL_SIZE} bytes.`;
+      console.log(message);
+      throw new Error(message);
+    }
+
+    // Pool requests because of https://github.com/denoland/deno_registry2/issues/15
+    await collectAsyncIterable(pooledMap(65, directory, async (entry) => {
+      if (entry.type === "file") {
+        const file = await Deno.open(join(path, entry.path));
         const body = await Deno.readAll(file);
-        if (body.length > MAX_FILE_SIZE) {
-          skippedFiles.push(filename);
-          return;
-        }
-        directory.push(
-          { path: filename, size: body.length, type: "file" },
-        );
         await uploadVersionRaw(
           moduleName,
           version,
-          filename,
+          entry.path,
           body,
         );
         file.close();
-      } else {
-        directory.push({ path: filename, size: undefined, type: "dir" });
       }
     }));
 
@@ -167,8 +170,6 @@ async function publishGithub(
       "versions.json",
       { latest: version, versions: [version, ...versions.versions] },
     );
-
-    const totalSize = directorySize(directory);
 
     // Upload directory listing to S3
     await uploadVersionMetaJson(
@@ -192,7 +193,6 @@ async function publishGithub(
 
     return {
       total_files: directory.filter((f) => f.type === "file").length,
-      skipped_due_to_size: skippedFiles,
       total_size: totalSize,
     };
   } finally {

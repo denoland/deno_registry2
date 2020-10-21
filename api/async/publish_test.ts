@@ -45,7 +45,6 @@ Deno.test({
         status: "success",
         message: "Published module.",
         stats: {
-          skipped_due_to_size: [],
           total_files: 11,
           total_size: 2735,
         },
@@ -353,7 +352,6 @@ Deno.test({
         status: "success",
         message: "Published module.",
         stats: {
-          skipped_due_to_size: [],
           total_files: 2,
           total_size: 425,
         },
@@ -420,6 +418,59 @@ Deno.test({
       assertEquals(readme?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(readme?.contentType, "text/markdown");
       assertEquals(readme?.body.length, 354);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
+  name: "publish too large",
+  async fn() {
+    try {
+      const id = await database.createBuild({
+        options: {
+          moduleName: "ltest_big",
+          ref: "0.0.1",
+          repository: "luca-rand/testing_big",
+          type: "github",
+          version: "0.0.1",
+        },
+        status: "queued",
+      });
+
+      await handler(
+        createSQSEvent({ buildID: id }),
+        createContext(),
+      );
+
+      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+        created_at: undefined,
+        id,
+        options: {
+          moduleName: "ltest_big",
+          ref: "0.0.1",
+          repository: "luca-rand/testing_big",
+          type: "github",
+          version: "0.0.1",
+        },
+        status: "error",
+        message:
+          "Module too large (26214825 bytes). Maximum allowed size is 20971520 bytes.",
+        stats: undefined,
+      });
+
+      // Check that versions.json file does not exists
+      const versions = await s3.getObject("ltest/meta/versions.json");
+      assertEquals(versions, undefined);
+
+      const meta = await s3.getObject("ltest/versions/0.0.1/meta/meta.json");
+      assertEquals(meta, undefined);
+
+      // Check the readme file was not uploaded
+      const readme = await s3.getObject("ltest/versions/0.0.1/raw/README.md");
+      assertEquals(readme, undefined);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();

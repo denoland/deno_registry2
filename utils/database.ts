@@ -74,7 +74,6 @@ export interface Build {
 export interface BuildStats {
   total_files: number;
   total_size: number;
-  skipped_due_to_size: string[];
 }
 
 export interface OwnerQuota {
