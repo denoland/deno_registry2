@@ -894,6 +894,104 @@ Deno.test({
 });
 
 Deno.test({
+  name: "create event previously failed",
+  async fn() {
+    try {
+      await database.createBuild({
+        options: {
+          moduleName: "ltest2",
+          ref: "0.0.7",
+          repository: "luca-rand/testing",
+          type: "github",
+          version: "0.0.7",
+        },
+        status: "error",
+      });
+
+      // Send push event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest2",
+          createevent,
+          { name: "ltest2" },
+          {},
+        ),
+        createContext(),
+      );
+
+      const builds = await database._builds.find({});
+
+      // Check that a new build was queued in addition to the errored build
+      assertEquals(builds.length, 2);
+      assertEquals(
+        builds[0],
+        {
+          _id: builds[0]._id,
+          created_at: builds[0].created_at,
+          options: {
+            moduleName: "ltest2",
+            type: "github",
+            repository: "luca-rand/testing",
+            ref: "0.0.7",
+            version: "0.0.7",
+          },
+          status: "error",
+        },
+      );
+      assertEquals(
+        builds[1],
+        {
+          _id: builds[1]._id,
+          created_at: builds[1].created_at,
+          options: {
+            moduleName: "ltest2",
+            type: "github",
+            repository: "luca-rand/testing",
+            ref: "0.0.7",
+            version: "0.0.7",
+          },
+          status: "queued",
+        },
+      );
+
+      assertEquals(resp, {
+        body:
+          `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+            builds[1]._id.$oid
+          }"}}`,
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 200,
+      });
+
+      // Check that the database entry was created
+      const ltest2 = await database.getModule("ltest2");
+      assert(ltest2);
+      assert(ltest2.created_at <= new Date());
+      ltest2.created_at = new Date(2020, 1, 1);
+
+      // Check that the database entry
+      assertEquals(ltest2, {
+        name: "ltest2",
+        type: "github",
+        repo_id: 274939732,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
   name: "create event rename repository",
   async fn() {
     try {

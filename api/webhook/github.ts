@@ -588,7 +588,7 @@ async function checkVersion(
 
   // Check that a build has not already been queued
   const build = await database.getBuildForVersion(moduleName, version);
-  if (build !== null) {
+  if (build !== null && build.status !== "error") {
     return respondJSON({
       statusCode: 400,
       body: JSON.stringify({
