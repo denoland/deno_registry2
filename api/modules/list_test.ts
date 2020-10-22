@@ -36,7 +36,7 @@ Deno.test({
         res,
         {
           body:
-            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4},{"name":"ltest3","description":"ltest repo","star_count":3},{"name":"ltest2","description":"ltest repo","star_count":2},{"name":"ltest1","description":"ltest repo","star_count":1},{"name":"ltest0","description":"ltest repo","star_count":0}]}}',
+            '{"success":true,"data":{"total_count":5,"options":{"limit":20,"page":1,"sort":"stars"},"results":[{"name":"ltest4","description":"ltest repo","star_count":4},{"name":"ltest3","description":"ltest repo","star_count":3},{"name":"ltest2","description":"ltest repo","star_count":2},{"name":"ltest1","description":"ltest repo","star_count":1},{"name":"ltest0","description":"ltest repo","star_count":0}]}}',
           headers: {
             "content-type": "application/json",
           },
@@ -75,7 +75,7 @@ Deno.test({
         ),
         {
           body:
-            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest2","description":"ltest repo","star_count":2},{"name":"ltest1","description":"ltest repo","star_count":1}]}}',
+            '{"success":true,"data":{"total_count":5,"options":{"limit":2,"page":2,"sort":"stars"},"results":[{"name":"ltest2","description":"ltest repo","star_count":2},{"name":"ltest1","description":"ltest repo","star_count":1}]}}',
           headers: {
             "content-type": "application/json",
           },
@@ -94,7 +94,8 @@ Deno.test({
           createContext(),
         ),
         {
-          body: '{"success":true,"data":{"total_count":5,"results":[]}}',
+          body:
+            '{"success":true,"data":{"total_count":5,"options":{"limit":2,"page":5,"sort":"stars"},"results":[]}}',
           headers: {
             "content-type": "application/json",
           },
@@ -258,7 +259,7 @@ Deno.test({
         res,
         {
           body:
-            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
+            '{"success":true,"data":{"total_count":5,"options":{"limit":1,"page":1,"sort":"stars"},"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
           headers: {
             "content-type": "application/json",
           },
@@ -281,7 +282,7 @@ Deno.test({
         res,
         {
           body:
-            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
+            '{"success":true,"data":{"total_count":5,"options":{"limit":1,"page":1,"sort":"stars"},"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
           headers: {
             "content-type": "application/json",
           },
@@ -304,7 +305,7 @@ Deno.test({
         res,
         {
           body:
-            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest0","description":"ltest repo","star_count":0}]}}',
+            '{"success":true,"data":{"total_count":5,"options":{"limit":1,"page":1,"sort":"oldest"},"results":[{"name":"ltest0","description":"ltest repo","star_count":0}]}}',
           headers: {
             "content-type": "application/json",
           },
@@ -327,7 +328,7 @@ Deno.test({
         res,
         {
           body:
-            '{"success":true,"data":{"total_count":5,"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
+            '{"success":true,"data":{"total_count":5,"options":{"limit":1,"page":1,"sort":"newest"},"results":[{"name":"ltest4","description":"ltest repo","star_count":4}]}}',
           headers: {
             "content-type": "application/json",
           },
@@ -357,7 +358,7 @@ Deno.test({
           created_at: new Date(2020, 1, 1),
         });
 
-        const res = await handler(
+        let res = await handler(
           createAPIGatewayProxyEventV2("GET", "/modules", {
             queryStringParameters: {
               sort: "random",
@@ -367,8 +368,35 @@ Deno.test({
           // deno-lint-ignore no-explicit-any
         ) as any;
 
+        let body = JSON.parse(res.body);
+
         assert(res);
         assertEquals(res.statusCode, 200);
+        assertEquals(
+          body.data?.options,
+          { "limit": 20, "page": 1, "sort": "random" },
+        );
+
+        res = await handler(
+          createAPIGatewayProxyEventV2("GET", "/modules", {
+            queryStringParameters: {
+              page: "2",
+              query: "foo",
+              sort: "random",
+            },
+          }),
+          createContext(),
+          // deno-lint-ignore no-explicit-any
+        ) as any;
+
+        body = JSON.parse(res.body);
+
+        assert(res);
+        assertEquals(res.statusCode, 200);
+        assertEquals(
+          body.data?.options,
+          { "limit": 20, "page": 1, "sort": "random" },
+        );
       }
     } finally {
       await cleanupDatabase(database);

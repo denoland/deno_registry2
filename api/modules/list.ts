@@ -15,6 +15,8 @@ import type {
 import { respondJSON } from "../../utils/http.ts";
 import {
   Database,
+  ListModuleResult,
+  SearchOptions,
   SearchResult,
   Sort,
   SortValues,
@@ -64,36 +66,41 @@ export async function handler(
     });
   }
 
-  if (sort !== undefined && !SortValues.includes(sort)) {
+  const publicSort = SortValues.filter((s) => s !== "search_order");
+  if (sort !== undefined && !publicSort.includes(sort)) {
     return respondJSON({
       statusCode: 400,
       body: JSON.stringify({
         success: false,
-        error: `the sort order must be one of ${SortValues.join(", ")}`,
+        error: `the sort order must be one of ${publicSort.join(", ")}`,
       }),
     });
   }
 
-  const [results, count] = await Promise.all([
+  const [searchResult, count] = await Promise.all([
     database.listModules({ limit, page, query, sort: sort as Sort }).then(
-      (results: ScoredModule[]): SearchResult[] => {
+      (results: ListModuleResult): [SearchOptions, SearchResult[]] => {
         // Transform the results
-        return results.map((doc: ScoredModule) => ({
+        const options = results[0];
+        const mods = results[1].map((doc: ScoredModule): SearchResult => ({
           name: doc._id,
           description: doc.description,
           star_count: doc.star_count,
           search_score: doc.search_score,
         }));
+        return [options, mods];
       },
     ),
     database.countModules(),
   ]);
 
+  const [options, results] = searchResult;
+
   return respondJSON({
     statusCode: 200,
     body: JSON.stringify({
       success: true,
-      data: { total_count: count, results },
+      data: { total_count: count, options, results },
     }),
   });
 }
