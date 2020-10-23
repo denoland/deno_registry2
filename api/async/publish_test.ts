@@ -477,3 +477,64 @@ Deno.test({
     }
   },
 });
+
+Deno.test({
+  name: "publish large custom quota",
+  async fn() {
+    try {
+      await database.saveOwnerQuota({
+        owner: "luca-rand",
+        type: "github",
+        max_modules: 7,
+        max_total_size: 1024 * 1024 * 50,
+        blocked: false,
+      });
+
+      const id = await database.createBuild({
+        options: {
+          moduleName: "ltest_big",
+          ref: "0.0.1",
+          repository: "luca-rand/testing_big",
+          type: "github",
+          version: "0.0.1",
+        },
+        status: "queued",
+      });
+
+      await handler(
+        createSQSEvent({ buildID: id }),
+        createContext(),
+      );
+
+      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+        created_at: undefined,
+        id,
+        options: {
+          moduleName: "ltest_big",
+          ref: "0.0.1",
+          repository: "luca-rand/testing_big",
+          type: "github",
+          version: "0.0.1",
+        },
+        status: "success",
+        message: "Published module.",
+        stats: {
+          total_files: 28,
+          total_size: 26214825,
+        },
+      });
+
+      // Check that versions.json file exists
+      const versions = await s3.getObject("ltest_big/meta/versions.json");
+      assertEquals(versions?.cacheControl, "max-age=10, must-revalidate");
+      assertEquals(versions?.contentType, "application/json");
+      assertEquals(
+        JSON.parse(decoder.decode(versions?.body)),
+        { latest: "0.0.1", versions: ["0.0.1"] },
+      );
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
