@@ -153,6 +153,7 @@ const ownerQuota1: OwnerQuota = {
   owner: "luca-rand",
   type: "github",
   max_modules: 5,
+  max_total_size: undefined,
   blocked: false,
 };
 

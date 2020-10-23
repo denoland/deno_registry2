@@ -87,6 +87,9 @@ async function publishGithub(
   console.log(
     `Publishing ${build.options.moduleName} at ${build.options.ref} from GitHub`,
   );
+  const quota = await database.getOwnerQuota(
+    build.options.repository.split("/")[0] as string,
+  );
   await database.saveBuild({
     ...build,
     status: "publishing",
@@ -139,7 +142,7 @@ async function publishGithub(
 
     const totalSize = directorySize(directory);
 
-    if (totalSize > DEFAULT_MAX_TOTAL_SIZE) {
+    if (totalSize > (quota?.max_total_size ?? DEFAULT_MAX_TOTAL_SIZE)) {
       const message =
         `Module too large (${totalSize} bytes). Maximum allowed size is ${DEFAULT_MAX_TOTAL_SIZE} bytes.`;
       console.log(message);

@@ -87,6 +87,7 @@ export interface OwnerQuota {
   owner: string;
   type: string;
   max_modules: number;
+  max_total_size?: number;
   blocked: boolean;
 }
 
@@ -360,6 +361,7 @@ export class Database {
       owner: ownerQuota._id as string,
       type: ownerQuota.type,
       max_modules: ownerQuota.max_modules,
+      max_total_size: ownerQuota.max_total_size,
       blocked: ownerQuota.blocked,
     };
   }
@@ -379,6 +381,7 @@ export class Database {
         _id: ownerQuota.owner as any,
         type: ownerQuota.type,
         max_modules: ownerQuota.max_modules,
+        max_total_size: ownerQuota.max_total_size,
         blocked: ownerQuota.blocked,
       },
       { upsert: true },
