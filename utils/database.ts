@@ -21,8 +21,10 @@ export interface SearchOptions {
   limit: number;
   page: number;
   query?: string;
-  sort?: Sort | "random";
+  sort?: Sort | "random" | "search_order";
 }
+
+export type ListModuleResult = [SearchOptions, ScoredModule[]];
 
 export type Sort = "stars" | "newest" | "oldest";
 
@@ -38,6 +40,7 @@ const sort = {
   newest: { "created_at": -1 },
   oldest: { "created_at": 1 },
   random: null,
+  search_order: null,
 };
 
 export const SortValues = Object.keys(sort);
@@ -155,7 +158,7 @@ export class Database {
     );
   }
 
-  async listModules(options: SearchOptions): Promise<ScoredModule[]> {
+  async listModules(options: SearchOptions): Promise<ListModuleResult> {
     if (typeof options.limit !== "number") {
       throw new Error("limit must be a number");
     }
@@ -172,23 +175,30 @@ export class Database {
     // The random sort option is not compatible with the 'search' and 'page'
     // options.
     if (options.sort === "random") {
-      return (await this._modules.aggregate([
-        {
-          $match: {
-            is_unlisted: { $not: { $eq: true } },
+      options.page = 1;
+      options.query = undefined;
+      return [
+        options,
+        (await this._modules.aggregate([
+          {
+            $match: {
+              is_unlisted: { $not: { $eq: true } },
+            },
           },
-        },
-        {
-          $sample: {
-            size: options.limit,
+          {
+            $sample: {
+              size: options.limit,
+            },
           },
-        },
-      ]) as ScoredModule[]);
+        ]) as ScoredModule[]),
+      ];
     }
 
     // If search is present, add a search step to the aggregation pipeline
-    const searchAggregation = options.query
-      ? [
+    let searchAggregation;
+    if (options.query) {
+      options.sort = "search_order";
+      searchAggregation = [
         {
           $search: {
             text: {
@@ -215,8 +225,9 @@ export class Database {
             search_score: -1,
           },
         },
-      ]
-      : [
+      ];
+    } else {
+      searchAggregation = [
         {
           $match: {
             is_unlisted: { $not: { $eq: true } },
@@ -226,6 +237,7 @@ export class Database {
           $sort: sort[options.sort],
         },
       ];
+    }
 
     //  Query the database
     const docs = (await this._modules.aggregate([
@@ -238,7 +250,7 @@ export class Database {
       },
     ])) as ScoredModule[];
 
-    return docs;
+    return [options, docs];
   }
 
   async listAllModules(): Promise<Module[]> {
