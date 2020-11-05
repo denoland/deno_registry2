@@ -13,6 +13,10 @@ import type {
 import { ObjectId } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
+import type {
+  APIBuildGetResponseSuccess,
+  APIErrorResponse,
+} from "../../utils/types.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -25,7 +29,9 @@ export async function handler(
   if (!id) {
     return respondJSON({
       statusCode: 400,
-      body: JSON.stringify({ success: false, error: "no build id provided" }),
+      body: JSON.stringify(
+        { success: false, error: "no build id provided" } as APIErrorResponse,
+      ),
     });
   }
 
@@ -34,7 +40,9 @@ export async function handler(
   } catch (err) {
     return respondJSON({
       statusCode: 400,
-      body: JSON.stringify({ success: false, error: "invalid build id" }),
+      body: JSON.stringify(
+        { success: false, error: "invalid build id" } as APIErrorResponse,
+      ),
     });
   }
 
@@ -43,12 +51,16 @@ export async function handler(
   if (build === null) {
     return respondJSON({
       statusCode: 404,
-      body: JSON.stringify({ success: false, error: "build not found" }),
+      body: JSON.stringify(
+        { success: false, error: "build not found" } as APIErrorResponse,
+      ),
     });
   }
 
   return respondJSON({
     statusCode: 200,
-    body: JSON.stringify({ success: true, data: { build } }),
+    body: JSON.stringify(
+      { success: true, data: { build } } as APIBuildGetResponseSuccess,
+    ),
   });
 }

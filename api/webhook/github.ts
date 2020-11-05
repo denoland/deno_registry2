@@ -27,7 +27,12 @@ import type {
 } from "../../utils/webhooks.d.ts";
 import { isIp4InCidrs } from "../../utils/net.ts";
 import { queueBuild } from "../../utils/queue.ts";
-import type { VersionInfo } from "../../utils/types.ts";
+import type {
+  APIErrorResponse,
+  APIInfoResponse,
+  APIWebhookResponseSuccess,
+  VersionInfo,
+} from "../../utils/types.ts";
 import { isForbidden } from "../../utils/moderation.ts";
 
 interface WebhookEvent {
@@ -50,7 +55,7 @@ export async function handler(
       body: JSON.stringify({
         success: false,
         error: "request does not come from GitHub",
-      }),
+      } as APIErrorResponse),
     });
   }
 
@@ -61,7 +66,7 @@ export async function handler(
       body: JSON.stringify({
         success: false,
         error: "no module name specified",
-      }),
+      } as APIErrorResponse),
     });
   }
 
@@ -78,7 +83,7 @@ export async function handler(
       body: JSON.stringify({
         success: false,
         error: "content-type is not json or x-www-form-urlencoded",
-      }),
+      } as APIErrorResponse),
     });
   }
 
@@ -101,7 +106,7 @@ export async function handler(
         body: JSON.stringify({
           success: false,
           info: "not a ping, or create event",
-        }),
+        } as APIInfoResponse),
       });
   }
 }
@@ -121,7 +126,7 @@ async function pingEvent(
       body: JSON.stringify({
         success: false,
         error: "no body provided",
-      }),
+      } as APIErrorResponse),
     });
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
@@ -178,7 +183,7 @@ async function pingEvent(
         module: moduleName,
         repository: `${owner}/${repo}`,
       },
-    }),
+    } as APIWebhookResponseSuccess),
   });
 }
 
@@ -195,7 +200,7 @@ async function pushEvent(
       body: JSON.stringify({
         success: false,
         error: "no body provided",
-      }),
+      } as APIErrorResponse),
     });
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPush;
@@ -208,7 +213,7 @@ async function pushEvent(
       body: JSON.stringify({
         success: false,
         info: "created ref is not tag",
-      }),
+      } as APIInfoResponse),
     });
   }
 
@@ -249,7 +254,7 @@ async function createEvent(
       body: JSON.stringify({
         success: false,
         error: "no body provided",
-      }),
+      } as APIErrorResponse),
     });
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadCreate;
@@ -263,7 +268,7 @@ async function createEvent(
       body: JSON.stringify({
         success: false,
         info: "created ref is not tag",
-      }),
+      } as APIInfoResponse),
     });
   }
 
@@ -322,7 +327,7 @@ async function initiateBuild(
       body: JSON.stringify({
         success: false,
         info: "ignoring event as the version does not match the version prefix",
-      }),
+      } as APIInfoResponse),
     });
   }
 
@@ -382,7 +387,7 @@ async function initiateBuild(
         repository: `${owner}/${repo}`,
         status_url: `https://deno.land/status/${buildID}`,
       },
-    }),
+    } as APIWebhookResponseSuccess),
   });
 }
 
@@ -428,7 +433,7 @@ function checkSubdir(
         body: JSON.stringify({
           success: false,
           error: "provided sub directory is not valid as it starts with a /",
-        }),
+        } as APIErrorResponse),
       });
     } else if (!subdir.endsWith("/")) {
       return respondJSON({
@@ -437,7 +442,7 @@ function checkSubdir(
           success: false,
           error:
             "provided sub directory is not valid as it does not end with a /",
-        }),
+        } as APIErrorResponse),
       });
     }
   }
@@ -454,7 +459,7 @@ async function checkBlocked(
       body: JSON.stringify({
         success: false,
         error: `Publishing your module failed. Please contact ry@deno.land.`,
-      }),
+      } as APIErrorResponse),
     });
   }
   return;
@@ -472,7 +477,7 @@ function checkMatchesRepo(
       body: JSON.stringify({
         success: false,
         error: "module name is registered to a different repository",
-      }),
+      } as APIErrorResponse),
     });
   }
   return;
@@ -495,7 +500,7 @@ async function checkModulesInRepo(
         success: false,
         error:
           `Max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached. Please contact ry@deno.land if you need more.`,
-      }),
+      } as APIErrorResponse),
     });
   }
   return;
@@ -517,7 +522,7 @@ async function hasReachedQuota(
         success: false,
         error:
           `Max number of modules for one user/org (${maxModuleQuota}) has been reached. Please contact ry@deno.land if you need more.`,
-      }),
+      } as APIErrorResponse),
     });
   }
   return;
@@ -536,7 +541,7 @@ async function checkName(
         body: JSON.stringify({
           success: false,
           error: "module name is not valid",
-        }),
+        } as APIErrorResponse),
       });
     }
 
@@ -549,7 +554,7 @@ async function checkName(
         body: JSON.stringify({
           success: false,
           error: "found forbidden word in module name",
-        }),
+        } as APIErrorResponse),
       });
     }
   }
@@ -582,7 +587,7 @@ async function checkVersion(
       body: JSON.stringify({
         success: false,
         error: "version already exists",
-      }),
+      } as APIErrorResponse),
     });
   }
 
@@ -594,7 +599,7 @@ async function checkVersion(
       body: JSON.stringify({
         success: false,
         error: "this module version is already being published",
-      }),
+      } as APIErrorResponse),
     });
   }
   return;
