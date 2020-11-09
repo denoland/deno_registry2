@@ -11,7 +11,7 @@ The contents and headers should be a GitHub `create` or `push` webhook event. Mo
 There are optional query parameters that can change the behavior of the request:
 
 - `subdir`: this specifies a subdirectory of the repository to upload (not set by default). This directory must be in the format `std/` (notice the trailing slash.)
-- `version_prefix`: only upload versions that match this prefix. When this is set to `std/` and you tag version `std/0.63.0`, version `0.63.0` will be uploaded.
+- `version_prefix_filter`: only upload versions that match this prefix. When this is set to `std/` and you tag version `std/0.63.0`, version `0.63.0` will be uploaded. You can a `keep_version_prefix=true` query parameter to retain the version prefix for publishing (`std/0.63.0` would be published as `std/0.63.0`).
 
 ### Response
 
@@ -59,7 +59,7 @@ OR
 ```json
 {
   "success": false,
-  "error": "module name is registered to a different repository",
+  "error": "module name is registered to a different repository"
 }
 ```
 

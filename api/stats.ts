@@ -19,10 +19,10 @@ export async function handler(
   event: APIGatewayProxyEventV2,
   context: Context,
 ): Promise<APIGatewayProxyResultV2> {
-  const total_count = await database.countModules();
-  const total_versions = await database.countAllVersions();
-  const recently_added_modules = await database.listRecentlyAddedModules();
-  const recently_uploaded_versions = await database
+  const totalCount = await database.countModules();
+  const totalVersions = await database.countAllVersions();
+  const recentlyAddedModules = await database.listRecentlyAddedModules();
+  const recentlyUploadedVersions = await database
     .listRecentlyUploadedVersions();
 
   return respondJSON({
@@ -30,10 +30,10 @@ export async function handler(
     body: JSON.stringify({
       success: true,
       data: {
-        total_count,
-        total_versions,
-        recently_added_modules,
-        recently_uploaded_versions,
+        total_count: totalCount,
+        total_versions: totalVersions,
+        recently_added_modules: recentlyAddedModules,
+        recently_uploaded_versions: recentlyUploadedVersions,
       },
     }),
   });
