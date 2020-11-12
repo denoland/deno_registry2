@@ -87,7 +87,8 @@ Deno.test({
     );
 
     // Cleanup
-    await database._modules.deleteMany({});
+    await database.deleteModule(ltest.name);
+    await database.deleteModule(utest.name);
   },
 });
 

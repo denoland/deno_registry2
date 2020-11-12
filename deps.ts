@@ -14,6 +14,9 @@ export {
   MongoClient,
   ObjectId,
 } from "https://deno.land/x/mongo@v0.13.0/mod.ts";
+export type {
+  WithID,
+} from "https://deno.land/x/mongo@v0.13.0/mod.ts";
 export { S3Bucket } from "https://deno.land/x/s3@0.2.0/mod.ts";
 export { SQSQueue } from "https://deno.land/x/sqs@0.3.4/mod.ts";
 export { SSM } from "https://deno.land/x/ssm@0.1.2/mod.ts";
