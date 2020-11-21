@@ -16,9 +16,9 @@ jobs:
       CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
     steps:
       - name: Setup Deno environment
-        uses: denolib/setup-deno@v2.2.0
+        uses: denolib/setup-deno@v2.3.0
         with:
-          deno-version: v1.4.6
+          deno-version: v1.5.2
 
       - uses: actions/checkout@v2
 
