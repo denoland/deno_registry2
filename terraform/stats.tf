@@ -12,7 +12,7 @@ resource "aws_lambda_function" "stats" {
 
   source_code_hash = filebase64sha256(data.archive_file.stats_zip.output_path)
 
-  runtime = "provided"
+  runtime = "provided.al2"
   layers  = [aws_lambda_layer_version.deno_layer.arn]
 
   timeout     = 10

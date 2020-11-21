@@ -14,9 +14,10 @@ locals {
 }
 
 resource "aws_lambda_layer_version" "deno_layer" {
-  filename         = "${path.module}/.terraform/dl/deno-lambda-layer.zip"
-  layer_name       = "${local.prefix}-deno-${local.short_uuid}"
-  source_code_hash = filebase64sha256("${path.module}/.terraform/dl/deno-lambda-layer.zip")
+  filename            = "${path.module}/.terraform/dl/deno-lambda-layer.zip"
+  layer_name          = "${local.prefix}-deno-${local.short_uuid}"
+  source_code_hash    = filebase64sha256("${path.module}/.terraform/dl/deno-lambda-layer.zip")
+  compatible_runtimes = ["provided.al2"]
 }
 
 resource "aws_s3_bucket" "storage_bucket" {

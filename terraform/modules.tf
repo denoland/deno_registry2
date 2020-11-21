@@ -14,7 +14,7 @@ resource "aws_lambda_function" "modules_get" {
 
   source_code_hash = filebase64sha256(data.archive_file.modules_get_zip.output_path)
 
-  runtime = "provided"
+  runtime = "provided.al2"
   layers  = [aws_lambda_layer_version.deno_layer.arn]
 
   timeout     = local.lambda_default_timeout
@@ -71,7 +71,7 @@ resource "aws_lambda_function" "modules_list" {
 
   source_code_hash = filebase64sha256(data.archive_file.modules_list_zip.output_path)
 
-  runtime = "provided"
+  runtime = "provided.al2"
   layers  = [aws_lambda_layer_version.deno_layer.arn]
 
   timeout     = local.lambda_default_timeout
