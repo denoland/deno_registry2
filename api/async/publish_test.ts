@@ -209,10 +209,10 @@ Deno.test({
               },
               "https://deno.land/std@0.64.0/uuid/v5.ts": {
                 deps: [
-                  "https://deno.land/std@0.64.0/_util/assert.ts",
+                  "https://deno.land/std@0.64.0/uuid/_common.ts",
                   "https://deno.land/std@0.64.0/hash/sha1.ts",
                   "https://deno.land/std@0.64.0/node/util.ts",
-                  "https://deno.land/std@0.64.0/uuid/_common.ts",
+                  "https://deno.land/std@0.64.0/_util/assert.ts",
                 ],
                 size: 1340,
               },
@@ -222,8 +222,8 @@ Deno.test({
               },
               "https://deno.land/std@0.64.0/node/util.ts": {
                 deps: [
-                  "https://deno.land/std@0.64.0/node/_util/_util_callbackify.ts",
                   "https://deno.land/std@0.64.0/node/_util/_util_promisify.ts",
+                  "https://deno.land/std@0.64.0/node/_util/_util_callbackify.ts",
                   "https://deno.land/std@0.64.0/node/_util/_util_types.ts",
                   "https://deno.land/std@0.64.0/node/_utils.ts",
                 ],

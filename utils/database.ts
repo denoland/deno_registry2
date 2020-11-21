@@ -40,7 +40,6 @@ const sort = {
   newest: { "created_at": -1 },
   oldest: { "created_at": 1 },
   random: null,
-  // deno-lint-ignore camelcase
   search_order: null,
 };
 
@@ -282,9 +281,9 @@ export class Database {
   }
 
   async countModulesForRepository(
-    repoId: number,
+    repo_id: number,
   ): Promise<number> {
-    const modules = await this._modules.find({ repo_id: repoId });
+    const modules = await this._modules.find({ repo_id });
     return modules.length;
   }
 

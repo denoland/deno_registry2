@@ -332,12 +332,12 @@ Deno.test({
   name: "ping event rename repository",
   async fn() {
     try {
-      const repoId = 274939732;
+      const repo_id = 274939732;
 
       await database.saveModule({
         name: "ltest",
         description: "testing things",
-        repo_id: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing-oldname",
         star_count: 4,
@@ -368,7 +368,7 @@ Deno.test({
 
       const ltest2 = await database.getModule("ltest");
       assert(ltest2);
-      assertEquals(ltest2.repo_id, repoId);
+      assertEquals(ltest2.repo_id, repo_id);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -380,12 +380,12 @@ Deno.test({
   name: "ping event wrong repository",
   async fn() {
     try {
-      const repoId = 123456789;
+      const repo_id = 123456789;
 
       database.saveModule({
         name: "ltest",
         description: "testing things",
-        repo_id: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing2",
         star_count: 4,
@@ -430,7 +430,7 @@ Deno.test({
       assertEquals(ltest, {
         name: "ltest",
         description: "testing things",
-        repo_id: repoId,
+        repo_id: repo_id,
         owner: "luca-rand",
         repo: "testing2",
         star_count: 4,

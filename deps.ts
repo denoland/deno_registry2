@@ -9,7 +9,7 @@ export type {
   Context,
   ScheduledEvent,
   SQSEvent,
-} from "https://deno.land/x/lambda@1.5.2/types.d.ts";
+} from "https://deno.land/x/lambda@1.4.6/types.d.ts";
 export {
   MongoClient,
   ObjectId,
