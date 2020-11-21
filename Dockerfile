@@ -1,4 +1,4 @@
-FROM hayd/alpine-deno:1.5.2
+FROM hayd/alpine-deno:1.4.6
 
 RUN apk add --no-cache python py-pip git
 RUN pip install awscli
