@@ -263,7 +263,7 @@ export async function analyzeDependencies(build: Build): Promise<void> {
     for (const url in graphToJoin) {
       totalGraph[url] = {
         ...graphToJoin[url],
-        deps: [...new Set(graphToJoin[url].deps)],
+        deps: [...new Set(graphToJoin[url].deps)].sort(),
       };
     }
   }
