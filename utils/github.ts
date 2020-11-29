@@ -73,7 +73,7 @@ export class GitHub {
     }
   }
 
-  async getRepo(owner: string, repo: string): Promise<Response> {
+  getRepo(owner: string, repo: string): Promise<Response> {
     return this._doRequest(new Request(`${base}/repos/${owner}/${repo}`));
   }
 

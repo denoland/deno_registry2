@@ -40,6 +40,7 @@ const sort = {
   newest: { "created_at": -1 },
   oldest: { "created_at": 1 },
   random: null,
+  // deno-lint-ignore camelcase
   search_order: null,
 };
 
@@ -274,16 +275,16 @@ export class Database {
     return results.map((o) => o._id);
   }
 
-  async countModules(): Promise<number> {
+  countModules(): Promise<number> {
     return this._modules.count({
       is_unlisted: { $not: { $eq: true } },
     });
   }
 
   async countModulesForRepository(
-    repo_id: number,
+    repoId: number,
   ): Promise<number> {
-    const modules = await this._modules.find({ repo_id });
+    const modules = await this._modules.find({ repo_id: repoId });
     return modules.length;
   }
 
@@ -325,7 +326,7 @@ export class Database {
     };
   }
 
-  async countAllVersions(): Promise<number> {
+  countAllVersions(): Promise<number> {
     return this._builds.count({});
   }
 

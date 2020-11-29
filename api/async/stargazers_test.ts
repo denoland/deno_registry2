@@ -16,24 +16,32 @@ const gh = new GitHub();
 const ltest: Module = {
   name: "ltest",
   description: "Testing all the things!",
+  // deno-lint-ignore camelcase
   repo_id: 274939732,
   type: "github",
   owner: "luca-rand",
   repo: "testing",
+  // deno-lint-ignore camelcase
   star_count: 0, // real number is 2 atm
+  // deno-lint-ignore camelcase
   is_unlisted: false,
+  // deno-lint-ignore camelcase
   created_at: new Date(2020, 1, 1),
 };
 
 const utest: Module = {
   name: "unlisted_module",
   description: "Testing all the things! -- unlisted",
+  // deno-lint-ignore camelcase
   repo_id: 70289105,
   type: "github",
   owner: "wperron",
   repo: "testing",
+  // deno-lint-ignore camelcase
   star_count: 0,
+  // deno-lint-ignore camelcase
   is_unlisted: true,
+  // deno-lint-ignore camelcase
   created_at: new Date(2020, 1, 1),
 };
 

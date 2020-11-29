@@ -44,6 +44,7 @@ const decoder = new TextDecoder();
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
+// deno-lint-ignore require-await
 export async function handler(
   event: APIGatewayProxyEventV2,
   context: Context,
@@ -131,7 +132,7 @@ async function pingEvent(
   }
   const webhook = JSON.parse(event.body) as WebhookPayloadPing;
   const [owner, repo] = webhook.repository.full_name.split("/");
-  const repo_id = webhook.repository.id;
+  const repoId = webhook.repository.id;
   const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
   const sender = webhook.sender.login;
@@ -145,7 +146,7 @@ async function pingEvent(
     moduleName,
     owner,
     sender,
-    repo_id,
+    repoId,
     subdir,
   );
   if (resp) return resp;
@@ -159,7 +160,7 @@ async function pingEvent(
         created_at: new Date(),
         is_unlisted: false,
       },
-    repo_id,
+    repo_id: repoId,
     owner,
     repo,
     description,
@@ -190,6 +191,7 @@ async function pingEvent(
 /**
  * Push event is triggered when one or more commits are pushed to a ref.
  */
+// deno-lint-ignore require-await
 async function pushEvent(
   { moduleName, event }: WebhookEvent,
 ): Promise<APIGatewayProxyResultV2> {
@@ -206,7 +208,7 @@ async function pushEvent(
   const webhook = JSON.parse(event.body) as WebhookPayloadPush;
   const { ref: rawRef } = webhook;
   const [owner, repo] = webhook.repository.full_name.split("/");
-  const repo_id = webhook.repository.id;
+  const repoId = webhook.repository.id;
   if (!rawRef.startsWith("refs/tags/")) {
     return respondJSON({
       statusCode: 200,
@@ -229,7 +231,7 @@ async function pushEvent(
 
   return initiateBuild({
     moduleName,
-    repo_id,
+    repo_id: repoId,
     owner,
     repo,
     sender,
@@ -244,6 +246,7 @@ async function pushEvent(
 /**
  * Create event is triggered when a new branch or tag is created.
  */
+// deno-lint-ignore require-await
 async function createEvent(
   { moduleName, event }: WebhookEvent,
 ): Promise<APIGatewayProxyResultV2> {
@@ -261,7 +264,7 @@ async function createEvent(
   const { ref } = webhook;
   const [owner, repo] = webhook.repository.full_name.split("/");
   const sender = webhook.sender.login;
-  const repo_id = webhook.repository.id;
+  const repoId = webhook.repository.id;
   if (webhook.ref_type !== "tag") {
     return respondJSON({
       statusCode: 200,
@@ -282,7 +285,7 @@ async function createEvent(
 
   return initiateBuild({
     moduleName,
-    repo_id,
+    repo_id: repoId,
     owner,
     repo,
     ref,
@@ -310,7 +313,7 @@ async function initiateBuild(
 ): Promise<APIGatewayProxyResultV2> {
   const {
     moduleName,
-    repo_id,
+    repo_id: repoId,
     owner,
     repo,
     sender,
@@ -338,7 +341,7 @@ async function initiateBuild(
     moduleName,
     owner,
     sender,
-    repo_id,
+    repoId,
     subdir,
   );
   if (resp) return resp;
@@ -352,7 +355,7 @@ async function initiateBuild(
         created_at: new Date(),
         is_unlisted: false,
       },
-    repo_id,
+    repo_id: repoId,
     owner,
     repo,
     description,
@@ -404,21 +407,21 @@ async function initiateBuild(
  * @param moduleName module name as shown on deno.land/x
  * @param owner username of the GH repository owner
  * @param sender username of the user triggering the webhoo
- * @param repo_id numerical id of the GH repository
+ * @param repoId numerical id of the GH repository
  */
 async function checkModuleInfo(
   entry: Module | null,
   moduleName: string,
   owner: string,
   sender: string,
-  repo_id: number,
+  repoId: number,
   subdir: string | null,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
   return await checkBlocked(sender) ??
     await checkBlocked(owner) ??
     checkSubdir(subdir) ??
-    checkMatchesRepo(entry, repo_id) ??
-    await checkModulesInRepo(entry, repo_id) ??
+    checkMatchesRepo(entry, repoId) ??
+    await checkModulesInRepo(entry, repoId) ??
     await hasReachedQuota(entry, owner) ??
     await checkName(entry, moduleName);
 }
@@ -467,10 +470,10 @@ async function checkBlocked(
 
 function checkMatchesRepo(
   entry: Module | null,
-  repo_id: number,
+  repoId: number,
 ): APIGatewayProxyResultV2 | undefined {
   if (
-    entry && !(entry.type === "github" && entry.repo_id === repo_id)
+    entry && !(entry.type === "github" && entry.repo_id === repoId)
   ) {
     return respondJSON({
       statusCode: 409,
@@ -488,10 +491,10 @@ const MAX_MODULES_PER_OWNER_DEFAULT = 15;
 
 async function checkModulesInRepo(
   entry: Module | null,
-  repo_id: number,
+  repoId: number,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
   if (
-    !entry && await database.countModulesForRepository(repo_id) >=
+    !entry && await database.countModulesForRepository(repoId) >=
       MAX_MODULES_PER_REPOSITORY
   ) {
     return respondJSON({
