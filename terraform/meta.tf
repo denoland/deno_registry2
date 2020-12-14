@@ -32,3 +32,10 @@ resource "aws_s3_bucket_public_access_block" "terraform_state_public_access" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "cloudflare_zone_settings_override" "this" {
+  zone_id = var.cloudflare_zone_id
+  settings {
+    browser_cache_ttl = 0
+  }
+}
