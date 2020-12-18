@@ -1,6 +1,6 @@
 FROM hayd/deno-lambda:1.6.1
 
+COPY deps.ts .
+RUN deno run --unstable -A deps.ts
 COPY . .
-RUN for i in $(find . -name "*.ts" -not -name "*_test.ts"); do \
-    deno cache --unstable $i; \
-  done
+RUN deno cache --unstable $(find . -name "*.ts" -not -name "*_test.ts")
