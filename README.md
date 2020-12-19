@@ -23,7 +23,7 @@ If you need an increase to these quotas, please reach out to [ry@tinyclouds.org]
 - AWS account
 - [MongoDB Atlas](https://cloud.mongodb.com) account
 
-## Preparing
+## Preparing MongoDB
 
 1. Create a cluster on [MongoDB Atlas](https://cloud.mongodb.com). A M2 cluster is enough in most cases.
 2. Create a database user on Atlas. They should have the read write database permission.
@@ -36,6 +36,15 @@ If you need an increase to these quotas, please reach out to [ry@tinyclouds.org]
 9. In this collection create a new index with the name `by_is_unlisted_and_star_count` like it is defined in `indexes/modules_by_is_unlisted_and_star_count.json`
 10. In this database create a collection called `builds`.
 11. In this collection create a new *unique* index with the name `by_name_and_version` like it is defined in `indexes/builds_by_name_and_version.json`
+
+## Preparing Docker
+
+Make sure to follow the official instructions to [login to ECR](https://docs.aws.amazon.com/AmazonECR/latest/userguide/registry_auth.html)
+via the Docker cli - this is needed to push the images used by the Lambda deployment to ECR.
+
+```bash
+aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
+```
 
 ## Deploy
 
