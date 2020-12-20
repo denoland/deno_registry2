@@ -13,6 +13,16 @@ locals {
   }
 }
 
+resource "aws_ecr_repository" "deployment_package" {
+  name                 = "deno_registry2"
+  image_tag_mutability = "IMMUTABLE"
+  tags                 = local.tags
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
 resource "aws_lambda_layer_version" "deno_layer" {
   filename         = "${path.module}/.terraform/dl/deno-lambda-layer.zip"
   layer_name       = "${local.prefix}-deno-${local.short_uuid}"
