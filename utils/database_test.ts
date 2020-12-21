@@ -13,11 +13,15 @@ const ltest: Module = {
   name: "ltest",
   description: "Testing all the things!",
   type: "github",
+  // deno-lint-ignore camelcase
   repo_id: 123,
   owner: "luca-rand",
   repo: "testing",
+  // deno-lint-ignore camelcase
   star_count: 5,
+  // deno-lint-ignore camelcase
   is_unlisted: false,
+  // deno-lint-ignore camelcase
   created_at: new Date(2020, 1, 1),
 };
 
@@ -25,11 +29,15 @@ const utest: Module = {
   name: "unlisted_module",
   description: "Testing all the things! -- unlisted",
   type: "github",
+  // deno-lint-ignore camelcase
   repo_id: 124,
   owner: "wperron",
   repo: "testing-unlisted",
+  // deno-lint-ignore camelcase
   star_count: 5,
+  // deno-lint-ignore camelcase
   is_unlisted: true,
+  // deno-lint-ignore camelcase
   created_at: new Date(2020, 1, 1),
 };
 
@@ -68,6 +76,7 @@ Deno.test({
     assertEquals(await database.countModules(), 1);
     assertEquals(await database.getModule(ltest.name), ltest);
 
+    // deno-lint-ignore camelcase
     const ltestWith6Stars = { ...ltest, star_count: 6 };
 
     await database.saveModule(ltestWith6Stars);
@@ -164,7 +173,9 @@ Deno.test({
 const ownerQuota1: OwnerQuota = {
   owner: "luca-rand",
   type: "github",
+  // deno-lint-ignore camelcase
   max_modules: 5,
+  // deno-lint-ignore camelcase
   max_total_size: undefined,
   blocked: false,
 };

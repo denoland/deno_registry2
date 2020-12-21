@@ -333,7 +333,7 @@ Deno.test({
           "/webhook/gh/ltest2",
           pushevent,
           { name: "ltest2" },
-          { version_prefix: "v" },
+          { version_prefix_filter: "v" },
         ),
         createContext(),
       );
@@ -363,6 +363,154 @@ Deno.test({
 
 Deno.test({
   name: "push event version prefix match",
+  async fn() {
+    try {
+      // Send push event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "push",
+          "/webhook/gh/ltest2",
+          pusheventVersionPrefix,
+          { name: "ltest2" },
+          { version_prefix_filter: "v" },
+        ),
+        createContext(),
+      );
+
+      const builds = await database._builds.find({});
+
+      // Check that a new build was queued
+      assertEquals(builds.length, 1);
+      assertEquals(
+        builds[0],
+        {
+          _id: builds[0]._id,
+          created_at: builds[0].created_at,
+          options: {
+            moduleName: "ltest2",
+            type: "github",
+            repository: "luca-rand/testing",
+            ref: "v0.0.7",
+            version: "0.0.7",
+          },
+          status: "queued",
+        },
+      );
+
+      assertEquals(resp, {
+        body:
+          `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+            builds[0]._id.$oid
+          }"}}`,
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 200,
+      });
+
+      const ltest2 = await database.getModule("ltest2");
+      assert(ltest2);
+      assert(ltest2.created_at <= new Date());
+      ltest2.created_at = new Date(2020, 1, 1);
+
+      // Check that the database entry
+      assertEquals(ltest2, {
+        name: "ltest2",
+        type: "github",
+        repo_id: 274939732,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Check that no versions.json file was created
+      assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
+  name: "push event version prefix match and keep",
+  async fn() {
+    try {
+      // Send push event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "push",
+          "/webhook/gh/ltest2",
+          pusheventVersionPrefix,
+          { name: "ltest2" },
+          { version_prefix_filter: "v", keep_version_prefix: "true" },
+        ),
+        createContext(),
+      );
+
+      const builds = await database._builds.find({});
+
+      // Check that a new build was queued
+      assertEquals(builds.length, 1);
+      assertEquals(
+        builds[0],
+        {
+          _id: builds[0]._id,
+          created_at: builds[0].created_at,
+          options: {
+            moduleName: "ltest2",
+            type: "github",
+            repository: "luca-rand/testing",
+            ref: "v0.0.7",
+            version: "v0.0.7",
+          },
+          status: "queued",
+        },
+      );
+
+      assertEquals(resp, {
+        body:
+          `{"success":true,"data":{"module":"ltest2","version":"v0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+            builds[0]._id.$oid
+          }"}}`,
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 200,
+      });
+
+      const ltest2 = await database.getModule("ltest2");
+      assert(ltest2);
+      assert(ltest2.created_at <= new Date());
+      ltest2.created_at = new Date(2020, 1, 1);
+
+      // Check that the database entry
+      assertEquals(ltest2, {
+        name: "ltest2",
+        type: "github",
+        repo_id: 274939732,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Check that no versions.json file was created
+      assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
+  name: "push event version prefix match legacy",
   async fn() {
     try {
       // Send push event
@@ -797,12 +945,12 @@ Deno.test({
   name: "push event rename repository",
   async fn() {
     try {
-      const repo_id = 274939732;
+      const repoId = 274939732;
 
       await database.saveModule({
         name: "ltest",
         description: "testing things",
-        repo_id: repo_id,
+        repo_id: repoId,
         owner: "luca-rand",
         repo: "testing-oldname",
         star_count: 4,
@@ -870,12 +1018,12 @@ Deno.test({
         { latest: "0.0.7", versions: ["0.0.7"] },
       );
 
-      const repo_id = 274939732;
+      const repoId = 274939732;
 
       await database.saveModule({
         name: "ltest",
         description: "testing things",
-        repo_id: repo_id,
+        repo_id: repoId,
         owner: "luca-rand",
         repo: "testing-oldname",
         star_count: 4,
@@ -913,7 +1061,7 @@ Deno.test({
       assertEquals(ltest, {
         name: "ltest",
         type: "github",
-        repo_id: repo_id,
+        repo_id: repoId,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
@@ -952,12 +1100,12 @@ Deno.test({
         status: "queued",
       });
 
-      const repo_id = 274939732;
+      const repoId = 274939732;
 
       await database.saveModule({
         name: "ltest",
         description: "testing things",
-        repo_id: repo_id,
+        repo_id: repoId,
         owner: "luca-rand",
         repo: "testing-oldname",
         star_count: 4,
@@ -997,7 +1145,7 @@ Deno.test({
       assertEquals(ltest, {
         name: "ltest",
         type: "github",
-        repo_id: repo_id,
+        repo_id: repoId,
         owner: "luca-rand",
         repo: "testing",
         description: "Move along, just for testing",
