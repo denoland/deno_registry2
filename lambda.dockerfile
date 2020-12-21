@@ -1,5 +1,6 @@
 FROM hayd/deno-lambda:1.6.1
 
+RUN yum install git -y && rm -rf /var/cache/yum
 COPY deps.ts .
 RUN deno run --unstable -A deps.ts
 COPY . .

@@ -6,6 +6,7 @@ locals {
   short_uuid             = substr(random_uuid.this.result, 0, 8)
   prefix                 = "deno-registry2-${var.env}"
   lambda_default_timeout = 10
+  ecr_image_url          = "${aws_ecr_repository.deployment_package.repository_url}:${var.docker_tag}"
   tags = {
     "deno.land/x:environment"    = var.env
     "deno.land/x:instance"       = local.short_uuid
