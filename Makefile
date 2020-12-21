@@ -1,5 +1,5 @@
 build:
-	docker build . -t deno_registry2 --file lambda.dockerfile; \
+	docker build . -t deno_registry2 --file lambda.dockerfile
 
-test:
+test: build
 	docker-compose up --build --abort-on-container-exit

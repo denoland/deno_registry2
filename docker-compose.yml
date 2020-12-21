@@ -41,7 +41,10 @@ services:
     ports:
       - "4566-4584:4566-4584"
   tests:
-    build: .
+    build:
+      context: .
+      dockerfile: test.dockerfile
+    entrypoint: ./run-tests.sh
     links:
       - s3
       - sqs
