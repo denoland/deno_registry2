@@ -30,14 +30,11 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
+      - name: Docker build
+        run: make build
+
       - name: Test
         run: docker-compose up --build --abort-on-container-exit
-
-      - name: Download dependencies
-        run: make download
-
-      - name: Package lambdas
-        run: make package
 
       - name: Validate
         run: |
