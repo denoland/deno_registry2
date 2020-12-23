@@ -6,6 +6,7 @@ locals {
   short_uuid             = substr(random_uuid.this.result, 0, 8)
   prefix                 = "deno-registry2-${var.env}"
   lambda_default_timeout = 10
+  ecr_image_url          = "${aws_ecr_repository.deployment_package.repository_url}:${var.docker_tag}"
   tags = {
     "deno.land/x:environment"    = var.env
     "deno.land/x:instance"       = local.short_uuid
@@ -21,12 +22,6 @@ resource "aws_ecr_repository" "deployment_package" {
   image_scanning_configuration {
     scan_on_push = true
   }
-}
-
-resource "aws_lambda_layer_version" "deno_layer" {
-  filename         = "${path.module}/.terraform/dl/deno-lambda-layer.zip"
-  layer_name       = "${local.prefix}-deno-${local.short_uuid}"
-  source_code_hash = filebase64sha256("${path.module}/.terraform/dl/deno-lambda-layer.zip")
 }
 
 resource "aws_s3_bucket" "storage_bucket" {

@@ -1,9 +1,3 @@
-data "archive_file" "stargazers_zip" {
-  type        = "zip"
-  output_path = "${path.module}/.terraform/tmp/stargazers.zip"
-  source_dir  = "${path.module}/.terraform/tmp/stargazers"
-}
-
 resource "aws_ssm_parameter" "github_token" {
   name        = "${local.prefix}-github-token-${local.short_uuid}"
   description = "Github personal access token"
@@ -13,24 +7,21 @@ resource "aws_ssm_parameter" "github_token" {
 }
 
 resource "aws_lambda_function" "stargazers" {
-  filename      = data.archive_file.stargazers_zip.output_path
+  package_type  = "Image"
+  image_uri     = local.ecr_image_url
   function_name = "${local.prefix}_scrape_stargazers_${local.short_uuid}"
   role          = aws_iam_role.lambda_exec_role.arn
-  handler       = "bundle.handler"
   publish       = true
+  timeout       = 300
+  memory_size   = 1024
 
-  source_code_hash = filebase64sha256(data.archive_file.stargazers_zip.output_path)
-
-  runtime = "provided"
-  layers  = [aws_lambda_layer_version.deno_layer.arn]
-
-  timeout     = 300
-  memory_size = 1024
+  image_config {
+    command = ["api/async/stargazers.handler"]
+  }
 
   environment {
     variables = {
       "DENO_UNSTABLE"    = "1"
-      "HANDLER_EXT"      = "js"
       "MONGO_URI"        = var.mongodb_uri
       "STORAGE_BUCKET"   = aws_s3_bucket.storage_bucket.id
       "GITHUB_TOKEN_SSM" = aws_ssm_parameter.github_token.name

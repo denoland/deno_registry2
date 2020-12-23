@@ -51,6 +51,11 @@ data "aws_iam_policy_document" "lambda_permissions" {
     actions   = ["ssm:GetParameter"]
     resources = [aws_ssm_parameter.github_token.arn]
   }
+
+  statement {
+    actions   = ["ecr:*"]
+    resources = [aws_ecr_repository.deployment_package.arn]
+  }
 }
 
 data "aws_iam_policy" "basic_lambda" {

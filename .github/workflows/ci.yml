@@ -30,20 +30,31 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
+      - name: Docker build
+        run: make build
+
       - name: Test
         run: docker-compose up --build --abort-on-container-exit
-
-      - name: Download dependencies
-        run: make download
-
-      - name: Package lambdas
-        run: make package
 
       - name: Validate
         run: |
           terraform init -backend=false
           terraform validate
         working-directory: terraform
+
+      - name: Push container to ECR (prod)
+        id: push_image
+        if: github.ref == 'refs/heads/main'
+        run: |
+          ECR_ID=$(aws sts get-caller-identity --query Account --output text).dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+          IMAGE_ID=$ECR_ID/deno_registry2:$GITHUB_RUN_ID
+          aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_ID
+          docker tag deno_registry2:latest $IMAGE_ID
+          docker push $IMAGE_ID
+          echo "::set-output name=image_id::$IMAGE_ID"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
@@ -60,6 +71,7 @@ jobs:
             -var cloudflare_account_id=$CLOUDFLARE_ACCOUNT_ID \
             -var cloudflare_zone_id=$CLOUDFLARE_ZONE_ID \
             -var github_token=${{ secrets.GH_TOKEN }} \
+            -var docker_tag=${{ steps.push_image.outputs.image_id }} \
             -out plan.tfplan
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}

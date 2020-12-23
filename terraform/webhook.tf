@@ -1,28 +1,19 @@
-data "archive_file" "webhook_github_zip" {
-  type        = "zip"
-  output_path = "${path.module}/.terraform/tmp/webhook_github.zip"
-  source_dir  = "${path.module}/.terraform/tmp/webhook_github"
-}
-
 resource "aws_lambda_function" "webhook_github" {
-  filename      = data.archive_file.webhook_github_zip.output_path
+  package_type  = "Image"
+  image_uri     = local.ecr_image_url
   function_name = "${local.prefix}_webhook_github_${local.short_uuid}"
   role          = aws_iam_role.lambda_exec_role.arn
-  handler       = "bundle.handler"
   publish       = true
+  timeout       = local.lambda_default_timeout
+  memory_size   = 128
 
-  source_code_hash = filebase64sha256(data.archive_file.webhook_github_zip.output_path)
-
-  runtime = "provided"
-  layers  = [aws_lambda_layer_version.deno_layer.arn]
-
-  timeout     = local.lambda_default_timeout
-  memory_size = 128
+  image_config {
+    command = ["api/webhook/stats.handler"]
+  }
 
   environment {
     variables = {
       "DENO_UNSTABLE"     = "1"
-      "HANDLER_EXT"       = "js"
       "MONGO_URI"         = var.mongodb_uri
       "STORAGE_BUCKET"    = aws_s3_bucket.storage_bucket.id
       "MODERATION_BUCKET" = aws_s3_bucket.moderation_bucket.id

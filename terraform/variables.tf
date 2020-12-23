@@ -24,6 +24,11 @@ variable "env" {
   type        = string
 }
 
+variable "docker_tag" {
+  description = "ECR image tag"
+  type        = string
+}
+
 variable "api_domain" {
   description = "The domain that hosts the registry API."
   type        = string
