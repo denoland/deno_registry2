@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest-xl
     env:
       AWS_DEFAULT_REGION: us-east-1
-      AWS_ACCOUNT_ID: 035475582903
       AWS_BACKUP_REGION: eu-central-1
       CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
       CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
@@ -47,7 +46,7 @@ jobs:
         id: push_image
         if: github.ref == 'refs/heads/main'
         run: |
-          ECR_ID=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+          ECR_ID=$(aws sts get-caller-identity --query Account --output text).dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
           IMAGE_ID=$ECR_ID/deno_registry2:$GITHUB_RUN_ID
           aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_ID
           docker tag deno_registry2:latest $IMAGE_ID
