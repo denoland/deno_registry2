@@ -8,7 +8,7 @@ resource "aws_lambda_function" "webhook_github" {
   memory_size   = 128
 
   image_config {
-    command = ["api/webhook/stats.handler"]
+    command = ["api/webhook/github.handler"]
   }
 
   environment {
