@@ -8,8 +8,7 @@ resource "aws_lambda_function" "stats" {
   memory_size   = 128
 
   image_config {
-    working_directory = "/var/task/api"
-    command           = ["stats.handler"]
+    command = ["api/stats.handler"]
   }
 
   environment {
