@@ -50,6 +50,7 @@ jobs:
           IMAGE_ID=$ECR_ID/deno_registry2:$GITHUB_RUN_ID
           aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_ID
           docker tag deno_registry2:latest $IMAGE_ID
+          docker push $IMAGE_ID
           echo "::set-output name=image_id::$IMAGE_ID"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
