@@ -84,7 +84,7 @@ jobs:
 
       - name: Deploy infrastructure (prod)
         if: github.ref == 'refs/heads/main'
-        run: terraform apply plan.tfplan
+        run: terraform apply -parallelism=3 plan.tfplan
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
