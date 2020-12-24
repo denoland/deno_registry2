@@ -1,28 +1,19 @@
-data "archive_file" "cleanup_zip" {
-  type        = "zip"
-  output_path = "${path.module}/.terraform/tmp/cleanup.zip"
-  source_dir  = "${path.module}/.terraform/tmp/cleanup"
-}
-
 resource "aws_lambda_function" "cleanup" {
-  filename      = data.archive_file.cleanup_zip.output_path
+  package_type  = "Image"
+  image_uri     = local.ecr_image_url
   function_name = "${local.prefix}_nightly_cleanup_${local.short_uuid}"
   role          = aws_iam_role.lambda_exec_role.arn
-  handler       = "bundle.handler"
   publish       = true
+  timeout       = 300
+  memory_size   = 1024
 
-  source_code_hash = filebase64sha256(data.archive_file.cleanup_zip.output_path)
-
-  runtime = "provided"
-  layers  = [aws_lambda_layer_version.deno_layer.arn]
-
-  timeout     = 300
-  memory_size = 1024
+  image_config {
+    command = ["api/async/cleanup.handler"]
+  }
 
   environment {
     variables = {
       "DENO_UNSTABLE" = "1"
-      "HANDLER_EXT"   = "js"
       "MONGO_URI"     = var.mongodb_uri
       "DRYRUN"        = "1"
     }

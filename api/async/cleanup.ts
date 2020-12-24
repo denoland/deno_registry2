@@ -18,8 +18,8 @@ export async function handler(
   __: Context,
 ): Promise<void> {
   const DRYRUN = Deno.env.get("DRYRUN") ?? "1";
+  if (DRYRUN) console.log("starting in dryrun mode.");
   const modules = await database.listAllModules();
-  console.log(modules);
   const now = new Date();
   for (const module of modules.filter((m) => m.is_unlisted === false)) {
     const successfulBuilds = await database.listSuccessfulBuilds(module.name);
