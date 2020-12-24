@@ -38,3 +38,5 @@ override.tf.json
 terraform.rc
 
 .deno_plugins
+
+.terraform.lock.hcl
