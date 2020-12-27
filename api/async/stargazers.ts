@@ -8,7 +8,6 @@
 
 import type { Context, ScheduledEvent } from "../../deps.ts";
 import { SSM } from "../../deps.ts";
-import type { ScoredModule, SearchResult } from "../../utils/database.ts";
 import { Database, Module } from "../../utils/database.ts";
 import { GitHub, GitHubAuth } from "../../utils/github.ts";
 

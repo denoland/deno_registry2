@@ -13,6 +13,10 @@ import type {
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
+import type {
+  APIErrorResponse,
+  APIModuleGetResponse,
+} from "../../utils/types.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -28,7 +32,7 @@ export async function handler(
       body: JSON.stringify({
         success: false,
         error: "no module name specified",
-      }),
+      } as APIErrorResponse),
     });
   }
 
@@ -38,7 +42,9 @@ export async function handler(
     return respondJSON(
       {
         statusCode: 404,
-        body: JSON.stringify({ success: false, error: "module not found" }),
+        body: JSON.stringify(
+          { success: false, error: "module not found" } as APIErrorResponse,
+        ),
       },
     );
   }
@@ -52,6 +58,6 @@ export async function handler(
         description: module.description,
         star_count: module.star_count,
       },
-    }),
+    } as APIModuleGetResponse),
   });
 }

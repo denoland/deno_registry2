@@ -12,6 +12,7 @@ import type {
 } from "../deps.ts";
 import { respondJSON } from "../utils/http.ts";
 import { Database } from "../utils/database.ts";
+import type { APIStatsResponse } from "../utils/types.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -35,6 +36,6 @@ export async function handler(
         recently_added_modules,
         recently_uploaded_versions,
       },
-    }),
+    } as APIStatsResponse),
   });
 }

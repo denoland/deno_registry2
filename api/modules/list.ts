@@ -22,6 +22,11 @@ import {
   SortValues,
 } from "../../utils/database.ts";
 import type { ScoredModule } from "../../utils/database.ts";
+import type {
+  APIErrorResponse,
+  APIModuleListResponseSuccess,
+  APIModuleListShortResponse,
+} from "../../utils/types.ts";
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
@@ -34,7 +39,7 @@ export async function handler(
     const results = await database.listAllModuleNames();
     return respondJSON({
       statusCode: 200,
-      body: JSON.stringify(results),
+      body: JSON.stringify(results as APIModuleListShortResponse),
       headers: {
         "cache-control": "max-age=60, must-revalidate",
       },
@@ -52,7 +57,7 @@ export async function handler(
       body: JSON.stringify({
         success: false,
         error: "the limit may not be larger than 100 or smaller than 1",
-      }),
+      } as APIErrorResponse),
     });
   }
 
@@ -62,7 +67,7 @@ export async function handler(
       body: JSON.stringify({
         success: false,
         error: "the page number must not be lower than 1",
-      }),
+      } as APIErrorResponse),
     });
   }
 
@@ -73,7 +78,7 @@ export async function handler(
       body: JSON.stringify({
         success: false,
         error: `the sort order must be one of ${publicSort.join(", ")}`,
-      }),
+      } as APIErrorResponse),
     });
   }
 
@@ -101,6 +106,6 @@ export async function handler(
     body: JSON.stringify({
       success: true,
       data: { total_count: count, options, results },
-    }),
+    } as APIModuleListResponseSuccess),
   });
 }
