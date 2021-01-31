@@ -32,7 +32,8 @@ export async function getMeta(
     join(module, "meta", file),
     {},
   );
-  return resp?.body;
+  if (!resp) return undefined;
+  return new Uint8Array(await new Response(resp.body).arrayBuffer());
 }
 
 export async function getVersionMetaJson(
@@ -44,7 +45,8 @@ export async function getVersionMetaJson(
     join(module, "versions", version, "meta", file),
     {},
   );
-  return resp?.body;
+  if (!resp) return undefined;
+  return new Uint8Array(await new Response(resp.body).arrayBuffer());
 }
 
 const encoder = new TextEncoder();
