@@ -1,4 +1,4 @@
-FROM hayd/deno-lambda:1.6.2
+FROM hayd/deno-lambda:1.7.1
 
 RUN yum install git -y && rm -rf /var/cache/yum
 COPY deps.ts .

@@ -18,7 +18,7 @@ jobs:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v2.3.0
         with:
-          deno-version: v1.4.6
+          deno-version: v1.7.1
 
       - uses: actions/checkout@v2
 
@@ -61,6 +61,8 @@ jobs:
           terraform plan \
             -var env=prod \
             -var mongodb_uri=$MONGODB_URI \
+            -var algolia_application_id=$ALGOLIA_APPLICATION_ID \
+            -var algolia_api_key=$ALGOLIA_API_KEY \
             -var api_domain=$API_DOMAIN \
             -var cdn_domain=$CDN_DOMAIN \
             -var certificate_arn=$CERTIFICATE_ARN \
@@ -80,6 +82,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          ALGOLIA_APPLICATION_ID: R4L5ZOZ659
+          ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
         working-directory: terraform
 
       - name: Deploy infrastructure (prod)

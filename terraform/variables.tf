@@ -59,3 +59,13 @@ variable "github_token" {
   description = "GitHub personal access token"
   type        = string
 }
+
+variable "algolia_application_id" {
+  description = "Algolia Application ID"
+  type        = string
+}
+
+variable "algolia_api_key" {
+  description = "Algolia API Key"
+  type        = string
+}

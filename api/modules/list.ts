@@ -30,6 +30,11 @@ import type {
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
+const deprecate = {
+  "X-Deprecate":
+    "The search functionality ('query' parameter) of this API will be removed on May 1st 2021. Starting on April 1st 5% of all requests to this endpoint that include the 'query' search parameter will fail. During the month of April you can prevent this brownout by setting a `X-Ack-Deprecate` header on your request.",
+};
+
 export async function handler(
   event: APIGatewayProxyEventV2,
   context: Context,
@@ -58,6 +63,7 @@ export async function handler(
         success: false,
         error: "the limit may not be larger than 100 or smaller than 1",
       } as APIErrorResponse),
+      headers: query ? deprecate : undefined,
     });
   }
 
@@ -68,6 +74,7 @@ export async function handler(
         success: false,
         error: "the page number must not be lower than 1",
       } as APIErrorResponse),
+      headers: query ? deprecate : undefined,
     });
   }
 
@@ -79,6 +86,7 @@ export async function handler(
         success: false,
         error: `the sort order must be one of ${publicSort.join(", ")}`,
       } as APIErrorResponse),
+      headers: query ? deprecate : undefined,
     });
   }
 
@@ -106,6 +114,7 @@ export async function handler(
     body: JSON.stringify({
       success: true,
       data: { total_count: count, options, results },
+      headers: query ? deprecate : undefined,
     } as APIModuleListResponseSuccess),
   });
 }
