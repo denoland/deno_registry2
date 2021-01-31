@@ -8,12 +8,16 @@ export type ScoredModule = DBModule & { search_score: number };
 export interface Module {
   name: string;
   type: string;
+  // deno-lint-ignore camelcase
   repo_id: number;
   owner: string;
   repo: string;
   description: string;
+  // deno-lint-ignore camelcase
   star_count: number;
+  // deno-lint-ignore camelcase
   is_unlisted: boolean;
+  // deno-lint-ignore camelcase
   created_at: Date;
 }
 
@@ -49,25 +53,31 @@ export const SortValues = Object.keys(sort);
 export interface SearchResult {
   name: string;
   description: string;
+  // deno-lint-ignore camelcase
   star_count: number;
+  // deno-lint-ignore camelcase
   search_score: number;
 }
 
 export interface RecentlyAddedModuleResult {
   name: string;
   description: string;
+  // deno-lint-ignore camelcase
   star_count: number;
+  // deno-lint-ignore camelcase
   created_at: Date;
 }
 
 export interface RecentlyAddedUploadedVersions {
   name: string;
   version: string;
+  // deno-lint-ignore camelcase
   created_at: Date;
 }
 
 export interface Build {
   id: string;
+  // deno-lint-ignore camelcase
   created_at: Date;
   options: {
     moduleName: string;
@@ -83,14 +93,18 @@ export interface Build {
 }
 
 export interface BuildStats {
+  // deno-lint-ignore camelcase
   total_files: number;
+  // deno-lint-ignore camelcase
   total_size: number;
 }
 
 export interface OwnerQuota {
   owner: string;
   type: string;
+  // deno-lint-ignore camelcase
   max_modules: number;
+  // deno-lint-ignore camelcase
   max_total_size?: number;
   blocked: boolean;
 }
