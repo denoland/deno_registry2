@@ -34,6 +34,7 @@ import type {
   VersionInfo,
 } from "../../utils/types.ts";
 import { isForbidden } from "../../utils/moderation.ts";
+import { AlgoliaAPI } from "../../utils/algolia.ts";
 
 interface WebhookEvent {
   moduleName: string;
@@ -43,6 +44,10 @@ interface WebhookEvent {
 const decoder = new TextDecoder();
 
 const database = new Database(Deno.env.get("MONGO_URI")!);
+const algolia = new AlgoliaAPI(
+  Deno.env.get("ALGOLIA_APPLICATION_ID")!,
+  Deno.env.get("ALGOLIA_API_KEY")!,
+);
 
 // deno-lint-ignore require-await
 export async function handler(
@@ -152,7 +157,7 @@ async function pingEvent(
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
-  await database.saveModule({
+  const module = {
     ...entry ??
       {
         name: moduleName,
@@ -160,12 +165,16 @@ async function pingEvent(
         created_at: new Date(),
         is_unlisted: false,
       },
+    // deno-lint-ignore camelcase
     repo_id: repoId,
     owner,
     repo,
     description,
+    // deno-lint-ignore camelcase
     star_count: starCount,
-  });
+  };
+  await database.saveModule(module);
+  await algolia.saveDatabaseModule(module);
 
   const versionInfoBody = await getMeta(moduleName, "versions.json");
   if (versionInfoBody === undefined) {
@@ -347,7 +356,7 @@ async function initiateBuild(
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
-  await database.saveModule({
+  const module = {
     ...entry ??
       {
         name: moduleName,
@@ -355,12 +364,16 @@ async function initiateBuild(
         created_at: new Date(),
         is_unlisted: false,
       },
+    // deno-lint-ignore camelcase
     repo_id: repoId,
     owner,
     repo,
     description,
+    // deno-lint-ignore camelcase
     star_count: starCount,
-  });
+  };
+  await database.saveModule(module);
+  await algolia.saveDatabaseModule(module);
 
   const version = ref.substring(versionPrefix.length);
   const invalidVersion = await checkVersion(moduleName, version);

@@ -8,6 +8,7 @@
 
 import type { Context, ScheduledEvent } from "../../deps.ts";
 import { SSM } from "../../deps.ts";
+import { AlgoliaAPI } from "../../utils/algolia.ts";
 import { Database, Module } from "../../utils/database.ts";
 import { GitHub, GitHubAuth } from "../../utils/github.ts";
 
@@ -33,6 +34,11 @@ const auth: GitHubAuth | undefined = secret
 const gh = new GitHub(auth);
 const database = new Database(Deno.env.get("MONGO_URI")!);
 
+const algolia = new AlgoliaAPI(
+  Deno.env.get("ALGOLIA_APPLICATION_ID")!,
+  Deno.env.get("ALGOLIA_API_KEY")!,
+);
+
 export async function handler(
   _: ScheduledEvent,
   __: Context,
@@ -44,6 +50,7 @@ export async function handler(
       if (repo.stargazers_count !== module.star_count) {
         module.star_count = repo.stargazers_count;
         await database.saveModule(module as unknown as Module);
+        await algolia.saveDatabaseModule(module);
       }
     } catch (err) {
       console.log(`failed to fetch repo from github api: ${err}`);

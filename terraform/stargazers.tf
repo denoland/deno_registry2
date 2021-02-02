@@ -21,10 +21,12 @@ resource "aws_lambda_function" "stargazers" {
 
   environment {
     variables = {
-      "DENO_UNSTABLE"    = "1"
-      "MONGO_URI"        = var.mongodb_uri
-      "STORAGE_BUCKET"   = aws_s3_bucket.storage_bucket.id
-      "GITHUB_TOKEN_SSM" = aws_ssm_parameter.github_token.name
+      "DENO_UNSTABLE"          = "1"
+      "MONGO_URI"              = var.mongodb_uri
+      "ALGOLIA_APPLICATION_ID" = var.algolia_application_id
+      "ALGOLIA_API_KEY"        = var.algolia_api_key
+      "STORAGE_BUCKET"         = aws_s3_bucket.storage_bucket.id
+      "GITHUB_TOKEN_SSM"       = aws_ssm_parameter.github_token.name
     }
   }
 

@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 // From https://github.com/octokit/webhooks, licensed under MIT: https://github.com/octokit/webhooks/blob/master/LICENSE
 
 type PayloadRepositoryOwner = {
