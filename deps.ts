@@ -15,7 +15,7 @@ export {
   ObjectId,
 } from "https://deno.land/x/mongo@v0.13.0/mod.ts";
 export { S3Bucket } from "https://deno.land/x/s3@0.4.0/mod.ts";
-export { SQSQueue } from "https://deno.land/x/sqs@0.3.4/mod.ts";
+export { SQSQueue } from "https://deno.land/x/sqs@0.3.5/mod.ts";
 export { SSM } from "https://deno.land/x/ssm@0.1.2/mod.ts";
 export { lookup } from "https://deno.land/x/media_types@v2.7.1/mod.ts";
 export { pooledMap } from "https://deno.land/std@0.85.0/async/mod.ts";
