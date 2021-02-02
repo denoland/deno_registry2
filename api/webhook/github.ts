@@ -430,15 +430,7 @@ function checkSubdir(
   subdir: string | null,
 ): APIGatewayProxyResultV2 | undefined {
   if (subdir !== null) {
-    if (subdir.startsWith("/")) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error: "provided sub directory is not valid as it starts with a /",
-        } as APIErrorResponse),
-      });
-    } else if (!subdir.endsWith("/")) {
+    if (!subdir.endsWith("/")) {
       return respondJSON({
         statusCode: 400,
         body: JSON.stringify({
