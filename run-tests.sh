@@ -15,7 +15,7 @@ export BUILD_QUEUE=http://localhost:9324/000000000000/builds
 export STORAGE_BUCKET=deno-registry2
 export MODERATION_BUCKET=deno-registry2-moderation
 export S3_ENDPOINT_URL=http://localhost:9000
-export SSM_ENDPOINT_URL=http://localhost:4566
+export SSM_ENDPOINT_URL=http://localhost:4583
 export REMOTE_URL=http://localhost:9000/deno-registry2/%m/versions/%v/raw
 
 # Set up S3
