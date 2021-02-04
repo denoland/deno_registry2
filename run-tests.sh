@@ -17,6 +17,8 @@ export MODERATION_BUCKET=deno-registry2-moderation
 export S3_ENDPOINT_URL=http://localhost:9000
 export SSM_ENDPOINT_URL=http://localhost:4583
 export REMOTE_URL=http://localhost:9000/deno-registry2/%m/versions/%v/raw
+# required because some tests use dates written in UTC in assertions
+export TZ='UTC'
 
 # Set up S3
 echo "Setting up S3 buckets..."
