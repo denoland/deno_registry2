@@ -182,7 +182,7 @@ Deno.test({
         {
           graph: {
             nodes: {
-              "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts":
+              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts":
                 {
                   deps: ["https://deno.land/std@0.64.0/uuid/mod.ts"],
                   size: 63,
@@ -249,20 +249,20 @@ Deno.test({
                 deps: [],
                 size: 405,
               },
-              "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/example.ts":
+              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/example.ts":
                 {
                   deps: [
-                    "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts",
+                    "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts",
                   ],
                   size: 50,
                 },
-              "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts": {
+              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts": {
                 deps: [
-                  "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts",
+                  "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts",
                 ],
                 size: 139,
               },
-              "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/mod_test.ts":
+              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod_test.ts":
                 {
                   deps: ["https://deno.land/std@0.64.0/testing/asserts.ts"],
                   size: 227,
@@ -282,7 +282,7 @@ Deno.test({
                 deps: [],
                 size: 5473,
               },
-              "http://s3:9000/deno-registry2/ltest/versions/0.0.9/raw/subproject/mod.ts":
+              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/subproject/mod.ts":
                 { deps: [], size: 71 },
             },
           },
