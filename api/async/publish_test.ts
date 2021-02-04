@@ -256,12 +256,13 @@ Deno.test({
                   ],
                   size: 50,
                 },
-              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts": {
-                deps: [
-                  "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts",
-                ],
-                size: 139,
-              },
+              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts":
+                {
+                  deps: [
+                    "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts",
+                  ],
+                  size: 139,
+                },
               "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod_test.ts":
                 {
                   deps: ["https://deno.land/std@0.64.0/testing/asserts.ts"],
