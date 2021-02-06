@@ -11,7 +11,7 @@ resource "aws_lambda_function" "stargazers" {
   image_uri     = local.ecr_image_url
   function_name = "${local.prefix}_scrape_stargazers_${local.short_uuid}"
   role          = aws_iam_role.lambda_exec_role.arn
-  publish       = true
+  publish       = false
   timeout       = 300
   memory_size   = 1024
 
