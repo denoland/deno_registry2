@@ -3,7 +3,7 @@ resource "aws_lambda_function" "builds_get" {
   image_uri     = local.ecr_image_url
   function_name = "${local.prefix}_builds_get_${local.short_uuid}"
   role          = aws_iam_role.lambda_exec_role.arn
-  publish       = true
+  publish       = false
   timeout       = local.lambda_default_timeout
   memory_size   = 128
 

@@ -3,7 +3,7 @@ resource "aws_lambda_function" "async_publish" {
   image_uri     = local.ecr_image_url
   function_name = "${local.prefix}_async_publish_${local.short_uuid}"
   role          = aws_iam_role.lambda_exec_role.arn
-  publish       = true
+  publish       = false
   timeout       = 300
   memory_size   = 1024
 
