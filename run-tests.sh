@@ -1,8 +1,5 @@
 #!/bin/sh
 
-echo "Wait for SQS to start..."
-sleep 10
-
 echo "Setting up environment variables..."
 export AWS_REGION=us-east-1
 export AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
