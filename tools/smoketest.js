@@ -1,3 +1,4 @@
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 const listURI = "https://api.deno.land/modules?page=1&limit=20&query=deno";
 const getURI = "https://api.deno.land/modules/oak";
 

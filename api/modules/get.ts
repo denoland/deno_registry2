@@ -1,4 +1,4 @@
-// Copyright 2020 the Deno authors. All rights reserved. MIT license.
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 /**
  * This function is responsible for returning a single module stored in

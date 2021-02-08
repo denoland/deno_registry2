@@ -1,4 +1,4 @@
-// Copyright 2020 the Deno authors. All rights reserved. MIT license.
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 import { assert, assertEquals } from "../test_deps.ts";
 import { Build, Database, Module, OwnerQuota } from "./database.ts";

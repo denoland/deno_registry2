@@ -1,3 +1,4 @@
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 const base = "https://api.github.com";
 
 export interface GitHubAuth {

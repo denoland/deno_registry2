@@ -1,3 +1,4 @@
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 import { assertEquals, bench, runBenchmarks } from "../test_deps.ts";
 import { directorySize } from "./utils.ts";
 import type { DirectoryListingFile } from "./types.ts";

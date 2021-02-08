@@ -1,4 +1,4 @@
-// Copyright 2020 the Deno authors. All rights reserved. MIT license.
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 /**
  * This function gets a build from the database by id. The function is triggered
