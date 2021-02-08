@@ -3,8 +3,7 @@ version: "3"
 services:
   s3:
     image: minio/minio
-    ports:
-      - "9000:9000"
+    network_mode: "host"
     environment:
       MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
       MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -18,8 +17,7 @@ services:
       driver: none
   sqs:
     image: softwaremill/elasticmq
-    ports:
-      - "9324:9324"
+    network_mode: "host"
     environment:
       AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -27,29 +25,14 @@ services:
       driver: none
   mongo:
     image: mongo:latest
+    network_mode: "host"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
-    ports:
-      - 27017:27017
     logging:
       driver: none
   localstack:
     image: localstack/localstack:0.11.5
+    network_mode: "host"
     environment:
       - "SERVICES=ssm"
-    ports:
-      - "4566-4584:4566-4584"
-  tests:
-    build:
-      context: .
-      dockerfile: test.dockerfile
-    entrypoint: ./run-tests.sh
-    links:
-      - s3
-      - sqs
-      - mongo
-      - localstack
-    environment:
-      AWS_ACCESS_KEY_ID: AKIAIOSFODNN7EXAMPLE
-      AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
