@@ -1,4 +1,4 @@
-// Copyright 2020 the Deno authors. All rights reserved. MIT license.
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 export { expandGlob, walk } from "https://deno.land/std@0.74.0/fs/mod.ts";
 export { join } from "https://deno.land/std@0.74.0/path/mod.ts";

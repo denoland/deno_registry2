@@ -1,3 +1,4 @@
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 // S3_BUCKET is passed in as an env var
 
 /**

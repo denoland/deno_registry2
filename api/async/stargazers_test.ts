@@ -1,3 +1,4 @@
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 import { assert } from "../../test_deps.ts";
 import {
   cleanupDatabase,

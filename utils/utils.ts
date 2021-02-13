@@ -1,3 +1,4 @@
+// Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 import type { DirectoryListingFile } from "./types.ts";
 
 export async function collectAsyncIterable<T>(
