@@ -4,7 +4,6 @@ import { directorySize } from "./utils.ts";
 import type { DirectoryListingFile } from "./types.ts";
 
 Deno.test({
-  ignore: true,
   name: "directory size for deno v1.3.2",
   async fn() {
     const dir = JSON.parse(
@@ -91,4 +90,4 @@ bench(function benchDirectorySize(b) {
   b.stop();
 });
 
-// runBenchmarks();
+runBenchmarks();
