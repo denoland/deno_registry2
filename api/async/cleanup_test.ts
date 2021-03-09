@@ -13,36 +13,48 @@ const database = new Database(Deno.env.get("MONGO_URI")!);
 const ltest: Module = {
   name: "recent",
   description: "Testing all the things! -- recent",
+  // deno-lint-ignore camelcase
   repo_id: 274939732,
   type: "github",
   owner: "luca-rand",
   repo: "testing",
+  // deno-lint-ignore camelcase
   star_count: 0, // real number is 2 atm
+  // deno-lint-ignore camelcase
   is_unlisted: false,
+  // deno-lint-ignore camelcase
   created_at: new Date(),
 };
 
 const utest: Module = {
   name: "old",
   description: "Testing all the things! -- old",
+  // deno-lint-ignore camelcase
   repo_id: 70289105,
   type: "github",
   owner: "wperron",
   repo: "testing",
+  // deno-lint-ignore camelcase
   star_count: 0,
+  // deno-lint-ignore camelcase
   is_unlisted: false,
+  // deno-lint-ignore camelcase
   created_at: new Date(2018, 1, 1),
 };
 
 const unlistedTest: Module = {
   name: "old_unlisted",
   description: "Testing all the things! -- old and unlisted",
+  // deno-lint-ignore camelcase
   repo_id: 70289105,
   type: "github",
   owner: "wperron",
   repo: "testing",
+  // deno-lint-ignore camelcase
   star_count: 0,
+  // deno-lint-ignore camelcase
   is_unlisted: true,
+  // deno-lint-ignore camelcase
   created_at: new Date(2018, 1, 1),
 };
 
