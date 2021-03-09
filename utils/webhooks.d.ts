@@ -1,4 +1,5 @@
 // From https://github.com/octokit/webhooks, licensed under MIT: https://github.com/octokit/webhooks/blob/master/LICENSE
+// deno-lint-ignore-file
 
 type PayloadRepositoryOwner = {
   login: string;
