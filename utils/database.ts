@@ -1,6 +1,6 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
-import { MongoClient, ObjectId } from "../deps.ts";
+import { MongoClient, ObjectId, WithID } from "../deps.ts";
 
 export type DBModule = Omit<Module, "name"> & { _id: string };
 export type ScoredModule = DBModule & { search_score: number };
@@ -293,6 +293,19 @@ export class Database {
     return modules.length;
   }
 
+  async deleteModule(name: string): Promise<void> {
+    const resp = await this._modules.deleteOne({
+      // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
+      // deno-lint-ignore no-explicit-any
+      _id: name as any,
+    });
+
+    if (!resp) {
+      throw new Error(`Failed to delete module [ ${name} ]`);
+    }
+    return;
+  }
+
   async getBuild(id: string): Promise<Build | null> {
     const build = await this._builds.findOne({ _id: ObjectId(id) });
     if (build === null) return null;
@@ -304,6 +317,27 @@ export class Database {
       message: build.message,
       stats: build.stats,
     };
+  }
+
+  async listSuccessfulBuilds(name: string): Promise<Build[]> {
+    const builds = await this._builds.aggregate([
+      {
+        $match: {
+          "options.moduleName": { $eq: name },
+          status: { $eq: "success" },
+        },
+      },
+    ]) as (Build & WithID)[];
+    return builds.map((b) => {
+      return {
+        id: b._id.$oid,
+        created_at: b.created_at,
+        options: b.options,
+        status: b.status,
+        message: b.message,
+        stats: b.stats,
+      };
+    });
   }
 
   async getBuildForVersion(
