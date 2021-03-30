@@ -15,6 +15,11 @@ resource "aws_iam_role" "lambda_exec_role" {
   tags               = local.tags
 }
 
+# AWS managed policy for write access to X-Ray
+data "aws_iam_policy" "xray_write" {
+  arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
+}
+
 data "aws_iam_policy_document" "lambda_permissions" {
   statement {
     actions = [
@@ -70,6 +75,11 @@ resource "aws_iam_role_policy" "lambda_permissions" {
 resource "aws_iam_role_policy_attachment" "basic_lambda" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = data.aws_iam_policy.basic_lambda.arn
+}
+
+resource "aws_iam_role_policy_attachment" "xray_lambda" {
+  role       = aws_iam_role.lambda_exec_role.name
+  policy_arn = data.aws_iam_policy.xray_write.arn
 }
 
 # S3 replication role & policy
