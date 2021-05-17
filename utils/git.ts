@@ -30,7 +30,7 @@ export async function clone(
     throw new Error(`Failed to clone git repository ${url} at tag ${tag}`);
   }
 
-  const dir = subdir === undefined ? '/*' : join('/', subdir, '*');
+  const dir = subdir === undefined ? "/*" : join("/", subdir, "*");
   const checkout = Deno.run({
     cwd: tmp,
     cmd: ["git", "sparse-checkout", "set", dir],
