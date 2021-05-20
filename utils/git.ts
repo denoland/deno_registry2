@@ -8,6 +8,7 @@ export async function clone(url: string, tag: string): Promise<string> {
       "clone",
       "--depth",
       "1",
+      "--recurse-submodules",
       // TODO(lucacasonato): re enable, this is is to slow for the moment
       // "--recursive",
       "-b",
