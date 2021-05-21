@@ -22,8 +22,8 @@ jobs:
           deno-version: v1.6.2
 
   test:
-    runs-on: ubuntu-latest-xl
     needs: setup
+    runs-on: ubuntu-latest-xl
     steps:
       - uses: actions/checkout@v2
 
@@ -52,7 +52,7 @@ jobs:
         working-directory: terraform
 
       - name: Push container to ECR (prod)
-        if: github.ref == 'refs/head/main'
+        if: github.ref == 'refs/heads/main'
         run: |
           ECR_ID=$(aws sts get-caller-identity --query Account --output text).dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
           IMAGE_ID=$ECR_ID/deno_registry2:$GITHUB_RUN_ID
