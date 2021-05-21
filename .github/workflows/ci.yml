@@ -13,7 +13,8 @@ env:
   CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
 
 jobs:
-  setup:
+
+  test:
     runs-on: ubuntu-latest-xl
     steps:
       - name: Setup Deno environment
@@ -21,10 +22,6 @@ jobs:
         with:
           deno-version: v1.6.2
 
-  test:
-    needs: setup
-    runs-on: ubuntu-latest-xl
-    steps:
       - uses: actions/checkout@v2
 
       - name: Format
@@ -35,9 +32,6 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
-      - name: Docker build
-        run: make build
-
       - name: Test
         run: make test
 
@@ -45,11 +39,13 @@ jobs:
     needs: test
     runs-on: ubuntu-latest-xl
     steps:
-      - name: Validate
-        run: |
-          terraform init -backend=false
-          terraform validate
-        working-directory: terraform
+      - name: Setup Deno environment
+        uses: denolib/setup-deno@v2.3.0
+        with:
+          deno-version: v1.6.2
+
+      - name: Docker build
+        run: make build
 
       - name: Push container to ECR (prod)
         if: github.ref == 'refs/heads/main'
@@ -62,6 +58,21 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-lastest-xl
+    steps:
+      - name: Setup Deno environment
+        uses: denolib/setup-deno@v2.3.0
+        with:
+          deno-version: v1.6.2
+
+      - name: Validate
+        run: |
+          terraform init -backend=false
+          terraform validate
+        working-directory: terraform
 
       - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
@@ -90,11 +101,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         working-directory: terraform
-  
-  deploy:
-    needs: build
-    runs-on: ubuntu-lastest-xl
-    steps:
+
       - name: Deploy infrastructure (prod)
         if: github.ref == 'refs/heads/main'
         run: terraform apply -parallelism=3 plan.tfplan
