@@ -6,20 +6,25 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_BACKUP_REGION: eu-central-1
+  CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
+  CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
+
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest-xl
-    env:
-      AWS_DEFAULT_REGION: us-east-1
-      AWS_BACKUP_REGION: eu-central-1
-      CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
-      CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
     steps:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v2.3.0
         with:
           deno-version: v1.6.2
 
+  test:
+    runs-on: ubuntu-latest-xl
+    needs: setup
+    steps:
       - uses: actions/checkout@v2
 
       - name: Format
@@ -36,6 +41,10 @@ jobs:
       - name: Test
         run: make test
 
+  build:
+    needs: test
+    runs-on: ubuntu-latest-xl
+    steps:
       - name: Validate
         run: |
           terraform init -backend=false
@@ -43,7 +52,7 @@ jobs:
         working-directory: terraform
 
       - name: Push container to ECR (prod)
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/head/main'
         run: |
           ECR_ID=$(aws sts get-caller-identity --query Account --output text).dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
           IMAGE_ID=$ECR_ID/deno_registry2:$GITHUB_RUN_ID
@@ -81,7 +90,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         working-directory: terraform
-
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-lastest-xl
+    steps:
       - name: Deploy infrastructure (prod)
         if: github.ref == 'refs/heads/main'
         run: terraform apply -parallelism=3 plan.tfplan
