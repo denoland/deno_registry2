@@ -6,14 +6,16 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_BACKUP_REGION: eu-central-1
+  CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
+  CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
+
 jobs:
-  build:
+
+  test:
     runs-on: ubuntu-latest-xl
-    env:
-      AWS_DEFAULT_REGION: us-east-1
-      AWS_BACKUP_REGION: eu-central-1
-      CLOUDFLARE_ACCOUNT_ID: 895762025d37fc687ecd72d7cc80204a
-      CLOUDFLARE_ZONE_ID: c192cf8ac042c681023493c52edd44c8
     steps:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v2.3.0
@@ -30,17 +32,20 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
-      - name: Docker build
-        run: make build
-
       - name: Test
         run: make test
 
-      - name: Validate
-        run: |
-          terraform init -backend=false
-          terraform validate
-        working-directory: terraform
+  build:
+    needs: test
+    runs-on: ubuntu-latest-xl
+    steps:
+      - name: Setup Deno environment
+        uses: denolib/setup-deno@v2.3.0
+        with:
+          deno-version: v1.6.2
+
+      - name: Docker build
+        run: make build
 
       - name: Push container to ECR (prod)
         if: github.ref == 'refs/heads/main'
@@ -53,6 +58,21 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  
+  deploy:
+    needs: build
+    runs-on: ubuntu-lastest-xl
+    steps:
+      - name: Setup Deno environment
+        uses: denolib/setup-deno@v2.3.0
+        with:
+          deno-version: v1.6.2
+
+      - name: Validate
+        run: |
+          terraform init -backend=false
+          terraform validate
+        working-directory: terraform
 
       - name: Create terraform plan (prod)
         if: github.ref == 'refs/heads/main'
