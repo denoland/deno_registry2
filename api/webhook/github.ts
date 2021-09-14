@@ -430,6 +430,18 @@ function checkSubdir(
   subdir: string | null,
 ): APIGatewayProxyResultV2 | undefined {
   if (subdir !== null) {
+    const url = new URL("https://dummy.test");
+    url.pathname = subdir;
+    if (url.pathname !== subdir) {
+      return respondJSON({
+        statusCode: 400,
+        body: JSON.stringify({
+          success: false,
+          error:
+            `provided sub directory is not canonical (should be '${url.pathname}')`,
+        } as APIErrorResponse),
+      });
+    }
     if (!subdir.endsWith("/")) {
       return respondJSON({
         statusCode: 400,
