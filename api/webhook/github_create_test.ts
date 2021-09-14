@@ -693,7 +693,7 @@ Deno.test({
         ),
         {
           body:
-          '{"success":false,"error":"provided sub directory is not canonical (should be \'/asd/\')"}',
+            '{"success":false,"error":"provided sub directory is not canonical (should be \'/asd/\')"}',
           headers: {
             "content-type": "application/json",
           },
