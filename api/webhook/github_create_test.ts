@@ -826,6 +826,81 @@ Deno.test({
 });
 
 Deno.test({
+  name: "create event subdir success non normalized",
+  async fn() {
+    try {
+      // Send create event
+      const resp = await handler(
+        createJSONWebhookEvent(
+          "create",
+          "/webhook/gh/ltest2",
+          createevent,
+          { name: "ltest2" },
+          { subdir: "../../asd/../foo/" },
+        ),
+        createContext(),
+      );
+
+      const builds = await database._builds.find({});
+
+      // Check that a new build was queued
+      assertEquals(builds.length, 1);
+      assertEquals(
+        builds[0],
+        {
+          _id: builds[0]._id,
+          created_at: builds[0].created_at,
+          options: {
+            moduleName: "ltest2",
+            type: "github",
+            repository: "luca-rand/testing",
+            ref: "0.0.7",
+            version: "0.0.7",
+            subdir: "/foo/",
+          },
+          status: "queued",
+        },
+      );
+
+      assertEquals(resp, {
+        body:
+          `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
+            builds[0]._id.$oid
+          }"}}`,
+        headers: {
+          "content-type": "application/json",
+        },
+        statusCode: 200,
+      });
+
+      const ltest2 = await database.getModule("ltest2");
+      assert(ltest2);
+      assert(ltest2.created_at <= new Date());
+      ltest2.created_at = new Date(2020, 1, 1);
+
+      // Check that the database entry
+      assertEquals(ltest2, {
+        name: "ltest2",
+        type: "github",
+        repo_id: 274939732,
+        owner: "luca-rand",
+        repo: "testing",
+        description: "Move along, just for testing",
+        star_count: 2,
+        is_unlisted: false,
+        created_at: new Date(2020, 1, 1),
+      });
+
+      // Check that no versions.json file was created
+      assertEquals(await getMeta("ltest2", "versions.json"), undefined);
+    } finally {
+      await cleanupDatabase(database);
+      await s3.empty();
+    }
+  },
+});
+
+Deno.test({
   name: "create event already exists",
   async fn() {
     try {
