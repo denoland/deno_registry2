@@ -137,9 +137,10 @@ async function pingEvent(
   const description = webhook.repository.description ?? "";
   const starCount = webhook.repository.stargazers_count;
   const sender = webhook.sender.login;
-  const subdir =
-    join("/", decodeURIComponent(event.queryStringParameters?.subdir ?? "")) ||
+  const subdirRaw =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") ||
     null;
+  const subdir = normalizeSubdir(subdirRaw);
 
   const entry = await database.getModule(moduleName);
 
@@ -227,9 +228,10 @@ async function pushEvent(
   const versionPrefix = decodeURIComponent(
     event.queryStringParameters?.version_prefix ?? "",
   );
-  const subdir =
-    join("/", decodeURIComponent(event.queryStringParameters?.subdir ?? "")) ||
+  const subdirRaw =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") ||
     null;
+  const subdir = normalizeSubdir(subdirRaw);
 
   const sender = webhook.sender.login;
 
@@ -284,9 +286,10 @@ async function createEvent(
   const versionPrefix = decodeURIComponent(
     event.queryStringParameters?.version_prefix ?? "",
   );
-  const subdir =
-    join("/", decodeURIComponent(event.queryStringParameters?.subdir ?? "")) ||
+  const subdirRaw =
+    decodeURIComponent(event.queryStringParameters?.subdir ?? "") ||
     null;
+  const subdir = normalizeSubdir(subdirRaw);
 
   return initiateBuild({
     moduleName,
@@ -614,4 +617,10 @@ const GITHUB_HOOKS_CIDRS = [
 
 export function isGitHubHooksIP(ip: string): boolean {
   return isIp4InCidrs(ip, GITHUB_HOOKS_CIDRS);
+}
+
+function normalizeSubdir(subdir: string | null): string | null {
+  if (subdir === null) return null;
+  subdir = join("/", subdir);
+  return subdir.substr(1);
 }
