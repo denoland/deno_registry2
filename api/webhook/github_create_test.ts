@@ -676,47 +676,6 @@ Deno.test({
 });
 
 Deno.test({
-  name: "create event subdir not canonical",
-  async fn() {
-    try {
-      // Send create event
-      assertEquals(
-        await handler(
-          createJSONWebhookEvent(
-            "create",
-            "/webhook/gh/ltest2",
-            createevent,
-            { name: "ltest2" },
-            { subdir: "../../asd/" },
-          ),
-          createContext(),
-        ),
-        {
-          body:
-            '{"success":false,"error":"provided sub directory is not canonical (should be \'/asd/\')"}',
-          headers: {
-            "content-type": "application/json",
-          },
-          statusCode: 400,
-        },
-      );
-
-      // Check that no versions.json file exists
-      assertEquals(await getMeta("ltest2", "versions.json"), undefined);
-
-      // Check that no builds are queued
-      assertEquals(await database._builds.find({}), []);
-
-      // Check that there is no module entry in the database
-      assertEquals(await database.getModule("ltest2"), null);
-    } finally {
-      await cleanupDatabase(database);
-      await s3.empty();
-    }
-  },
-});
-
-Deno.test({
   name: "create event subdir success",
   async fn() {
     try {

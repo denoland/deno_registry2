@@ -8,10 +8,11 @@
  * build is added to the AWS SQS build queue to be processed asynchronously.
  */
 
-import type {
+import {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
   Context,
+  join,
 } from "../../deps.ts";
 import { parseRequestBody, respondJSON } from "../../utils/http.ts";
 import { Database, Module } from "../../utils/database.ts";
@@ -137,7 +138,8 @@ async function pingEvent(
   const starCount = webhook.repository.stargazers_count;
   const sender = webhook.sender.login;
   const subdir =
-    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+    join("/", decodeURIComponent(event.queryStringParameters?.subdir ?? "")) ||
+    null;
 
   const entry = await database.getModule(moduleName);
 
@@ -226,7 +228,9 @@ async function pushEvent(
     event.queryStringParameters?.version_prefix ?? "",
   );
   const subdir =
-    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+    join("/", decodeURIComponent(event.queryStringParameters?.subdir ?? "")) ||
+    null;
+
   const sender = webhook.sender.login;
 
   return initiateBuild({
@@ -281,7 +285,8 @@ async function createEvent(
     event.queryStringParameters?.version_prefix ?? "",
   );
   const subdir =
-    decodeURIComponent(event.queryStringParameters?.subdir ?? "") || null;
+    join("/", decodeURIComponent(event.queryStringParameters?.subdir ?? "")) ||
+    null;
 
   return initiateBuild({
     moduleName,
@@ -430,18 +435,6 @@ function checkSubdir(
   subdir: string | null,
 ): APIGatewayProxyResultV2 | undefined {
   if (subdir !== null) {
-    const url = new URL("https://dummy.test");
-    url.pathname = subdir;
-    if (url.pathname !== subdir) {
-      return respondJSON({
-        statusCode: 400,
-        body: JSON.stringify({
-          success: false,
-          error:
-            `provided sub directory is not canonical (should be '${url.pathname}')`,
-        } as APIErrorResponse),
-      });
-    }
     if (!subdir.endsWith("/")) {
       return respondJSON({
         statusCode: 400,
