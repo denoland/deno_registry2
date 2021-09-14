@@ -676,7 +676,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "create event subdir invalid",
+  name: "create event subdir not canonical",
   async fn() {
     try {
       // Send create event
