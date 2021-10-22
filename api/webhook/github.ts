@@ -461,7 +461,7 @@ async function checkBlocked(
       statusCode: 400,
       body: JSON.stringify({
         success: false,
-        error: `Publishing your module failed. Please contact ry@deno.land.`,
+        error: `Publishing your module failed. Please contact modules@deno.com.`,
       } as APIErrorResponse),
     });
   }
@@ -502,7 +502,7 @@ async function checkModulesInRepo(
       body: JSON.stringify({
         success: false,
         error:
-          `Max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached. Please contact ry@deno.land if you need more.`,
+          `Max number of modules for one repository (${MAX_MODULES_PER_REPOSITORY}) has been reached. Please contact modules@deno.com if you need more.`,
       } as APIErrorResponse),
     });
   }
@@ -524,7 +524,7 @@ async function hasReachedQuota(
       body: JSON.stringify({
         success: false,
         error:
-          `Max number of modules for one user/org (${maxModuleQuota}) has been reached. Please contact ry@deno.land if you need more.`,
+          `Max number of modules for one user/org (${maxModuleQuota}) has been reached. Please contact modules@deno.com if you need more.`,
       } as APIErrorResponse),
     });
   }

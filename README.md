@@ -16,7 +16,7 @@ Additionally to these guidelines there are also hard limits:
 - You can not publish more than 3 different modules from a single repository source.
 - You can not publish more than 15 modules from a single GitHub account or organization.
 
-If you need an increase to these quotas, please reach out to [ry@tinyclouds.org](mailto:ry@tinyclouds.org).
+If you need an increase to these quotas, please reach out to [modules@deno.com](mailto:modules@deno.com).
 
 ## Requirements
 

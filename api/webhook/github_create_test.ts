@@ -192,7 +192,7 @@ Deno.test({
         ),
         {
           body:
-            '{"success":false,"error":"Max number of modules for one repository (3) has been reached. Please contact ry@deno.land if you need more."}',
+            '{"success":false,"error":"Max number of modules for one repository (3) has been reached. Please contact modules@deno.com if you need more."}',
           headers: {
             "content-type": "application/json",
           },
@@ -247,7 +247,7 @@ Deno.test({
         ),
         {
           body:
-            '{"success":false,"error":"Max number of modules for one user/org (15) has been reached. Please contact ry@deno.land if you need more."}',
+            '{"success":false,"error":"Max number of modules for one user/org (15) has been reached. Please contact modules@deno.com if you need more."}',
           headers: {
             "content-type": "application/json",
           },
@@ -312,7 +312,7 @@ Deno.test({
         ),
         {
           body:
-            '{"success":false,"error":"Max number of modules for one user/org (7) has been reached. Please contact ry@deno.land if you need more."}',
+            '{"success":false,"error":"Max number of modules for one user/org (7) has been reached. Please contact modules@deno.com if you need more."}',
           headers: {
             "content-type": "application/json",
           },
