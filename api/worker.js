@@ -3,7 +3,7 @@
 
 /**
  * Handles a request
- * @param {Request} request 
+ * @param {Request} request
  */
 async function handleRequest(request) {
   const url = new URL(request.url);

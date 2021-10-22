@@ -461,7 +461,8 @@ async function checkBlocked(
       statusCode: 400,
       body: JSON.stringify({
         success: false,
-        error: `Publishing your module failed. Please contact modules@deno.com.`,
+        error:
+          `Publishing your module failed. Please contact modules@deno.com.`,
       } as APIErrorResponse),
     });
   }
