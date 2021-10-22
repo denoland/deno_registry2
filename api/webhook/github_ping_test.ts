@@ -585,7 +585,7 @@ Deno.test({
       );
       assertEquals(resp, {
         body:
-          '{"success":false,"error":"Publishing your module failed. Please contact modules@deno.com"}',
+          '{"success":false,"error":"Publishing your module failed. Please contact modules@deno.com."}',
         headers: {
           "content-type": "application/json",
         },
