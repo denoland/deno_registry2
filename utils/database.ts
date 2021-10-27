@@ -180,7 +180,7 @@ export class Database {
       options.query = undefined;
       return [
         options,
-        (await this._modules.aggregate([
+        await this._modules.aggregate([
           {
             $match: {
               is_unlisted: { $not: { $eq: true } },
@@ -191,7 +191,7 @@ export class Database {
               size: options.limit,
             },
           },
-        ]) as ScoredModule[]),
+        ]) as ScoredModule[],
       ];
     }
 

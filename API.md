@@ -2,16 +2,24 @@
 
 ## POST /webhook/gh/:module
 
-This API endpoint recieves webhooks from GitHub. The `module` parameter in the URL is the name of the module. Both `application/json` and `application/x-www-url-formencoded` content types are accepted.
+This API endpoint recieves webhooks from GitHub. The `module` parameter in the
+URL is the name of the module. Both `application/json` and
+`application/x-www-url-formencoded` content types are accepted.
 
 ### Request
 
-The contents and headers should be a GitHub `create` or `push` webhook event. More information: https://developer.github.com/webhooks/event-payloads/#create and https://developer.github.com/webhooks/event-payloads/#push
+The contents and headers should be a GitHub `create` or `push` webhook event.
+More information: https://developer.github.com/webhooks/event-payloads/#create
+and https://developer.github.com/webhooks/event-payloads/#push
 
 There are optional query parameters that can change the behavior of the request:
 
-- `subdir`: this specifies a subdirectory of the repository to upload (not set by default). This directory must be in the format `std/` (notice the trailing slash.)
-- `version_prefix`: only upload versions that match this prefix. When this is set to `std/` and you tag version `std/0.63.0`, version `0.63.0` will be uploaded.
+- `subdir`: this specifies a subdirectory of the repository to upload (not set
+  by default). This directory must be in the format `std/` (notice the trailing
+  slash.)
+- `version_prefix`: only upload versions that match this prefix. When this is
+  set to `std/` and you tag version `std/0.63.0`, version `0.63.0` will be
+  uploaded.
 
 ### Response
 
@@ -59,7 +67,7 @@ OR
 ```json
 {
   "success": false,
-  "error": "module name is registered to a different repository",
+  "error": "module name is registered to a different repository"
 }
 ```
 
@@ -71,11 +79,16 @@ This API endpoint can be used to get a list of all the modules in the registry.
 
 There are some query parameters that change the request:
 
-- `limit` is the amount of results to display per page of the response (default 20)
+- `limit` is the amount of results to display per page of the response
+  (default 20)
 - `page` is the page to display (default 1)
 - `query` is a query to use for filtering the list (not set by default)
-- `sort` orders the results in a specific order. The accepted values are `oldest`, `newest`, `stars` and `random`. If a query is present in the request, this parameter is ignored and defaults to the strongest match. The `random` option invalidates the `query` and a `page` parameters.
-- `simple` toggles the result payload to a simpler output. Invalidates all other parameters.
+- `sort` orders the results in a specific order. The accepted values are
+  `oldest`, `newest`, `stars` and `random`. If a query is present in the
+  request, this parameter is ignored and defaults to the strongest match. The
+  `random` option invalidates the `query` and a `page` parameters.
+- `simple` toggles the result payload to a simpler output. Invalidates all other
+  parameters.
 
 ### Response
 
@@ -172,11 +185,13 @@ The `name` parameter in the URL is the name of the module.
 
 ## GET /builds/:id
 
-This API endpoint can be used to get the status for a module build status. You can find the build ID in the `status_url` from the webhook execution response.
+This API endpoint can be used to get the status for a module build status. You
+can find the build ID in the `status_url` from the webhook execution response.
 
 ### Request
 
-The `id` parameter URL is the build id in the database generate after the webhook is successfully executed.
+The `id` parameter URL is the build id in the database generate after the
+webhook is successfully executed.
 
 ### Response
 

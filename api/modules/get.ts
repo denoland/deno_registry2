@@ -3,7 +3,7 @@
 /**
  * This function is responsible for returning a single module stored in
  * the database by name. The function is triggered by a HTTP GET call
- * to /modules/{name}. More information in API.md. 
+ * to /modules/{name}. More information in API.md.
  */
 
 import type {
