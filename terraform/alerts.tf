@@ -53,29 +53,6 @@ resource "aws_cloudwatch_metric_alarm" "data_lambda_errors" {
   tags               = local.tags
 }
 
-resource "aws_cloudwatch_metric_alarm" "stargazers_lambda_errors" {
-  for_each = {
-    stargazers = aws_lambda_function.stargazers.function_name,
-  }
-
-  alarm_name          = "${local.prefix}-lambda-errors-alarm-${each.key}-${local.short_uuid}"
-  alarm_description   = "Lambda function failed once in the last 15 minutes."
-  comparison_operator = "GreaterThanThreshold"
-  evaluation_periods  = 1
-  period              = 900
-  datapoints_to_alarm = 1
-  statistic           = "Sum"
-  metric_name         = "Errors"
-  namespace           = "AWS/Lambda"
-  dimensions = {
-    "FunctionName" = each.value
-  }
-  threshold          = 1
-  treat_missing_data = "missing"
-  alarm_actions      = [aws_sns_topic.alarm.arn]
-  tags               = local.tags
-}
-
 resource "aws_cloudwatch_metric_alarm" "stuck_builds" {
   alarm_name          = "${local.prefix}-build-queue-old-messages-${local.short_uuid}"
   comparison_operator = "GreaterThanThreshold"
