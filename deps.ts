@@ -10,8 +10,11 @@ export type {
   ScheduledEvent,
   SQSEvent,
 } from "https://deno.land/x/lambda@1.16.0/types.d.ts";
-export { MongoClient, Bson } from "https://deno.land/x/mongo@v0.28.0/mod.ts";
-export type { Database as MongoDatabase, Collection as MongoCollection } from "https://deno.land/x/mongo@v0.28.0/mod.ts";
+export { Bson, MongoClient } from "https://deno.land/x/mongo@v0.28.0/mod.ts";
+export type {
+  Collection as MongoCollection,
+  Database as MongoDatabase,
+} from "https://deno.land/x/mongo@v0.28.0/mod.ts";
 export { S3Bucket } from "https://deno.land/x/s3@0.5.0/mod.ts";
 export { SQSQueue } from "https://deno.land/x/sqs@0.3.7/mod.ts";
 export { SSM } from "https://deno.land/x/ssm@0.1.4/mod.ts";
