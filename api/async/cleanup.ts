@@ -10,7 +10,7 @@
 import type { Context, ScheduledEvent } from "../../deps.ts";
 import { Database } from "../../utils/database.ts";
 
-const database = new Database(Deno.env.get("MONGO_URI")!);
+const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 const INACTIVITY_PERIOD = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 export async function handler(
