@@ -31,7 +31,7 @@ const auth: GitHubAuth | undefined = secret
   : undefined;
 
 const gh = new GitHub(auth);
-const database = new Database(Deno.env.get("MONGO_URI")!);
+const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   _: ScheduledEvent,

@@ -7,7 +7,7 @@ export AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 # required when using the aws cli v2 to disable the sticky pager
 # see https://docs.aws.amazon.com/cli/latest/userguide/cliv2-migration.html#cliv2-migration-output-pager
 export AWS_PAGER=""
-export MONGO_URI=mongodb://root:rootpassword@localhost
+export MONGO_URI=mongodb://root:rootpassword@localhost?authMechanism=SCRAM-SHA-1
 export BUILD_QUEUE=http://localhost:9324/000000000000/builds
 export STORAGE_BUCKET=deno-registry2
 export MODERATION_BUCKET=deno-registry2-moderation
@@ -34,4 +34,4 @@ aws --endpoint-url=http://localhost:9324 sqs delete-queue --queue-url http://loc
 aws --endpoint-url=http://localhost:9324 sqs create-queue --queue-name builds --region us-east-1
 
 echo "Running tests..."
-deno test --unstable -A
+deno test --unstable -A $DENO_ARGS

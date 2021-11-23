@@ -9,7 +9,7 @@ import {
 import { Database } from "../../utils/database.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
 import { getMeta, s3 } from "../../utils/storage.ts";
-const database = new Database(Deno.env.get("MONGO_URI")!);
+const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
@@ -53,7 +53,7 @@ Deno.test({
       assertEquals(await getMeta("ltest-2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest-2"), null);
@@ -91,7 +91,7 @@ Deno.test({
       assertEquals(await getMeta("ltest-2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest-2"), null);
@@ -129,7 +129,7 @@ Deno.test({
       assertEquals(await getMeta("frisbee", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("frisbee"), null);
@@ -189,7 +189,7 @@ Deno.test({
       );
 
       // Check that no new build was queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -246,7 +246,7 @@ Deno.test({
       );
 
       // Check that no new build was queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -321,7 +321,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest5"), null);
 
       // Check that builds were queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -383,7 +383,7 @@ Deno.test({
     try {
       const repoId = 123456789;
 
-      database.saveModule({
+      await database.saveModule({
         name: "ltest",
         description: "testing things",
         repo_id: repoId,
@@ -420,7 +420,7 @@ Deno.test({
       assertEquals(await getMeta("ltest", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
 
       const ltest = await database.getModule("ltest");
       assert(ltest);
@@ -507,7 +507,7 @@ Deno.test({
       );
 
       // Check that no new build was queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -550,7 +550,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
@@ -596,7 +596,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}), []);
+      assertEquals(await database._builds.find({}).toArray(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
