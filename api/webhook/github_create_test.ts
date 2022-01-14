@@ -278,7 +278,7 @@ Deno.test({
   name: "create event max registered to repository with dynamic owner quota",
   async fn() {
     try {
-      database.saveOwnerQuota({
+      await database.saveOwnerQuota({
         owner: "luca-rand",
         type: "github",
         max_modules: 7,

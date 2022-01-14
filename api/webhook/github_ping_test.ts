@@ -450,7 +450,7 @@ Deno.test({
   name: "ping event success capitalization",
   async fn() {
     try {
-      database.saveModule({
+      await database.saveModule({
         name: "ltest2",
         description: "testing things",
         repo_id: 274939732,
@@ -519,7 +519,7 @@ Deno.test({
   name: "ping event blocked owner",
   async fn() {
     try {
-      database.saveOwnerQuota({
+      await database.saveOwnerQuota({
         type: "github",
         owner: "luca-rand",
         max_modules: 0,
@@ -565,7 +565,7 @@ Deno.test({
   name: "ping event blocked sender",
   async fn() {
     try {
-      database.saveOwnerQuota({
+      await database.saveOwnerQuota({
         type: "github",
         owner: "lucacasonato",
         max_modules: 0,
