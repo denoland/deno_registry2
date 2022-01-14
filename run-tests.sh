@@ -33,5 +33,9 @@ echo "Setting up SQS queue..."
 aws --endpoint-url=http://localhost:9324 sqs delete-queue --queue-url http://localhost:9324/000000000000/builds --region us-east-1|| true
 aws --endpoint-url=http://localhost:9324 sqs create-queue --queue-name builds --region us-east-1
 
+docker-compose logs
+mongo $MONGO_URI
+docker-compose logs
+
 echo "Running tests..."
 deno test --unstable -A $DENO_ARGS
