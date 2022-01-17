@@ -9,10 +9,10 @@ import { assertEquals } from "../../test_deps.ts";
 import { Database } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
-  name: "`/builds/:id` success",
+  name: "`/builds/:id`success",
   async fn() {
     try {
       const id = await database.createBuild({
@@ -56,7 +56,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "`/builds/:id` missing id",
+  name: "`/builds/:id` missing id",
   async fn() {
     assertEquals(
       await handler(
@@ -77,7 +77,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "`/builds/:id` invalid id",
+  name: "`/builds/:id` invalid id",
   async fn() {
     assertEquals(
       await handler(
@@ -100,7 +100,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "`/builds/:id` not found",
+  name: "`/builds/:id` not found",
   async fn() {
     assertEquals(
       await handler(
