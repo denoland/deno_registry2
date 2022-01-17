@@ -43,12 +43,12 @@ interface WebhookEvent {
 
 const decoder = new TextDecoder();
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 // deno-lint-ignore require-await
 export async function handler(
   event: APIGatewayProxyEventV2,
-  _context: Context,
+  context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   const ip = event.requestContext.http.sourceIp;
   if (!isGitHubHooksIP(ip)) {
@@ -72,7 +72,7 @@ export async function handler(
     });
   }
 
-  const headers = new Headers(event.headers as Record<string, string>);
+  const headers = new Headers(event.headers);
 
   if (
     !(headers.get("content-type") ?? "").startsWith("application/json") &&

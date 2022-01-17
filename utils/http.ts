@@ -26,7 +26,7 @@ export function parseRequestBody(
     event.isBase64Encoded = false;
   }
 
-  const headers = new Headers(event.headers as Record<string, string>);
+  const headers = new Headers(event.headers);
   if (
     headers.get("content-type") === "application/x-www-form-urlencoded" &&
     event.body
