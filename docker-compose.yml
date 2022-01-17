@@ -29,10 +29,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
-    logging:
-      driver: none
   localstack:
     image: localstack/localstack:0.11.5
     network_mode: "host"
     environment:
       - "SERVICES=ssm"
+    logging:
+      driver: none
