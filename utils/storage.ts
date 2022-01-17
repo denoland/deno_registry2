@@ -13,16 +13,20 @@ export const s3 = new S3Bucket(
   },
 );
 
-export const moderationS3 = new S3Bucket(
-  {
-    bucket: Deno.env.get("MODERATION_BUCKET")!,
-    region: Deno.env.get("AWS_REGION")!,
-    accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
-    secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
-    sessionToken: Deno.env.get("AWS_SESSION_TOKEN"),
-    endpointURL: Deno.env.get("S3_ENDPOINT_URL"),
-  },
-);
+let moderationS3: S3Bucket | null = null;
+
+if (Deno.env.get("MODERATION_BUCKET")) {
+  moderationS3 = new S3Bucket(
+    {
+      bucket: Deno.env.get("MODERATION_BUCKET")!,
+      region: Deno.env.get("AWS_REGION")!,
+      accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
+      secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
+      sessionToken: Deno.env.get("AWS_SESSION_TOKEN"),
+      endpointURL: Deno.env.get("S3_ENDPOINT_URL"),
+    },
+  );
+}
 
 export async function getMeta(
   module: string,
@@ -123,6 +127,9 @@ export async function uploadVersionMetaJson(
 }
 
 export async function getForbiddenWords(): Promise<Uint8Array> {
+  if (!moderationS3) {
+    throw new Error("Missing MODERATION_BUCKET environment variable.");
+  }
   const resp = await moderationS3.getObject(
     "badwords.txt",
     {},
