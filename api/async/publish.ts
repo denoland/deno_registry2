@@ -9,14 +9,7 @@
  * the module name, GitHub repository, version, subdirectory ect.
  */
 
-import {
-  Context,
-  join,
-  pooledMap,
-  readAll,
-  SQSEvent,
-  walk,
-} from "../../deps.ts";
+import { Context, join, pooledMap, SQSEvent, walk } from "../../deps.ts";
 import { Build, BuildStats, Database } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
@@ -30,7 +23,7 @@ import type { DirectoryListingFile } from "../../utils/types.ts";
 import { DepGraph, runDenoInfo } from "../../utils/deno.ts";
 import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const remoteURL = Deno.env.get("REMOTE_URL")!;
 
@@ -40,7 +33,7 @@ const decoder = new TextDecoder();
 
 export async function handler(
   event: SQSEvent,
-  _context: Context,
+  context: Context,
 ): Promise<void> {
   for (const record of event.Records) {
     const { buildID } = JSON.parse(record.body);
@@ -162,7 +155,7 @@ async function publishGithub(
     await collectAsyncIterable(pooledMap(65, directory, async (entry) => {
       if (entry.type === "file") {
         const file = await Deno.open(join(path, entry.path));
-        const body = await readAll(file);
+        const body = await Deno.readAll(file);
         await uploadVersionRaw(
           moduleName,
           version,
@@ -191,7 +184,7 @@ async function publishGithub(
       {
         uploaded_at: new Date().toISOString(),
         directory_listing: directory.sort((a, b) =>
-          a.path.localeCompare(b.path, "en-US")
+          a.path.localeCompare(b.path)
         ),
         upload_options: {
           type: "github",
@@ -269,19 +262,10 @@ export async function analyzeDependencies(build: Build): Promise<void> {
     }
 
     const graphToJoin = await runDenoInfo({ entrypoint, denoDir });
-    for (const dep of graphToJoin) {
-      if (dep.error || !dep.dependencies || !dep.size) {
-        throw new Error(`Failed to load ${dep.specifier}: ${dep.error}`);
-      }
-      const dependencies = dep.dependencies.map((d) => {
-        if (!d.code?.specifier) {
-          throw new Error(`Failed to load ${d.specifier}`);
-        }
-        return d.code.specifier;
-      });
-      totalGraph[dep.specifier] = {
-        size: dep.size,
-        deps: [...new Set(dependencies)],
+    for (const url in graphToJoin) {
+      totalGraph[url] = {
+        ...graphToJoin[url],
+        deps: [...new Set(graphToJoin[url].deps)],
       };
     }
   }

@@ -14,11 +14,11 @@ import { respondJSON } from "../utils/http.ts";
 import { Database } from "../utils/database.ts";
 import type { APIStatsResponse } from "../utils/types.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
-  _event: APIGatewayProxyEventV2,
-  _context: Context,
+  event: APIGatewayProxyEventV2,
+  context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   const totalCount = await database.countModules();
   const totalVersions = await database.countAllVersions();

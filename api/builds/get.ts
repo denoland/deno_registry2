@@ -10,7 +10,7 @@ import type {
   APIGatewayProxyResultV2,
   Context,
 } from "../../deps.ts";
-import { Bson } from "../../deps.ts";
+import { ObjectId } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
 import type {
@@ -18,11 +18,11 @@ import type {
   APIErrorResponse,
 } from "../../utils/types.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   event: APIGatewayProxyEventV2,
-  _context: Context,
+  context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   const id = event.pathParameters?.id;
 
@@ -36,8 +36,8 @@ export async function handler(
   }
 
   try {
-    new Bson.ObjectId(id);
-  } catch (_err: unknown) {
+    ObjectId(id);
+  } catch (err) {
     return respondJSON({
       statusCode: 400,
       body: JSON.stringify(
