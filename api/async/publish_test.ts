@@ -5,13 +5,11 @@ import {
   createContext,
   createSQSEvent,
 } from "../../utils/test_utils.ts";
-import { assertEquals } from "../../test_deps.ts";
+import { assert, assertEquals } from "../../test_deps.ts";
 import { Database } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
 
-const database = new Database(Deno.env.get("MONGO_URI")!);
-
-const decoder = new TextDecoder();
+const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
   name: "publish success",
@@ -55,8 +53,9 @@ Deno.test({
       const versions = await s3.getObject("ltest/meta/versions.json");
       assertEquals(versions?.cacheControl, "max-age=10, must-revalidate");
       assertEquals(versions?.contentType, "application/json");
+      assert(versions);
       assertEquals(
-        JSON.parse(decoder.decode(versions?.body)),
+        await new Response(versions.body).json(),
         { latest: "0.0.9", versions: ["0.0.9"] },
       );
 
@@ -64,13 +63,10 @@ Deno.test({
       assertEquals(meta?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(meta?.contentType, "application/json");
       // Check that meta file exists
+      assert(meta);
       assertEquals(
         {
-          ...JSON.parse(
-            decoder.decode(
-              meta?.body,
-            ),
-          ),
+          ...await new Response(meta.body).json(),
           uploaded_at: undefined,
         },
         {
@@ -111,11 +107,6 @@ Deno.test({
               type: "file",
             },
             {
-              path: "/LICENSE",
-              size: 1066,
-              type: "file",
-            },
-            {
               path: "/deps.ts",
               size: 63,
               type: "file",
@@ -136,8 +127,8 @@ Deno.test({
               type: "file",
             },
             {
-              path: "/mod.ts",
-              size: 139,
+              path: "/LICENSE",
+              size: 1066,
               type: "file",
             },
             {
@@ -146,18 +137,23 @@ Deno.test({
               type: "file",
             },
             {
+              path: "/mod.ts",
+              size: 139,
+              type: "file",
+            },
+            {
               path: "/subproject",
               size: 425,
               type: "dir",
             },
             {
-              path: "/subproject/README.md",
-              size: 354,
+              path: "/subproject/mod.ts",
+              size: 71,
               type: "file",
             },
             {
-              path: "/subproject/mod.ts",
-              size: 71,
+              path: "/subproject/README.md",
+              size: 354,
               type: "file",
             },
           ],
@@ -174,12 +170,9 @@ Deno.test({
       assertEquals(deps?.cacheControl, "max-age=10, must-revalidate");
       assertEquals(deps?.contentType, "application/json");
       // Check that meta file exists
+      assert(deps);
       assertEquals(
-        JSON.parse(
-          decoder.decode(
-            deps?.body,
-          ),
-        ),
+        await new Response(deps.body).json(),
         {
           graph: {
             nodes: {
@@ -297,13 +290,17 @@ Deno.test({
       );
       assertEquals(yml?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(yml?.contentType, "text/yaml");
-      assertEquals(yml?.body.length, 412);
+      assert(yml);
+      let body = await new Response(yml.body).arrayBuffer();
+      assertEquals(body.byteLength, 412);
 
       // Check the ts file was uploaded
       const ts = await s3.getObject("ltest/versions/0.0.9/raw/mod.ts");
       assertEquals(ts?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(ts?.contentType, "application/typescript; charset=utf-8");
-      assertEquals(ts?.body.length, 139);
+      assert(ts);
+      body = await new Response(ts.body).arrayBuffer();
+      assertEquals(body.byteLength, 139);
 
       // Check the ts file was uploaded
       const readme = await s3.getObject(
@@ -311,7 +308,10 @@ Deno.test({
       );
       assertEquals(readme?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(readme?.contentType, "text/markdown");
-      assertEquals(readme?.body.length, 304);
+      assert(readme);
+      body = await new Response(readme.body).arrayBuffer();
+      console.log(new TextDecoder().decode(body));
+      assertEquals(body.byteLength, 304);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -363,8 +363,9 @@ Deno.test({
       const versions = await s3.getObject("ltest/meta/versions.json");
       assertEquals(versions?.cacheControl, "max-age=10, must-revalidate");
       assertEquals(versions?.contentType, "application/json");
+      assert(versions);
       assertEquals(
-        JSON.parse(decoder.decode(versions?.body)),
+        await new Response(versions.body).json(),
         { latest: "0.0.7", versions: ["0.0.7"] },
       );
 
@@ -372,13 +373,10 @@ Deno.test({
       assertEquals(meta?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(meta?.contentType, "application/json");
       // Check that meta file exists
+      assert(meta);
       assertEquals(
         {
-          ...JSON.parse(
-            decoder.decode(
-              meta?.body,
-            ),
-          ),
+          ...await new Response(meta.body).json(),
           uploaded_at: undefined,
         },
         {
@@ -389,13 +387,13 @@ Deno.test({
               type: "dir",
             },
             {
-              path: "/README.md",
-              size: 354,
+              path: "/mod.ts",
+              size: 71,
               type: "file",
             },
             {
-              path: "/mod.ts",
-              size: 71,
+              path: "/README.md",
+              size: 354,
               type: "file",
             },
           ],
@@ -413,13 +411,17 @@ Deno.test({
       const ts = await s3.getObject("ltest/versions/0.0.7/raw/mod.ts");
       assertEquals(ts?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(ts?.contentType, "application/typescript; charset=utf-8");
-      assertEquals(ts?.body.length, 71);
+      assert(ts);
+      let body = await new Response(ts.body).arrayBuffer();
+      assertEquals(body.byteLength, 71);
 
       // Check the ts file was uploaded
       const readme = await s3.getObject("ltest/versions/0.0.7/raw/README.md");
       assertEquals(readme?.cacheControl, "public, max-age=31536000, immutable");
       assertEquals(readme?.contentType, "text/markdown");
-      assertEquals(readme?.body.length, 354);
+      assert(readme);
+      body = await new Response(readme.body).arrayBuffer();
+      assertEquals(body.byteLength, 354);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -530,8 +532,9 @@ Deno.test({
       const versions = await s3.getObject("ltest_big/meta/versions.json");
       assertEquals(versions?.cacheControl, "max-age=10, must-revalidate");
       assertEquals(versions?.contentType, "application/json");
+      assert(versions);
       assertEquals(
-        JSON.parse(decoder.decode(versions?.body)),
+        await new Response(versions.body).json(),
         { latest: "0.0.1", versions: ["0.0.1"] },
       );
     } finally {

@@ -32,7 +32,9 @@ export async function getMeta(
     join(module, "meta", file),
     {},
   );
-  return resp?.body;
+  if (resp === undefined) return undefined;
+  const data = await new Response(resp.body).arrayBuffer();
+  return new Uint8Array(data);
 }
 
 export async function getVersionMetaJson(
@@ -44,7 +46,9 @@ export async function getVersionMetaJson(
     join(module, "versions", version, "meta", file),
     {},
   );
-  return resp?.body;
+  if (resp === undefined) return undefined;
+  const data = await new Response(resp.body).arrayBuffer();
+  return new Uint8Array(data);
 }
 
 const encoder = new TextEncoder();
@@ -118,10 +122,12 @@ export async function uploadVersionMetaJson(
   return { etag: resp.etag };
 }
 
-export async function getForbiddenWords() {
+export async function getForbiddenWords(): Promise<Uint8Array> {
   const resp = await moderationS3.getObject(
     "badwords.txt",
     {},
   );
-  return resp?.body;
+  if (resp === undefined) throw new Error("badwords.txt not found");
+  const data = await new Response(resp.body).arrayBuffer();
+  return new Uint8Array(data);
 }
