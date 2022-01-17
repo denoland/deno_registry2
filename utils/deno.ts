@@ -10,9 +10,23 @@ export interface Dep {
   deps: string[];
 }
 
+export interface Module {
+  specifier: string;
+  error?: string;
+  size?: number;
+  dependencies?: ModuleDependency[];
+}
+
+export interface ModuleDependency {
+  specifier: string;
+  code?: {
+    specifier?: string;
+  };
+}
+
 export async function runDenoInfo(
   options: { entrypoint: string; denoDir: string },
-): Promise<DepGraph> {
+): Promise<Module[]> {
   const p = Deno.run({
     cmd: [
       "deno",
@@ -35,6 +49,6 @@ export async function runDenoInfo(
     throw new Error(`Failed to run deno info for ${options.entrypoint}`);
   }
   const text = decoder.decode(file);
-  const { files } = JSON.parse(text);
-  return files;
+  const { modules } = JSON.parse(text);
+  return modules;
 }
