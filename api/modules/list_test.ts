@@ -8,7 +8,7 @@ import {
 import { assert, assertEquals } from "../../test_deps.ts";
 import { Database } from "../../utils/database.ts";
 
-const database = new Database(Deno.env.get("MONGO_URI")!);
+const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
   name: "`/modules` success",

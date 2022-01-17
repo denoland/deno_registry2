@@ -1,6 +1,6 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
-import { MongoClient, ObjectId, WithID } from "../deps.ts";
+import { Bson, MongoClient, MongoCollection, MongoDatabase } from "../deps.ts";
 
 export type DBModule = Omit<Module, "name"> & { _id: string };
 export type ScoredModule = DBModule & { search_score: number };
@@ -8,12 +8,16 @@ export type ScoredModule = DBModule & { search_score: number };
 export interface Module {
   name: string;
   type: string;
+  // deno-lint-ignore camelcase
   repo_id: number;
   owner: string;
   repo: string;
   description: string;
+  // deno-lint-ignore camelcase
   star_count: number;
+  // deno-lint-ignore camelcase
   is_unlisted: boolean;
+  // deno-lint-ignore camelcase
   created_at: Date;
 }
 
@@ -49,25 +53,31 @@ export const SortValues = Object.keys(sort);
 export interface SearchResult {
   name: string;
   description: string;
+  // deno-lint-ignore camelcase
   star_count: number;
+  // deno-lint-ignore camelcase
   search_score: number;
 }
 
 export interface RecentlyAddedModuleResult {
   name: string;
   description: string;
+  // deno-lint-ignore camelcase
   star_count: number;
+  // deno-lint-ignore camelcase
   created_at: Date;
 }
 
 export interface RecentlyAddedUploadedVersions {
   name: string;
   version: string;
+  // deno-lint-ignore camelcase
   created_at: Date;
 }
 
 export interface Build {
   id: string;
+  // deno-lint-ignore camelcase
   created_at: Date;
   options: {
     moduleName: string;
@@ -83,14 +93,18 @@ export interface Build {
 }
 
 export interface BuildStats {
+  // deno-lint-ignore camelcase
   total_files: number;
+  // deno-lint-ignore camelcase
   total_size: number;
 }
 
 export interface OwnerQuota {
   owner: string;
   type: string;
+  // deno-lint-ignore camelcase
   max_modules: number;
+  // deno-lint-ignore camelcase
   max_total_size?: number;
   blocked: boolean;
 }
@@ -100,17 +114,24 @@ export type DBOwnerQuota = Omit<OwnerQuota, "owner"> & {
 };
 
 export class Database {
-  private mongo = new MongoClient();
-  protected db = this.mongo.database("production");
-  _modules = this.db.collection<DBModule>("modules");
-  _builds = this.db.collection<Omit<Build, "id"> & { _id: ObjectId }>("builds");
-  _owner_quotas = this.db.collection<DBOwnerQuota>("owner_quotas");
+  protected db: MongoDatabase;
+  _modules: MongoCollection<DBModule>;
+  _builds: MongoCollection<Omit<Build, "id"> & { _id: Bson.ObjectId }>;
+  _owner_quotas: MongoCollection<DBOwnerQuota>;
 
-  constructor(mongoUri: string) {
-    this.mongo.connectWithUri(mongoUri);
-    if (this.mongo.clientId === null || this.mongo.clientId === undefined) {
-      throw new Error("Could not connect to database.");
-    }
+  constructor(db: MongoDatabase) {
+    this.db = db;
+    this._modules = db.collection<DBModule>("modules");
+    this._builds = db.collection<Omit<Build, "id"> & { _id: Bson.ObjectId }>(
+      "builds",
+    );
+    this._owner_quotas = db.collection<DBOwnerQuota>("owner_quotas");
+  }
+
+  static async connect(mongoUri: string): Promise<Database> {
+    const mongo = new MongoClient();
+    const db = await mongo.connect(mongoUri);
+    return new Database(db);
   }
 
   _entryToModule(entry: DBModule): Module {
@@ -128,32 +149,26 @@ export class Database {
   }
 
   async getModule(name: string): Promise<Module | null> {
-    // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-    // deno-lint-ignore no-explicit-any
-    const entry = await this._modules.findOne({ _id: name.toString() } as any);
-    if (entry === null) return null;
+    const entry = await this._modules.findOne({ _id: name.toString() });
+    if (entry === undefined) return null;
     return this._entryToModule(entry);
   }
 
   async saveModule(module: Module): Promise<void> {
     await this._modules.updateOne(
+      { _id: module.name },
       {
-        // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-        // deno-lint-ignore no-explicit-any
-        _id: module.name as any,
-      },
-      {
-        // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-        // deno-lint-ignore no-explicit-any
-        _id: module.name as any,
-        type: module.type,
-        repo_id: module.repo_id,
-        owner: module.owner,
-        repo: module.repo,
-        description: module.description,
-        star_count: module.star_count,
-        is_unlisted: module.is_unlisted,
-        created_at: module.created_at ?? new Date(),
+        $set: {
+          _id: module.name,
+          type: module.type,
+          repo_id: module.repo_id,
+          owner: module.owner,
+          repo: module.repo,
+          description: module.description,
+          star_count: module.star_count,
+          is_unlisted: module.is_unlisted,
+          created_at: module.created_at ?? new Date(),
+        },
       },
       { upsert: true },
     );
@@ -178,20 +193,21 @@ export class Database {
     if (options.sort === "random") {
       options.page = 1;
       options.query = undefined;
+      const modules = await this._modules.aggregate([
+        {
+          $match: {
+            is_unlisted: { $not: { $eq: true } },
+          },
+        },
+        {
+          $sample: {
+            size: options.limit,
+          },
+        },
+      ]).toArray() as ScoredModule[];
       return [
         options,
-        await this._modules.aggregate([
-          {
-            $match: {
-              is_unlisted: { $not: { $eq: true } },
-            },
-          },
-          {
-            $sample: {
-              size: options.limit,
-            },
-          },
-        ]) as ScoredModule[],
+        modules,
       ];
     }
 
@@ -249,18 +265,18 @@ export class Database {
       {
         $limit: options.limit,
       },
-    ])) as ScoredModule[];
+    ]).toArray()) as ScoredModule[];
 
     return [options, docs];
   }
 
   async listAllModules(): Promise<Module[]> {
-    const entries = await this._modules.find({});
-    return entries.map(this._entryToModule);
+    const entries = this._modules.find({});
+    return await entries.map(this._entryToModule);
   }
 
   async listAllModuleNames(): Promise<string[]> {
-    const results = await this._modules.aggregate([
+    return await this._modules.aggregate<{ _id: string }>([
       {
         $match: {
           is_unlisted: { $not: { $eq: true } },
@@ -271,12 +287,11 @@ export class Database {
           _id: 1,
         },
       },
-    ]) as { _id: string }[];
-    return results.map((o) => o._id);
+    ]).map((o) => o._id);
   }
 
   countModules(): Promise<number> {
-    return this._modules.count({
+    return this._modules.countDocuments({
       is_unlisted: { $not: { $eq: true } },
     });
   }
@@ -284,21 +299,15 @@ export class Database {
   async countModulesForRepository(
     repoId: number,
   ): Promise<number> {
-    const modules = await this._modules.find({ repo_id: repoId });
-    return modules.length;
+    return await this._modules.countDocuments({ repo_id: repoId });
   }
 
   async countModulesForOwner(owner: string): Promise<number> {
-    const modules = await this._modules.find({ owner });
-    return modules.length;
+    return await this._modules.countDocuments({ owner });
   }
 
   async deleteModule(name: string): Promise<void> {
-    const resp = await this._modules.deleteOne({
-      // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-      // deno-lint-ignore no-explicit-any
-      _id: name as any,
-    });
+    const resp = await this._modules.deleteOne({ _id: name });
 
     if (!resp) {
       throw new Error(`Failed to delete module [ ${name} ]`);
@@ -307,10 +316,10 @@ export class Database {
   }
 
   async getBuild(id: string): Promise<Build | null> {
-    const build = await this._builds.findOne({ _id: ObjectId(id) });
-    if (build === null) return null;
+    const build = await this._builds.findOne({ _id: new Bson.ObjectId(id) });
+    if (build === undefined) return null;
     return {
-      id: build._id.$oid,
+      id: build._id.toHexString(),
       created_at: build.created_at,
       options: build.options,
       status: build.status,
@@ -320,17 +329,17 @@ export class Database {
   }
 
   async listSuccessfulBuilds(name: string): Promise<Build[]> {
-    const builds = await this._builds.aggregate([
+    const cursor = this._builds.aggregate<Build & { _id: Bson.ObjectId }>([
       {
         $match: {
           "options.moduleName": { $eq: name },
-          status: { $eq: "success" },
+          status: { $eq: "success" as BuildStatus },
         },
       },
-    ]) as (Build & WithID)[];
-    return builds.map((b) => {
+    ]);
+    return await cursor.map((b) => {
       return {
-        id: b._id.$oid,
+        id: b._id.toHexString(),
         created_at: b.created_at,
         options: b.options,
         status: b.status,
@@ -345,13 +354,12 @@ export class Database {
     version: string,
   ): Promise<Build | null> {
     const build = await this._builds.findOne({
-      // @ts-ignore because the deno_mongo typings are incorrect
       "options.moduleName": name,
       "options.version": version,
     });
-    if (build === null) return null;
+    if (build === undefined) return null;
     return {
-      id: build._id.$oid,
+      id: build._id.toHexString(),
       created_at: build.created_at,
       options: build.options,
       status: build.status,
@@ -361,7 +369,7 @@ export class Database {
   }
 
   countAllVersions(): Promise<number> {
-    return this._builds.count({});
+    return this._builds.countDocuments({});
   }
 
   async createBuild(
@@ -374,21 +382,23 @@ export class Database {
       message: build.message,
       stats: build.stats,
     });
-    return id.$oid;
+    return id.toHexString();
   }
 
   async saveBuild(build: Build): Promise<void> {
     await this._builds.updateOne(
       {
-        _id: ObjectId(build.id),
+        _id: new Bson.ObjectId(build.id),
       },
       {
-        _id: ObjectId(build.id),
-        created_at: build.created_at,
-        options: build.options,
-        status: build.status,
-        message: build.message,
-        stats: build.stats,
+        $set: {
+          _id: new Bson.ObjectId(build.id),
+          created_at: build.created_at,
+          options: build.options,
+          status: build.status,
+          message: build.message,
+          stats: build.stats,
+        },
       },
       { upsert: true },
     );
@@ -398,14 +408,11 @@ export class Database {
     owner: string,
   ): Promise<OwnerQuota | null> {
     const ownerQuota = await this._owner_quotas.findOne({
-      // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-      // deno-lint-ignore no-explicit-any
-      _id: owner as any,
+      _id: owner,
     });
-    if (ownerQuota === null) return null;
+    if (ownerQuota === undefined) return null;
     return {
-      // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-      owner: ownerQuota._id as string,
+      owner: ownerQuota._id,
       type: ownerQuota.type,
       max_modules: ownerQuota.max_modules,
       max_total_size: ownerQuota.max_total_size,
@@ -418,25 +425,23 @@ export class Database {
   ): Promise<void> {
     await this._owner_quotas.updateOne(
       {
-        // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-        // deno-lint-ignore no-explicit-any
-        _id: ownerQuota.owner as any,
+        _id: ownerQuota.owner,
       },
       {
-        // TODO: https://github.com/manyuanrong/deno_mongo/issues/76
-        // deno-lint-ignore no-explicit-any
-        _id: ownerQuota.owner as any,
-        type: ownerQuota.type,
-        max_modules: ownerQuota.max_modules,
-        max_total_size: ownerQuota.max_total_size,
-        blocked: ownerQuota.blocked,
+        $set: {
+          _id: ownerQuota.owner,
+          type: ownerQuota.type,
+          max_modules: ownerQuota.max_modules,
+          max_total_size: ownerQuota.max_total_size,
+          blocked: ownerQuota.blocked,
+        },
       },
       { upsert: true },
     );
   }
 
   async listRecentlyAddedModules(): Promise<RecentlyAddedModuleResult[]> {
-    const results = await this._modules.aggregate([
+    const cursor = this._modules.aggregate<DBModule>([
       {
         $match: {
           is_unlisted: { $not: { $eq: true } },
@@ -450,8 +455,8 @@ export class Database {
       {
         $limit: 10,
       },
-    ]) as DBModule[];
-    return results.map((doc) => ({
+    ]);
+    return await cursor.map((doc) => ({
       name: doc._id,
       description: doc.description,
       star_count: doc.star_count,
@@ -462,7 +467,7 @@ export class Database {
   async listRecentlyUploadedVersions(): Promise<
     RecentlyAddedUploadedVersions[]
   > {
-    const results = await this._builds.aggregate([
+    const cursor = this._builds.aggregate<Build>([
       {
         $sort: {
           created_at: -1,
@@ -471,8 +476,8 @@ export class Database {
       {
         $limit: 10,
       },
-    ]) as Build[];
-    return results.map((doc) => ({
+    ]);
+    return await cursor.map((doc) => ({
       name: doc.options.moduleName,
       version: doc.options.version,
       created_at: doc.created_at,
