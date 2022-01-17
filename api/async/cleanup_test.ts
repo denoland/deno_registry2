@@ -8,7 +8,7 @@ import { handler } from "./cleanup.ts";
 import { Database, Module } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const ltest: Module = {
   name: "recent",
@@ -178,7 +178,7 @@ Deno.test({
       );
 
       const list = await database.listAllModules();
-      assertEquals(list.length, 1);
+      assert(list.length === 1);
       assertEquals(list[0].name, "old");
     } finally {
       await cleanupDatabase(database);

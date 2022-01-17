@@ -1,5 +1,5 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
-import { assert, assertEquals } from "../../test_deps.ts";
+import { assert } from "../../test_deps.ts";
 import {
   cleanupDatabase,
   createContext,
@@ -7,9 +7,12 @@ import {
 } from "../../utils/test_utils.ts";
 import { handler } from "./stargazers.ts";
 import { Database, Module } from "../../utils/database.ts";
+import { GitHub } from "../../utils/github.ts";
+import { assertEquals } from "https://deno.land/std@0.69.0/testing/asserts.ts";
 import { s3 } from "../../utils/storage.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
+const gh = new GitHub();
 
 const ltest: Module = {
   name: "ltest",

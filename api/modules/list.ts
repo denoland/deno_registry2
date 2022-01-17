@@ -28,11 +28,11 @@ import type {
   APIModuleListShortResponse,
 } from "../../utils/types.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   event: APIGatewayProxyEventV2,
-  _context: Context,
+  context: Context,
 ): Promise<APIGatewayProxyResultV2> {
   const simple = event.queryStringParameters?.simple === "1";
   if (simple) {

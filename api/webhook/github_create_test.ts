@@ -9,8 +9,7 @@ import {
 import { Database } from "../../utils/database.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
 import { getMeta, s3, uploadMetaJson } from "../../utils/storage.ts";
-
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const database = new Database(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
@@ -92,7 +91,7 @@ Deno.test({
       assertEquals(await getMeta("ltest-2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest-2"), null);
@@ -130,7 +129,7 @@ Deno.test({
       assertEquals(await getMeta("frisbee", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("frisbee"), null);
@@ -208,7 +207,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest5"), null);
 
       // Check that builds were queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -263,7 +262,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest17"), null);
 
       // Check that builds were queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
 
       // Clean up
       await database._modules.deleteMany({});
@@ -278,7 +277,7 @@ Deno.test({
   name: "create event max registered to repository with dynamic owner quota",
   async fn() {
     try {
-      await database.saveOwnerQuota({
+      database.saveOwnerQuota({
         owner: "luca-rand",
         type: "github",
         max_modules: 7,
@@ -328,7 +327,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest9"), null);
 
       // Check that builds were queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -352,7 +351,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -375,7 +374,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -426,7 +425,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -449,7 +448,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -511,7 +510,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
@@ -550,7 +549,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
@@ -577,7 +576,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -600,7 +599,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -665,7 +664,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
@@ -692,7 +691,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -716,7 +715,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -767,7 +766,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -791,7 +790,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -842,7 +841,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -866,7 +865,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -955,7 +954,7 @@ Deno.test({
       );
 
       // Check that no new build was queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -1050,7 +1049,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued in addition to the errored build
       assertEquals(builds.length, 2);
@@ -1088,7 +1087,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[1]._id.toHexString()
+            builds[1]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -1151,7 +1150,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -1174,7 +1173,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -1278,7 +1277,7 @@ Deno.test({
       );
 
       // Check that no new build was queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await database._builds.find({}), []);
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
@@ -1410,7 +1409,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -1436,7 +1435,7 @@ Deno.test({
         {
           body:
             `{"success":true,"data":{"module":"ltest4","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-              builds[0]._id.toHexString()
+              builds[0]._id.$oid
             }"}}`,
           headers: {
             "content-type": "application/json",
@@ -1480,7 +1479,7 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await database._builds.find({});
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
@@ -1503,7 +1502,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"frisbee","version":"0.0.7","repository":"luca-rand/frisbee","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0]._id.$oid
           }"}}`,
         headers: {
           "content-type": "application/json",
