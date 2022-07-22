@@ -18,7 +18,7 @@ jobs:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v2.3.0
         with:
-          deno-version: v1.17.3
+          deno-version: v1.24.0
 
       - uses: actions/checkout@v2
 
@@ -41,6 +41,9 @@ jobs:
           terraform init -backend=false
           terraform validate
         working-directory: terraform
+        env:
+          # The below token is fake!
+          CLOUDFLARE_API_TOKEN: 3M_VhkYS7ot1fl4Ai6fpWJIXG4y2xWSIS3QuXSBa
 
       - name: Push container to ECR (prod)
         if: github.ref == 'refs/heads/main'
