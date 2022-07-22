@@ -60,6 +60,7 @@ Deno.test({
         sort: "stars",
       },
       [
+        // @ts-expect-error ignore search_score, because the exact value is not important
         {
           _id: "ltest",
           created_at: new Date("2020-02-01T00:00:00.000Z"),
@@ -125,12 +126,14 @@ Deno.test({
     const build = await database.getBuild(id);
     assert(build);
     assert(build.created_at);
-    // deno-lint-ignore ban-ts-comment
-    // @ts-expect-error
-    build.created_at = undefined;
     assertEquals(
       build,
-      { ...build1, id, created_at: undefined, stats: undefined },
+      {
+        ...build1,
+        id,
+        created_at: build.created_at,
+        stats: undefined,
+      },
     );
 
     // Cleanup
