@@ -270,7 +270,8 @@ export async function analyzeDependencies(build: Build): Promise<void> {
 
     const graphToJoin = await runDenoInfo({ entrypoint, denoDir });
     for (const dep of graphToJoin) {
-      if (dep.error || !dep.dependencies || !dep.size) {
+      dep.dependencies ??= [];
+      if (dep.error || dep.size === undefined) {
         throw new Error(`Failed to load ${dep.specifier}: ${dep.error}`);
       }
       const dependencies = dep.dependencies.map((d) => {
