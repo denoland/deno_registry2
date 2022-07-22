@@ -42,7 +42,8 @@ jobs:
           terraform validate
         working-directory: terraform
         env:
-          CLOUDFLARE_API_TOKEN: faketoken
+          # The below token is fake!
+          CLOUDFLARE_API_TOKEN: 3M_VhkYS7ot1fl4Ai6fpWJIXG4y2xWSIS3QuXSBa
 
       - name: Push container to ECR (prod)
         if: github.ref == 'refs/heads/main'
