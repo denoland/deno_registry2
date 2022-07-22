@@ -41,6 +41,8 @@ jobs:
           terraform init -backend=false
           terraform validate
         working-directory: terraform
+        env:
+          CLOUDFLARE_API_TOKEN: faketoken
 
       - name: Push container to ECR (prod)
         if: github.ref == 'refs/heads/main'
