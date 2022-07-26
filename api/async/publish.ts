@@ -104,6 +104,9 @@ export async function handler(
       message += " Failed to post webhook to apiland.";
     }
 
+    // consume body, to not leak resources
+    await res.text();
+
     await database.saveBuild({
       ...build,
       status: "success",
