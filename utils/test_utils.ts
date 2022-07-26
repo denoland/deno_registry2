@@ -18,22 +18,16 @@ export function createApiLandMock() {
 
   const listener = Deno.listen({ port: parseInt(port, 10) });
 
-  const controller = new AbortController();
-  const { signal } = controller;
-  signal.addEventListener("abort", () => {
-    console.log("onabort");
-    listener.close();
-  });
-
-  async function serve(conn: Deno.Conn) {
-    for await (const { request, respondWith } of Deno.serveHttp(conn)) {
+  (async () => {
+    const conn = await listener.accept();
+    const httpConn = Deno.serveHttp(conn);
+    const requestEvent = await httpConn.nextRequest();
+    if (requestEvent) {
+      const { request, respondWith } = requestEvent;
       try {
-        console.log("request:");
-        console.log(request);
         assert(request.method === "POST");
         assert(request.headers.get("content-type") === "application/json");
         const body = await request.json();
-        console.log("body:", body);
         assert(
           request.headers.get("authorization")?.toLowerCase() ===
             `bearer ${authToken}`,
@@ -41,7 +35,7 @@ export function createApiLandMock() {
         assert(body.event === "create");
         assert(typeof body.module === "string");
         assert(typeof body.version === "string");
-        respondWith(
+        await respondWith(
           new Response(
             JSON.stringify({
               "result": "enqueued",
@@ -52,33 +46,26 @@ export function createApiLandMock() {
         );
       } catch (e) {
         if (e instanceof Error) {
-          respondWith(
+          await respondWith(
             new Response(`${e.message}\n${e.stack}`, { status: 401 }),
           );
         } else {
-          respondWith(new Response("ooops!", { status: 401 }));
+          await respondWith(new Response("ooops!", { status: 401 }));
         }
       }
-      if (signal.aborted) {
-        return;
-      }
     }
-  }
-
-  (async () => {
-    for await (const conn of listener) {
-      serve(conn);
-      if (signal.aborted) {
-        return;
-      }
+    httpConn.close();
+    try {
+      conn.close();
+    } catch {
+      // just swallow
+    }
+    try {
+      listener.close();
+    } catch {
+      // just swallow
     }
   })();
-
-  return {
-    abort() {
-      controller.abort();
-    },
-  };
 }
 
 export function createAPIGatewayProxyEventV2(

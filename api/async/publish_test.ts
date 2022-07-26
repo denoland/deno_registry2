@@ -15,8 +15,8 @@ const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 Deno.test({
   name: "publish success",
   async fn() {
-    const mockApiland = createApiLandMock();
     try {
+      createApiLandMock();
       const id = await database.createBuild({
         options: {
           moduleName: "ltest",
@@ -315,7 +315,6 @@ Deno.test({
       console.log(new TextDecoder().decode(body));
       assertEquals(body.byteLength, 304);
     } finally {
-      mockApiland.abort();
       await cleanupDatabase(database);
       await s3.empty();
     }
@@ -325,8 +324,8 @@ Deno.test({
 Deno.test({
   name: "publish success subdir",
   async fn() {
-    const mockApiland = createApiLandMock();
     try {
+      createApiLandMock();
       const id = await database.createBuild({
         options: {
           moduleName: "ltest",
@@ -427,7 +426,6 @@ Deno.test({
       body = await new Response(readme.body).arrayBuffer();
       assertEquals(body.byteLength, 354);
     } finally {
-      mockApiland.abort();
       await cleanupDatabase(database);
       await s3.empty();
     }
@@ -490,8 +488,8 @@ Deno.test({
 Deno.test({
   name: "publish large custom quota",
   async fn() {
-    const mockApiland = createApiLandMock();
     try {
+      createApiLandMock();
       await database.saveOwnerQuota({
         owner: "luca-rand",
         type: "github",
@@ -544,7 +542,6 @@ Deno.test({
         { latest: "0.0.1", versions: ["0.0.1"] },
       );
     } finally {
-      mockApiland.abort();
       await cleanupDatabase(database);
       await s3.empty();
     }
