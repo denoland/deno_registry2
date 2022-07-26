@@ -13,14 +13,15 @@ interface KV {
 }
 
 export function createApiLandMock() {
-  const controller = new AbortController();
-  const { signal } = controller;
   const { port } = new URL(Deno.env.get("APILAND_URL")!);
   const authToken = Deno.env.get("APILAND_AUTH_TOKEN");
 
   const listener = Deno.listen({ port: parseInt(port, 10) });
 
+  const controller = new AbortController();
+  const { signal } = controller;
   signal.addEventListener("abort", () => {
+    console.log("onabort");
     listener.close();
   });
 
@@ -32,6 +33,7 @@ export function createApiLandMock() {
         assert(request.method === "POST");
         assert(request.headers.get("content-type") === "application/json");
         const body = await request.json();
+        console.log("body:", body);
         assert(
           request.headers.get("authorization")?.toLowerCase() ===
             `bearer ${authToken}`,
