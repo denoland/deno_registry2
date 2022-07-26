@@ -2,6 +2,7 @@
 import { handler } from "./publish.ts";
 import {
   cleanupDatabase,
+  createApiLandMock,
   createContext,
   createSQSEvent,
 } from "../../utils/test_utils.ts";
@@ -14,6 +15,7 @@ const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 Deno.test({
   name: "publish success",
   async fn() {
+    const mockApiland = createApiLandMock();
     try {
       const id = await database.createBuild({
         options: {
@@ -315,6 +317,7 @@ Deno.test({
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
+      mockApiland.abort();
     }
   },
 });
@@ -322,6 +325,7 @@ Deno.test({
 Deno.test({
   name: "publish success subdir",
   async fn() {
+    const mockApiland = createApiLandMock();
     try {
       const id = await database.createBuild({
         options: {
@@ -425,6 +429,7 @@ Deno.test({
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
+      mockApiland.abort();
     }
   },
 });
@@ -485,6 +490,7 @@ Deno.test({
 Deno.test({
   name: "publish large custom quota",
   async fn() {
+    const mockApiland = createApiLandMock();
     try {
       await database.saveOwnerQuota({
         owner: "luca-rand",
@@ -540,6 +546,7 @@ Deno.test({
     } finally {
       await cleanupDatabase(database);
       await s3.empty();
+      mockApiland.abort();
     }
   },
 });

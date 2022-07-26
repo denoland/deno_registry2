@@ -6,9 +6,75 @@ import type {
   ScheduledEvent,
   SQSEvent,
 } from "../deps.ts";
+import { assert } from "../test_deps.ts";
 import type { Database } from "./database.ts";
 interface KV {
   [key: string]: string;
+}
+
+export function createApiLandMock() {
+  const controller = new AbortController();
+  const { signal } = controller;
+  const { port } = new URL(Deno.env.get("APILAND_URL")!);
+  const authToken = Deno.env.get("APILAND_AUTH_TOKEN");
+
+  const listener = Deno.listen({ port: parseInt(port, 10) });
+
+  signal.addEventListener("abort", () => {
+    listener.close();
+  });
+
+  async function serve(conn: Deno.Conn) {
+    for await (const { request, respondWith } of Deno.serveHttp(conn)) {
+      try {
+        assert(request.method === "POST");
+        assert(request.headers.get("content-type") === "application/json");
+        const body = await request.json();
+        assert(
+          request.headers.get("authorization")?.toLowerCase() ===
+            `bearer ${authToken}`,
+        );
+        assert(body.event === "create");
+        assert(typeof body.module === "string");
+        assert(typeof body.version === "string");
+        respondWith(
+          new Response(
+            JSON.stringify({
+              "result": "enqueued",
+              "id": 1,
+            }),
+            { headers: { "content-type": "application/json" } },
+          ),
+        );
+      } catch (e) {
+        if (e instanceof Error) {
+          respondWith(
+            new Response(`${e.message}\n${e.stack}`, { status: 401 }),
+          );
+        } else {
+          respondWith(new Response("ooops!", { status: 401 }));
+        }
+      }
+      if (signal.aborted) {
+        return;
+      }
+    }
+  }
+
+  (async () => {
+    for await (const conn of listener) {
+      serve(conn);
+      if (signal.aborted) {
+        return;
+      }
+    }
+  })();
+
+  return {
+    abort() {
+      controller.abort();
+    },
+  };
 }
 
 export function createAPIGatewayProxyEventV2(
