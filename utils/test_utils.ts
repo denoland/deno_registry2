@@ -27,6 +27,8 @@ export function createApiLandMock() {
   async function serve(conn: Deno.Conn) {
     for await (const { request, respondWith } of Deno.serveHttp(conn)) {
       try {
+        console.log("request:");
+        console.log(request);
         assert(request.method === "POST");
         assert(request.headers.get("content-type") === "application/json");
         const body = await request.json();

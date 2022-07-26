@@ -315,9 +315,9 @@ Deno.test({
       console.log(new TextDecoder().decode(body));
       assertEquals(body.byteLength, 304);
     } finally {
+      mockApiland.abort();
       await cleanupDatabase(database);
       await s3.empty();
-      mockApiland.abort();
     }
   },
 });
@@ -427,9 +427,9 @@ Deno.test({
       body = await new Response(readme.body).arrayBuffer();
       assertEquals(body.byteLength, 354);
     } finally {
+      mockApiland.abort();
       await cleanupDatabase(database);
       await s3.empty();
-      mockApiland.abort();
     }
   },
 });
@@ -544,9 +544,9 @@ Deno.test({
         { latest: "0.0.1", versions: ["0.0.1"] },
       );
     } finally {
+      mockApiland.abort();
       await cleanupDatabase(database);
       await s3.empty();
-      mockApiland.abort();
     }
   },
 });
