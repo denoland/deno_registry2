@@ -64,6 +64,7 @@ jobs:
           terraform plan \
             -var env=prod \
             -var mongodb_uri=$MONGODB_URI \
+            -var apiland_auth_token=$APILAND_AUTH_TOKEN \
             -var api_domain=$API_DOMAIN \
             -var cdn_domain=$CDN_DOMAIN \
             -var certificate_arn=$CERTIFICATE_ARN \
@@ -76,6 +77,7 @@ jobs:
             -out plan.tfplan
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          APILAND_AUTH_TOKEN: ${{ secrets.APILAND_AUTH_TOKEN }}
           API_DOMAIN: api.deno.land
           CDN_DOMAIN: cdn.deno.land
           CERTIFICATE_ARN: arn:aws:acm:us-east-1:035475582903:certificate/1c3bd085-95ef-4c27-ae09-18d27825739c

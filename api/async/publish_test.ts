@@ -2,6 +2,7 @@
 import { handler } from "./publish.ts";
 import {
   cleanupDatabase,
+  createApiLandMock,
   createContext,
   createSQSEvent,
 } from "../../utils/test_utils.ts";
@@ -15,6 +16,7 @@ Deno.test({
   name: "publish success",
   async fn() {
     try {
+      createApiLandMock();
       const id = await database.createBuild({
         options: {
           moduleName: "ltest",
@@ -323,6 +325,7 @@ Deno.test({
   name: "publish success subdir",
   async fn() {
     try {
+      createApiLandMock();
       const id = await database.createBuild({
         options: {
           moduleName: "ltest",
@@ -486,6 +489,7 @@ Deno.test({
   name: "publish large custom quota",
   async fn() {
     try {
+      createApiLandMock();
       await database.saveOwnerQuota({
         owner: "luca-rand",
         type: "github",

@@ -9,7 +9,12 @@ variable "backup_region" {
 }
 
 variable "mongodb_uri" {
-  description = "MongoDB conection string"
+  description = "MongoDB connection string"
+  type        = string
+}
+
+variable "apiland_auth_token" {
+  description = "Authorization token for using apiland webhook"
   type        = string
 }
 

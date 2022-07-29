@@ -34,6 +34,9 @@ const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const remoteURL = Deno.env.get("REMOTE_URL")!;
 
+const apilandURL = Deno.env.get("APILAND_URL")!;
+const apilandAuthToken = Deno.env.get("APILAND_AUTH_TOKEN")!;
+
 const DEFAULT_MAX_TOTAL_SIZE = 1024 * 1024 * 20; // 20 mb in total
 
 const decoder = new TextDecoder();
@@ -75,6 +78,34 @@ export async function handler(
       console.error("failed dependency analysis", build, err, err?.response);
       message += " Failed to run dependency analysis v2.";
     });
+
+    // send a webhook request to apiland to do further indexing of the module
+    // this is temporary until apiland subsumes the functionality of registry2
+    const res = await fetch(apilandURL, {
+      method: "POST",
+      body: JSON.stringify({
+        event: "create",
+        module: build.options.moduleName,
+        version: build.options.version,
+      }),
+      headers: {
+        "authorization": `bearer ${apilandAuthToken}`,
+        "content-type": "application/json",
+      },
+    });
+
+    if (res.status !== 200) {
+      console.error(
+        "failed to post webhook to apiland",
+        apilandURL,
+        res.status,
+        res.statusText,
+      );
+      message += " Failed to post webhook to apiland.";
+    }
+
+    // consume body, to not leak resources
+    await res.text();
 
     await database.saveBuild({
       ...build,
