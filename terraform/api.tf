@@ -1,11 +1,6 @@
-data "google_dns_managed_zone" "dns_zone" {
-  project = "misc-dns"
-  name    = "deno-land"
-}
-
 locals {
   api_name        = "${local.prefix}_api_${local.short_uuid}"
-  api_domain_name = "${local.domain_prefix}api.${trimsuffix(data.google_dns_managed_zone.dns_zone.dns_name, ".")}"
+  api_domain_name = "${local.domain_prefix}api.${trimsuffix(data.google_dns_managed_zone.dotland_dns_zone.dns_name, ".")}"
 }
 
 resource "aws_acm_certificate" "api_certificate" {
@@ -20,38 +15,29 @@ resource "aws_acm_certificate" "api_certificate" {
 
 resource "aws_acm_certificate_validation" "api_certificate_validation" {
   certificate_arn         = aws_acm_certificate.api_certificate.arn
-  validation_record_fqdns = [for dvo in aws_acm_certificate.api_certificate.domain_validation_options : dvo.resource_record_name]
-}
-
-resource "aws_apigatewayv2_domain_name" "deno_api_domain" {
-  domain_name = aws_acm_certificate.api_certificate.domain_name
-  domain_name_configuration {
-    certificate_arn = aws_acm_certificate.api_certificate.arn
-    endpoint_type   = "REGIONAL"
-    security_policy = "TLS_1_2"
-  }
+  validation_record_fqdns = [for record in google_dns_record_set.api_domain_validation_record : record.name]
 }
 
 resource "google_dns_record_set" "api_cname_record" {
-  project      = data.google_dns_managed_zone.dns_zone.project
-  managed_zone = data.google_dns_managed_zone.dns_zone.name
+  project      = data.google_dns_managed_zone.dotland_dns_zone.project
+  managed_zone = data.google_dns_managed_zone.dotland_dns_zone.name
   name         = "${aws_apigatewayv2_domain_name.deno_api_domain.domain_name}."
   rrdatas      = ["${aws_apigatewayv2_domain_name.deno_api_domain.domain_name_configuration[0].target_domain_name}."]
   type         = "CNAME"
-  ttl          = "3600"
+  ttl          = 3600
 }
 
 resource "google_dns_record_set" "api_domain_validation_record" {
   for_each = {
-    for dvo in aws_acm_certificate.api_certificate.domain_validation_options : dvo.domain_name => dvo
+    for dv in aws_acm_certificate.api_certificate.domain_validation_options : dv.domain_name => dv
   }
 
-  project      = data.google_dns_managed_zone.dns_zone.project
-  managed_zone = data.google_dns_managed_zone.dns_zone.name
+  project      = data.google_dns_managed_zone.dotland_dns_zone.project
+  managed_zone = data.google_dns_managed_zone.dotland_dns_zone.name
   name         = each.value.resource_record_name
   rrdatas      = [each.value.resource_record_value]
   type         = each.value.resource_record_type
-  ttl          = "3600"
+  ttl          = 3600
 }
 
 resource "aws_apigatewayv2_api" "deno_api" {
@@ -60,6 +46,15 @@ resource "aws_apigatewayv2_api" "deno_api" {
 
   cors_configuration {
     allow_origins = ["*"]
+  }
+}
+
+resource "aws_apigatewayv2_domain_name" "deno_api_domain" {
+  domain_name = aws_acm_certificate.api_certificate.domain_name
+  domain_name_configuration {
+    certificate_arn = aws_acm_certificate_validation.api_certificate_validation.certificate_arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
   }
 }
 

@@ -60,7 +60,6 @@ jobs:
             -var env=prod \
             -var mongodb_uri=$MONGODB_URI \
             -var apiland_auth_token=$APILAND_AUTH_TOKEN \
-            -var cdn_domain=$CDN_DOMAIN \
             -var region=$AWS_DEFAULT_REGION \
             -var backup_region=$AWS_BACKUP_REGION \
             -var github_token=${{ secrets.GH_TOKEN }} \
@@ -69,7 +68,6 @@ jobs:
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           APILAND_AUTH_TOKEN: ${{ secrets.APILAND_AUTH_TOKEN }}
-          CDN_DOMAIN: cdn.deno.land
           TERRAFORM_STATE_BUCKET: deno-registry2-prod-terraform-state-b3a31d16
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

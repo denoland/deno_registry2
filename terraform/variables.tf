@@ -34,11 +34,6 @@ variable "docker_tag" {
   type        = string
 }
 
-variable "cdn_domain" {
-  description = "The domain that hosts the registry CDN."
-  type        = string
-}
-
 variable "github_token" {
   description = "GitHub personal access token"
   type        = string

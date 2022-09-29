@@ -1,5 +1,10 @@
 resource "random_uuid" "this" {}
 
+data "google_dns_managed_zone" "dotland_dns_zone" {
+  provider = google.dns
+  name     = "deno-land"
+}
+
 data "aws_caller_identity" "this" {}
 
 locals {
@@ -32,14 +37,9 @@ resource "aws_s3_bucket" "storage_bucket" {
 
   cors_rule {
     allowed_headers = []
-    allowed_methods = [
-      "GET",
-    ]
-    allowed_origins = [
-      "*",
-    ]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
     expose_headers  = []
-    max_age_seconds = 0
   }
 
   versioning {

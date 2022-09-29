@@ -8,5 +8,6 @@ provider "aws" {
 }
 
 provider "google" {
-  alias = "dns"
+  alias   = "dns"
+  project = "misc-dns"
 }
