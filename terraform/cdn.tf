@@ -51,7 +51,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   is_ipv6_enabled = true
   price_class     = "PriceClass_All"
 
-  aliases = ["cdn.deno.land"]
+  aliases = [local.cdn_domain_name]
 
   default_cache_behavior {
     target_origin_id           = local.cdn_origin_id
