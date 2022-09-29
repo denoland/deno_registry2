@@ -5,6 +5,7 @@ data "aws_caller_identity" "this" {}
 locals {
   short_uuid             = substr(random_uuid.this.result, 0, 8)
   prefix                 = "deno-registry2-${var.env}"
+  domain_prefix          = var.env == "prod" ? "" : "${var.env}."
   lambda_default_timeout = 10
   ecr_image_url          = "${aws_ecr_repository.deployment_package.repository_url}:${var.docker_tag}"
   tags = {
@@ -96,15 +97,6 @@ resource "aws_s3_bucket_public_access_block" "storage_replication_bucket_public_
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
-
-resource "cloudflare_record" "cdn" {
-  zone_id = var.cloudflare_zone_id
-  name    = var.cdn_domain
-  value   = aws_s3_bucket.storage_bucket.website_endpoint
-  type    = "CNAME"
-  ttl     = 1 # '1' = automatic
-  proxied = true
 }
 
 resource "aws_s3_bucket" "moderation_bucket" {

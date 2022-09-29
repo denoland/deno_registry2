@@ -7,8 +7,8 @@ terraform {
     archive = {
       source = "hashicorp/archive"
     }
-    cloudflare = {
-      source = "terraform-providers/cloudflare"
+    google = {
+      version = ">= 4.0.0, < 5.0.0"
     }
   }
   backend "s3" {
