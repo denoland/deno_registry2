@@ -11,6 +11,10 @@ resource "aws_acm_certificate" "cdn_certificate" {
   options {
     certificate_transparency_logging_preference = "ENABLED"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_acm_certificate_validation" "cdn_certificate_validation" {
