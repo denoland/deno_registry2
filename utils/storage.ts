@@ -66,7 +66,6 @@ export async function uploadMetaJson(
     join(module, "meta", file),
     encoder.encode(JSON.stringify(data)),
     {
-      acl: "public-read",
       // Global module meta data must always be fresh.
       cacheControl: "max-age=10, must-revalidate",
       contentType: "application/json",
@@ -91,7 +90,6 @@ export async function uploadVersionRaw(
     join(module, "versions", version, "raw", file),
     contents,
     {
-      acl: "public-read",
       // Versioned files can be cached indefinitely. (1 year)
       cacheControl: "public, max-age=31536000, immutable",
       contentType: type === "video/mp2t"
@@ -115,7 +113,6 @@ export async function uploadVersionMetaJson(
     join(module, "versions", version, "meta", file),
     encoder.encode(JSON.stringify(data)),
     {
-      acl: "public-read",
       // Immutable files can be cached indefinitely. (1 year)
       cacheControl: immutable
         ? "public, max-age=31536000, immutable"
