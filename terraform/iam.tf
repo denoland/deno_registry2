@@ -96,21 +96,19 @@ data "aws_iam_policy_document" "replication_assume" {
 data "aws_iam_policy_document" "replication_permissions" {
   statement {
     actions = [
-      "s3:GetReplicationConfiguration",
       "s3:ListBucket",
+      "s3:GetReplicationConfiguration",
+      "s3:GetObjectVersionForReplication",
+      "s3:GetObjectVersionAcl",
+      "s3:GetObjectVersionTagging",
+      "s3:GetObjectRetention",
+      "s3:GetObjectLegalHold"
     ]
     resources = [
       aws_s3_bucket.storage_bucket.arn,
-    ]
-  }
-
-  statement {
-    actions = [
-      "s3:GetObjectVersion",
-      "s3:GetObjectVersionAcl",
-    ]
-    resources = [
-      "${aws_s3_bucket.storage_bucket.arn}/*"
+      "${aws_s3_bucket.storage_bucket.arn}/*",
+      aws_s3_bucket.storage_bucket_replication.arn,
+      "${aws_s3_bucket.storage_bucket_replication.arn}/*"
     ]
   }
 
@@ -118,8 +116,11 @@ data "aws_iam_policy_document" "replication_permissions" {
     actions = [
       "s3:ReplicateObject",
       "s3:ReplicateDelete",
+      "s3:ReplicateTags",
+      "s3:ObjectOwnerOverrideToBucketOwner"
     ]
     resources = [
+      aws_s3_bucket.storage_bucket_replication.arn,
       "${aws_s3_bucket.storage_bucket_replication.arn}/*"
     ]
   }
