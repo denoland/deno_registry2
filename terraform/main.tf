@@ -30,6 +30,28 @@ resource "aws_ecr_repository" "deployment_package" {
   }
 }
 
+resource "aws_ecr_repository_policy" "deployment_package_policy" {
+  repository = aws_ecr_repository.deployment_package.name
+  policy     = data.aws_iam_policy_document.lambda_ecr_image_retrieval.json
+}
+
+data "aws_iam_policy_document" "lambda_ecr_image_retrieval" {
+  statement {
+    sid = "LambdaECRImageRetrievalPolicy"
+    actions = [
+      "ecr:BatchGetImage",
+      "ecr:DeleteRepositoryPolicy",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetRepositoryPolicy",
+      "ecr:SetRepositoryPolicy"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "storage_bucket" {
   bucket = "${local.prefix}-storagebucket-${local.short_uuid}"
   tags   = local.tags
