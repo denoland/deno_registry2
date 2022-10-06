@@ -88,3 +88,27 @@ resource "aws_cloudwatch_metric_alarm" "dlq_messages" {
   alarm_actions      = [aws_sns_topic.alarm.arn]
   tags               = local.tags
 }
+
+resource "aws_sns_topic_subscription" "email-bert" {
+  endpoint  = "bert@deno.land"
+  protocol  = "email"
+  topic_arn = aws_sns_topic.alarm.arn
+}
+
+resource "aws_sns_topic_subscription" "email-luca" {
+  endpoint  = "lucacasonato@yahoo.com"
+  protocol  = "email"
+  topic_arn = aws_sns_topic.alarm.arn
+}
+
+resource "aws_sns_topic_subscription" "email-ryan" {
+  endpoint  = "ry@tinyclouds.org"
+  protocol  = "email"
+  topic_arn = aws_sns_topic.alarm.arn
+}
+
+resource "aws_sns_topic_subscription" "sms-luca" {
+  endpoint  = "+31615219593"
+  protocol  = "sms"
+  topic_arn = aws_sns_topic.alarm.arn
+}
