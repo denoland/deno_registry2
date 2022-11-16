@@ -35,21 +35,20 @@ If you need an increase to these quotas, please reach out to
 2. Create a database user on Atlas. They should have the read write database
    permission.
 3. Get the database connection string and insert the username and password for
-   the created. It should look something like this:
+   the user you just created. It should look something like this:
    `mongodb+srv://user:password@zyxwvu.fedcba.mongodb.net/?retryWrites=true&w=majority`.
-4. Save this connection string in AWS Secrets Manager with the name
-   `mongodb/atlas/deno_registry2` and the value key `MongoURI`.
-5. Create a database called `production` in your cluster.
-6. In this database create a collection called `modules`.
-7. In this collection create a new Atlas Search index with the name `default`
+   Save the connection string somewhere, you'll need it later.
+4. Create a database called `production` in your cluster.
+5. In this database create a collection called `modules`.
+6. In this collection create a new Atlas Search index with the name `default`
    and the mapping defined in `indexes/atlas_search_index_mapping.json`
-8. In this collection create a new index with the name `by_owner_and_repo` like
+7. In this collection create a new index with the name `by_owner_and_repo` like
    it is defined in `indexes/modules_by_owner_and_repo.json`
-9. In this collection create a new index with the name
+8. In this collection create a new index with the name
    `by_is_unlisted_and_star_count` like it is defined in
    `indexes/modules_by_is_unlisted_and_star_count.json`
-10. In this database create a collection called `builds`.
-11. In this collection create a new _unique_ index with the name
+9. In this database create a collection called `builds`.
+10. In this collection create a new _unique_ index with the name
     `by_name_and_version` like it is defined in
     `indexes/builds_by_name_and_version.json`
 
@@ -71,9 +70,12 @@ aws ecr get-login-password --region region | docker login --username AWS --passw
 3. [Install Terraform](https://terraform.io/downloads.html) version 0.13 or
    higher
 4. Copy `terraform/terraform.tfvars.example` to `terraform/terraform.tfvars`
-5. Move to the `terraform/` and **comment out** the `backend` section in the
+5. Modify `terraform/terraform.tfvars`, changing the value of variable
+   `mongodb_uri` to the the MongoDB connection string produced when setting up
+   the database.
+6. Move to the `terraform/` and **comment out** the `backend` section in the
    `meta.tf` file (important for first-time apply)
-6. Run the following steps:
+7. Run the following steps:
 
 ```bash
 terraform init
