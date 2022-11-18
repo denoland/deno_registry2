@@ -14,7 +14,7 @@ resource "aws_lambda_function" "async_publish" {
   environment {
     variables = {
       "DENO_UNSTABLE"      = "1"
-      "MONGO_URI"          = var.mongodb_uri
+      "MONGO_URI"          = local.mongodb_uri
       "STORAGE_BUCKET"     = aws_s3_bucket.storage_bucket.id
       "REMOTE_URL"         = "https://deno.land/x/%m@%v"
       "APILAND_URL"        = "https://apiland.deno.dev/webhook/publish"

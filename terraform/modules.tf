@@ -14,7 +14,7 @@ resource "aws_lambda_function" "modules_get" {
   environment {
     variables = {
       "DENO_UNSTABLE" = "1"
-      "MONGO_URI"     = var.mongodb_uri
+      "MONGO_URI"     = local.mongodb_uri
     }
   }
 
@@ -62,7 +62,7 @@ resource "aws_lambda_function" "modules_list" {
   environment {
     variables = {
       "DENO_UNSTABLE" = "1"
-      "MONGO_URI"     = var.mongodb_uri
+      "MONGO_URI"     = local.mongodb_uri
     }
   }
 

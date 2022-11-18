@@ -22,7 +22,7 @@ resource "aws_lambda_function" "stargazers" {
   environment {
     variables = {
       "DENO_UNSTABLE"    = "1"
-      "MONGO_URI"        = var.mongodb_uri
+      "MONGO_URI"        = local.mongodb_uri
       "STORAGE_BUCKET"   = aws_s3_bucket.storage_bucket.id
       "GITHUB_TOKEN_SSM" = aws_ssm_parameter.github_token.name
     }
