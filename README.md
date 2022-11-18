@@ -28,30 +28,6 @@ If you need an increase to these quotas, please reach out to
 - AWS account
 - [MongoDB Atlas](https://cloud.mongodb.com) account
 
-## Preparing MongoDB
-
-1. Create a cluster on [MongoDB Atlas](https://cloud.mongodb.com). A M2 cluster
-   is enough in most cases.
-2. Create a database user on Atlas. They should have the read write database
-   permission.
-3. Get the database connection string and insert the username and password for
-   the user you just created. It should look something like this:
-   `mongodb+srv://user:password@zyxwvu.fedcba.mongodb.net/?retryWrites=true&w=majority`.
-   Save the connection string somewhere, you'll need it later.
-4. Create a database called `production` in your cluster.
-5. In this database create a collection called `modules`.
-6. In this collection create a new Atlas Search index with the name `default`
-   and the mapping defined in `indexes/atlas_search_index_mapping.json`
-7. In this collection create a new index with the name `by_owner_and_repo` like
-   it is defined in `indexes/modules_by_owner_and_repo.json`
-8. In this collection create a new index with the name
-   `by_is_unlisted_and_star_count` like it is defined in
-   `indexes/modules_by_is_unlisted_and_star_count.json`
-9. In this database create a collection called `builds`.
-10. In this collection create a new _unique_ index with the name
-    `by_name_and_version` like it is defined in
-    `indexes/builds_by_name_and_version.json`
-
 ## Preparing Docker
 
 Make sure to follow the official instructions to
@@ -63,6 +39,12 @@ deployment to ECR.
 aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
 ```
 
+## Preparing MongoDB Atlas
+
+1. Create an API key on [MongoDB Atlas](https://cloud.mongodb.com). The API key
+   should have sufficient privileges to create a new project and configure it
+   afterwards.
+
 ## Deploy
 
 1. Install `aws` CLI.
@@ -70,9 +52,9 @@ aws ecr get-login-password --region region | docker login --username AWS --passw
 3. [Install Terraform](https://terraform.io/downloads.html) version 0.13 or
    higher
 4. Copy `terraform/terraform.tfvars.example` to `terraform/terraform.tfvars`
-5. Modify `terraform/terraform.tfvars`, changing the value of variable
-   `mongodb_uri` to the the MongoDB connection string produced when setting up
-   the database.
+5. Modify `terraform/terraform.tfvars`: set `mongodb_atlas_org_id` to your
+   MongoDB Atlas organization ID, and update `mongodb_atlas_private_key` and
+   `mongodb_atlas_public_key` with the API key you created earlier.
 6. Move to the `terraform/` and **comment out** the `backend` section in the
    `meta.tf` file (important for first-time apply)
 7. Run the following steps:
@@ -85,6 +67,24 @@ aws s3 ls | grep 'terraform-state' # take note of your tf state bucket name
 # before the final step, go back and remove the comments from step 5
 terraform init -backend-config "bucket=<your-bucket-name>" -backend-config "region=<aws-region>"
 ```
+
+## Setting up MongoDB
+
+Terraform automatically provisions a MongoDB cluster in a separate project.
+
+1. In the newly created MongoDB cluster, create a database called `production`.
+2. In this database create a collection called `modules`.
+3. In this collection create a new Atlas Search index with the name `default`
+   and the mapping defined in `indexes/atlas_search_index_mapping.json`
+4. In this collection create a new index with the name `by_owner_and_repo` like
+   it is defined in `indexes/modules_by_owner_and_repo.json`
+5. In this collection create a new index with the name
+   `by_is_unlisted_and_star_count` like it is defined in
+   `indexes/modules_by_is_unlisted_and_star_count.json`
+6. In this database create a collection called `builds`.
+7. In this collection create a new _unique_ index with the name
+   `by_name_and_version` like it is defined in
+   `indexes/builds_by_name_and_version.json`
 
 ## Teardown
 

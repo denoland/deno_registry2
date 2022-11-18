@@ -8,7 +8,14 @@ terraform {
       source = "hashicorp/archive"
     }
     google = {
+      source  = "hashicorp/google"
       version = ">= 4.0.0, < 5.0.0"
+    }
+    mongodbatlas = {
+      source = "mongodb/mongodbatlas"
+    }
+    random = {
+      source = "hashicorp/random"
     }
   }
   backend "s3" {

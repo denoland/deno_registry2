@@ -14,7 +14,7 @@ resource "aws_lambda_function" "cleanup" {
   environment {
     variables = {
       "DENO_UNSTABLE" = "1"
-      "MONGO_URI"     = var.mongodb_uri
+      "MONGO_URI"     = local.mongodb_uri
       "DRYRUN"        = "1"
     }
   }

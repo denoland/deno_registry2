@@ -66,19 +66,19 @@ jobs:
             -backend-config "region=$AWS_DEFAULT_REGION"
           terraform plan \
             -var env=prod \
-            -var mongodb_uri=$MONGODB_URI \
-            -var apiland_auth_token=$APILAND_AUTH_TOKEN \
-            -var region=$AWS_DEFAULT_REGION \
-            -var backup_region=$AWS_BACKUP_REGION \
-            -var github_token=${{ secrets.GH_TOKEN }} \
+            -var apiland_auth_token=${{ secrets.APILAND_AUTH_TOKEN }} \
+            -var aws_backup_region=$AWS_BACKUP_REGION \
+            -var aws_default_region=$AWS_DEFAULT_REGION \
             -var docker_tag=$GITHUB_RUN_ID \
+            -var github_token=${{ secrets.GH_TOKEN }} \
+            -var mongodb_atlas_org_id=${{ secrets.MONGODB_ATLAS_ORG_ID }} \
             -out plan.tfplan
         env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          APILAND_AUTH_TOKEN: ${{ secrets.APILAND_AUTH_TOKEN }}
           TERRAFORM_STATE_BUCKET: deno-registry2-prod-terraform-state-b3a31d16
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          MONGODB_ATLAS_PRIVATE_KEY: ${{ secrets.MONGODB_ATLAS_PRIVATE_KEY }}
+          MONGODB_ATLAS_PUBLIC_KEY: ${{ secrets.MONGODB_ATLAS_PUBLIC_KEY }}
         working-directory: terraform
 
       - name: Deploy infrastructure (prod)
@@ -87,6 +87,8 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          MONGODB_ATLAS_PRIVATE_KEY: ${{ secrets.MONGODB_ATLAS_PRIVATE_KEY }}
+          MONGODB_ATLAS_PUBLIC_KEY: ${{ secrets.MONGODB_ATLAS_PUBLIC_KEY }}
         working-directory: terraform
 
       - name: Run Smoke Tests (prod)
