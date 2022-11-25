@@ -65,6 +65,7 @@ export class Database {
         transactional: false,
       })
     ) {
+      // empty
     }
   }
 
@@ -76,6 +77,7 @@ export class Database {
         transactional: false,
       })
     ) {
+      // empty
     }
   }
 }
