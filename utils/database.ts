@@ -99,25 +99,10 @@ export interface BuildStats {
   total_size: number;
 }
 
-export interface OwnerQuota {
-  owner: string;
-  type: string;
-  // deno-lint-ignore camelcase
-  max_modules: number;
-  // deno-lint-ignore camelcase
-  max_total_size?: number;
-  blocked: boolean;
-}
-
-export type DBOwnerQuota = Omit<OwnerQuota, "owner"> & {
-  _id: string;
-};
-
 export class Database {
   protected db: MongoDatabase;
   _modules: MongoCollection<DBModule>;
   _builds: MongoCollection<Omit<Build, "id"> & { _id: Bson.ObjectId }>;
-  _owner_quotas: MongoCollection<DBOwnerQuota>;
 
   constructor(db: MongoDatabase) {
     this.db = db;
@@ -125,7 +110,6 @@ export class Database {
     this._builds = db.collection<Omit<Build, "id"> & { _id: Bson.ObjectId }>(
       "builds",
     );
-    this._owner_quotas = db.collection<DBOwnerQuota>("owner_quotas");
   }
 
   static async connect(mongoUri: string): Promise<Database> {
@@ -398,42 +382,6 @@ export class Database {
           status: build.status,
           message: build.message,
           stats: build.stats,
-        },
-      },
-      { upsert: true },
-    );
-  }
-
-  async getOwnerQuota(
-    owner: string,
-  ): Promise<OwnerQuota | null> {
-    const ownerQuota = await this._owner_quotas.findOne({
-      _id: owner,
-    });
-    if (ownerQuota === undefined) return null;
-    return {
-      owner: ownerQuota._id,
-      type: ownerQuota.type,
-      max_modules: ownerQuota.max_modules,
-      max_total_size: ownerQuota.max_total_size,
-      blocked: ownerQuota.blocked,
-    };
-  }
-
-  async saveOwnerQuota(
-    ownerQuota: OwnerQuota,
-  ): Promise<void> {
-    await this._owner_quotas.updateOne(
-      {
-        _id: ownerQuota.owner,
-      },
-      {
-        $set: {
-          _id: ownerQuota.owner,
-          type: ownerQuota.type,
-          max_modules: ownerQuota.max_modules,
-          max_total_size: ownerQuota.max_total_size,
-          blocked: ownerQuota.blocked,
         },
       },
       { upsert: true },

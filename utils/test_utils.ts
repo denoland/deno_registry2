@@ -11,6 +11,8 @@ import type { Database } from "./database.ts";
 interface KV {
   [key: string]: string;
 }
+import { Database as Datastore } from "./datastore_database.ts";
+
 
 export function createApiLandMock() {
   const { port } = new URL(Deno.env.get("APILAND_URL")!);
@@ -213,11 +215,11 @@ export function createContext(): Context {
   };
 }
 
-export async function cleanupDatabase(db: Database): Promise<void> {
+export async function cleanupDatabase(db: Database, datastore: Datastore): Promise<void> {
   await Promise.all([
     db._builds.deleteMany({}),
     db._modules.deleteMany({}),
-    db._owner_quotas.deleteMany({}),
+    datastore.deleteOwnerQuota("luca-rand"),
   ]);
 }
 

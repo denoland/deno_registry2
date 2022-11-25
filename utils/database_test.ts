@@ -1,13 +1,15 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 import { assert, assertEquals } from "../test_deps.ts";
-import { Build, Database, Module, OwnerQuota } from "./database.ts";
+import { Build, Database, Module } from "./database.ts";
+import { Database as Datastore, OwnerQuota } from "./datastore_database.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 await database._modules.deleteMany({});
 await database._builds.deleteMany({});
-await database._owner_quotas.deleteMany({});
+
+const datastore = new Datastore();
 
 const ltest: Module = {
   name: "ltest",
@@ -187,8 +189,8 @@ const ownerQuota1: OwnerQuota = {
 Deno.test({
   name: "add and get owner quotas in database",
   async fn() {
-    await database.saveOwnerQuota(ownerQuota1);
-    const ownerQuota = await database.getOwnerQuota(
+    await datastore.saveOwnerQuota(ownerQuota1);
+    const ownerQuota = await datastore.getOwnerQuota(
       ownerQuota1.owner,
     );
     assertEquals(
@@ -196,7 +198,6 @@ Deno.test({
       ownerQuota1,
     );
 
-    // Cleanup
-    await database._owner_quotas.deleteMany({});
+    await datastore.deleteOwnerQuota(ownerQuota1.owner);
   },
 });

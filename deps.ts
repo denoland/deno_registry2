@@ -21,3 +21,10 @@ export { SSM } from "https://deno.land/x/ssm@0.1.4/mod.ts";
 export { lookup } from "https://deno.land/x/media_types@v2.13.0/mod.ts";
 export { pooledMap } from "https://deno.land/std@0.149.0/async/pool.ts";
 export { readAll } from "https://deno.land/std@0.149.0/streams/conversion.ts";
+export {
+  Datastore,
+  entityToObject,
+  objectSetKey,
+  objectToEntity,
+} from "https://deno.land/x/google_datastore@0.0.17/mod.ts";
+export * as DatastoreTypes from "https://deno.land/x/google_datastore@0.0.17/types.d.ts";
