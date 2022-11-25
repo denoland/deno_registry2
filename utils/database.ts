@@ -89,14 +89,6 @@ export interface Build {
   };
   status: BuildStatus;
   message?: string;
-  stats?: BuildStats;
-}
-
-export interface BuildStats {
-  // deno-lint-ignore camelcase
-  total_files: number;
-  // deno-lint-ignore camelcase
-  total_size: number;
 }
 
 export interface OwnerQuota {
@@ -324,7 +316,6 @@ export class Database {
       options: build.options,
       status: build.status,
       message: build.message,
-      stats: build.stats,
     };
   }
 
@@ -344,7 +335,6 @@ export class Database {
         options: b.options,
         status: b.status,
         message: b.message,
-        stats: b.stats,
       };
     });
   }
@@ -364,7 +354,6 @@ export class Database {
       options: build.options,
       status: build.status,
       message: build.message,
-      stats: build.stats,
     };
   }
 
@@ -380,7 +369,6 @@ export class Database {
       options: build.options,
       status: build.status,
       message: build.message,
-      stats: build.stats,
     });
     return id.toHexString();
   }
@@ -397,7 +385,6 @@ export class Database {
           options: build.options,
           status: build.status,
           message: build.message,
-          stats: build.stats,
         },
       },
       { upsert: true },
@@ -438,49 +425,5 @@ export class Database {
       },
       { upsert: true },
     );
-  }
-
-  async listRecentlyAddedModules(): Promise<RecentlyAddedModuleResult[]> {
-    const cursor = this._modules.aggregate<DBModule>([
-      {
-        $match: {
-          is_unlisted: { $not: { $eq: true } },
-        },
-      },
-      {
-        $sort: {
-          created_at: -1,
-        },
-      },
-      {
-        $limit: 10,
-      },
-    ]);
-    return await cursor.map((doc) => ({
-      name: doc._id,
-      description: doc.description,
-      star_count: doc.star_count,
-      created_at: doc.created_at,
-    }));
-  }
-
-  async listRecentlyUploadedVersions(): Promise<
-    RecentlyAddedUploadedVersions[]
-  > {
-    const cursor = this._builds.aggregate<Build>([
-      {
-        $sort: {
-          created_at: -1,
-        },
-      },
-      {
-        $limit: 10,
-      },
-    ]);
-    return await cursor.map((doc) => ({
-      name: doc.options.moduleName,
-      version: doc.options.version,
-      created_at: doc.created_at,
-    }));
   }
 }

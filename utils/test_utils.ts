@@ -2,7 +2,6 @@
 import type {
   APIGatewayProxyEventV2,
   Context,
-  S3Bucket,
   ScheduledEvent,
   SQSEvent,
 } from "../deps.ts";
@@ -219,15 +218,4 @@ export async function cleanupDatabase(db: Database): Promise<void> {
     db._modules.deleteMany({}),
     db._owner_quotas.deleteMany({}),
   ]);
-}
-
-export async function cleanupStorage(
-  s: S3Bucket,
-  ...objects: string[]
-): Promise<void> {
-  const p = [];
-  for (const object of objects) {
-    p.push(s.deleteObject(object));
-  }
-  await Promise.all(p);
 }
