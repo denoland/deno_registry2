@@ -73,11 +73,9 @@ export class Database {
 
     for await (
       const _ of this.db.commit([{ delete: key }], {
-      transactional: false,
-    })
-      ) {
+        transactional: false,
+      })
+    ) {
     }
   }
-
 }
-
