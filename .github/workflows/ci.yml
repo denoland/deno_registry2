@@ -38,6 +38,7 @@ jobs:
 
       - name: Run Datastore Emulator
         run: |
+          gcloud config set project registry2_testing
           gcloud beta emulators datastore start
           $(gcloud beta emulators datastore env-init)
 
