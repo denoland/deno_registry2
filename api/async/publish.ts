@@ -21,18 +21,14 @@ import { Build, BuildStats, Database } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
   getMeta,
-  getVersionMetaJson,
   uploadMetaJson,
   uploadVersionMetaJson,
   uploadVersionRaw,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
-import { DepGraph, runDenoInfo } from "../../utils/deno.ts";
 import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
-
-const remoteURL = Deno.env.get("REMOTE_URL")!;
 
 const apilandURL = Deno.env.get("APILAND_URL")!;
 const apilandAuthToken = Deno.env.get("APILAND_AUTH_TOKEN")!;
@@ -73,11 +69,6 @@ export async function handler(
     }
 
     let message = "Published module.";
-
-    await analyzeDependencies(build).catch((err) => {
-      console.error("failed dependency analysis", build, err, err?.response);
-      message += " Failed to run dependency analysis v2.";
-    });
 
     // send a webhook request to apiland to do further indexing of the module
     // this is temporary until apiland subsumes the functionality of registry2
@@ -242,91 +233,4 @@ async function publishGithub(
     // Remove checkout
     await Deno.remove(clonePath, { recursive: true });
   }
-}
-
-export async function analyzeDependencies(build: Build): Promise<void> {
-  console.log(
-    `Analyzing dependencies for ${build.options.moduleName}@${build.options.version}`,
-  );
-  await database.saveBuild({
-    ...build,
-    status: "analyzing_dependencies",
-  });
-
-  const { options: { moduleName, version } } = build;
-  const denoDir = await Deno.makeTempDir();
-  const prefix = remoteURL.replace("%m", moduleName).replace("%v", version);
-
-  const rawMeta = await getVersionMetaJson(moduleName, version, "meta.json");
-  if (!rawMeta) {
-    throw new Error("Invalid module");
-  }
-  const meta: { directory_listing: DirectoryListingFile[] } = JSON.parse(
-    decoder.decode(rawMeta),
-  );
-
-  let total = 0;
-  let skipped = 0;
-
-  const totalGraph: DepGraph = {};
-
-  for await (const file of meta.directory_listing) {
-    if (file.type !== "file") {
-      continue;
-    }
-
-    // Skip non code files
-    if (
-      !(file.path.endsWith(".js") || file.path.endsWith(".jsx") ||
-        file.path.endsWith(".ts") || file.path.endsWith(".tsx"))
-    ) {
-      continue;
-    }
-
-    const url = new URL(prefix);
-    url.pathname = join(
-      url.pathname,
-      file.path,
-    );
-    const entrypoint = url.toString();
-
-    total++;
-
-    // We can skip analyzing a module if we have already analyzed
-    // and this already in the dependency graph.
-    if (totalGraph[entrypoint]) {
-      skipped++;
-      continue;
-    }
-
-    const graphToJoin = await runDenoInfo({ entrypoint, denoDir });
-    for (const dep of graphToJoin) {
-      dep.dependencies ??= [];
-      if (dep.error || dep.size === undefined) {
-        throw new Error(`Failed to load ${dep.specifier}: ${dep.error}`);
-      }
-      const dependencies = dep.dependencies.map((d) => {
-        if (!d.code?.specifier) {
-          throw new Error(`Failed to load ${d.specifier}`);
-        }
-        return d.code.specifier;
-      });
-      totalGraph[dep.specifier] = {
-        size: dep.size,
-        deps: [...new Set(dependencies)],
-      };
-    }
-  }
-
-  console.log(">>>>>> total", total, "skipped", skipped);
-
-  await Deno.remove(denoDir, { recursive: true });
-
-  await uploadVersionMetaJson(
-    build.options.moduleName,
-    build.options.version,
-    "deps_v2.json",
-    { graph: { nodes: totalGraph } },
-    false,
-  );
 }
