@@ -13,7 +13,6 @@ interface KV {
 }
 import { Database as Datastore } from "./datastore_database.ts";
 
-
 export function createApiLandMock() {
   const { port } = new URL(Deno.env.get("APILAND_URL")!);
   const authToken = Deno.env.get("APILAND_AUTH_TOKEN");
@@ -215,7 +214,10 @@ export function createContext(): Context {
   };
 }
 
-export async function cleanupDatabase(db: Database, datastore: Datastore): Promise<void> {
+export async function cleanupDatabase(
+  db: Database,
+  datastore: Datastore,
+): Promise<void> {
   await Promise.all([
     db._builds.deleteMany({}),
     db._modules.deleteMany({}),

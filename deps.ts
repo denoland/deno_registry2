@@ -27,4 +27,3 @@ export {
   objectSetKey,
   objectToEntity,
 } from "https://deno.land/x/google_datastore@0.0.17/mod.ts";
-export * as DatastoreTypes from "https://deno.land/x/google_datastore@0.0.17/types.d.ts";
