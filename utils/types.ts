@@ -6,7 +6,7 @@ import {
   RecentlyAddedUploadedVersions,
   SearchOptions,
   SearchResult,
-} from "../utils/database.ts";
+} from "./database.ts";
 
 export type APIResponseBase = {
   success: boolean;

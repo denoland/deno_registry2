@@ -132,7 +132,6 @@ Deno.test({
         ...build1,
         id,
         created_at: build.created_at,
-        stats: undefined,
       },
     );
 
