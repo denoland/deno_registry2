@@ -202,6 +202,9 @@ async function publishGithub(build: Build) {
       moduleName,
       version,
       {
+        directory_listing: directory.sort((a, b) =>
+          a.path.localeCompare(b.path, "en-US")
+        ),
         uploaded_at: new Date().toISOString(),
         upload_options: {
           type: "github",

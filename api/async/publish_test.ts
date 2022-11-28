@@ -68,6 +68,93 @@ Deno.test({
           uploaded_at: undefined,
         },
         {
+          directory_listing: [
+            {
+              path: "",
+              size: 2735,
+              type: "dir",
+            },
+            {
+              path: "/.github",
+              size: 716,
+              type: "dir",
+            },
+            {
+              path: "/.github/README.md",
+              size: 304,
+              type: "file",
+            },
+            {
+              path: "/.github/workflows",
+              size: 412,
+              type: "dir",
+            },
+            {
+              path: "/.github/workflows/ci.yml",
+              size: 412,
+              type: "file",
+            },
+            {
+              path: "/.vscode",
+              size: 26,
+              type: "dir",
+            },
+            {
+              path: "/.vscode/settings.json",
+              size: 26,
+              type: "file",
+            },
+            {
+              path: "/deps.ts",
+              size: 63,
+              type: "file",
+            },
+            {
+              path: "/example.ts",
+              size: 50,
+              type: "file",
+            },
+            {
+              path: "/fixtures",
+              size: 23,
+              type: "dir",
+            },
+            {
+              path: "/fixtures/%",
+              size: 23,
+              type: "file",
+            },
+            {
+              path: "/LICENSE",
+              size: 1066,
+              type: "file",
+            },
+            {
+              path: "/mod_test.ts",
+              size: 227,
+              type: "file",
+            },
+            {
+              path: "/mod.ts",
+              size: 139,
+              type: "file",
+            },
+            {
+              path: "/subproject",
+              size: 425,
+              type: "dir",
+            },
+            {
+              path: "/subproject/mod.ts",
+              size: 71,
+              type: "file",
+            },
+            {
+              path: "/subproject/README.md",
+              size: 354,
+              type: "file",
+            },
+          ],
           upload_options: {
             ref: "0.0.9",
             repository: "luca-rand/testing",
@@ -170,6 +257,23 @@ Deno.test({
           uploaded_at: undefined,
         },
         {
+          directory_listing: [
+            {
+              path: "",
+              size: 425,
+              type: "dir",
+            },
+            {
+              path: "/mod.ts",
+              size: 71,
+              type: "file",
+            },
+            {
+              path: "/README.md",
+              size: 354,
+              type: "file",
+            },
+          ],
           upload_options: {
             ref: "0.0.7",
             repository: "luca-rand/testing",
