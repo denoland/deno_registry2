@@ -47,10 +47,6 @@ Deno.test({
         },
         status: "success",
         message: "Published module.",
-        stats: {
-          total_files: 11,
-          total_size: 2735,
-        },
       });
 
       // Check that versions.json file exists
@@ -240,10 +236,6 @@ Deno.test({
         },
         status: "success",
         message: "Published module.",
-        stats: {
-          total_files: 2,
-          total_size: 425,
-        },
       });
 
       // Check that versions.json file exists
@@ -349,7 +341,6 @@ Deno.test({
         status: "error",
         message:
           "Module too large (26214825 bytes). Maximum allowed size is 20971520 bytes.",
-        stats: undefined,
       });
 
       // Check that versions.json file does not exists
@@ -410,10 +401,6 @@ Deno.test({
         },
         status: "success",
         message: "Published module.",
-        stats: {
-          total_files: 28,
-          total_size: 26214825,
-        },
       });
 
       // Check that versions.json file exists

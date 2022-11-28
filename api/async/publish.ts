@@ -17,7 +17,7 @@ import {
   SQSEvent,
   walk,
 } from "../../deps.ts";
-import { Build, BuildStats, Database } from "../../utils/database.ts";
+import { Build, Database } from "../../utils/database.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
 import { clone } from "../../utils/git.ts";
 import {
@@ -50,12 +50,10 @@ export async function handler(
       throw new Error("Build does not exist!");
     }
 
-    let stats: BuildStats | undefined = undefined;
-
     switch (build.options.type) {
       case "github":
         try {
-          stats = await publishGithub(build);
+          await publishGithub(build);
         } catch (err) {
           console.log("error", err, err?.response);
           await database.saveBuild({
@@ -104,17 +102,11 @@ export async function handler(
       ...build,
       status: "success",
       message: message,
-      stats,
     });
   }
 }
 
-async function publishGithub(
-  build: Build,
-): Promise<{
-  total_files: number;
-  total_size: number;
-}> {
+async function publishGithub(build: Build) {
   console.log(
     `Publishing ${build.options.moduleName} at ${build.options.ref} from GitHub`,
   );
@@ -211,12 +203,11 @@ async function publishGithub(
     await uploadVersionMetaJson(
       moduleName,
       version,
-      "meta.json",
       {
-        uploaded_at: new Date().toISOString(),
         directory_listing: directory.sort((a, b) =>
           a.path.localeCompare(b.path, "en-US")
         ),
+        uploaded_at: new Date().toISOString(),
         upload_options: {
           type: "github",
           repository,
@@ -224,13 +215,7 @@ async function publishGithub(
           ref,
         },
       },
-      true,
     );
-
-    return {
-      total_files: directory.filter((f) => f.type === "file").length,
-      total_size: totalSize,
-    };
   } finally {
     // Remove checkout
     await Deno.remove(clonePath, { recursive: true });
