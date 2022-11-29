@@ -39,7 +39,11 @@ jobs:
       - name: Run Datastore Emulator
         run: |
           sh -c '"$(dirname "$(which gcloud)")/../platform/cloud-datastore-emulator/cloud_datastore_emulator" start --testing &'
-          $(gcloud emulators datastore env-init)
+          echo "DATASTORE_DATASET=deno-registry2-testing" >> $GITHUB_ENV
+          echo "DATASTORE_EMULATOR_HOST=localhost:8020" >> $GITHUB_ENV
+          echo "DATASTORE_EMULATOR_HOST_PATH=localhost:8020/datastore" >> $GITHUB_ENV
+          echo "DATASTORE_HOST=http://localhost:8020" >> $GITHUB_ENV
+          echo "DATASTORE_PROJECT_ID=deno-registry2-testing" >> $GITHUB_ENV
 
       - name: Test
         run: make test
