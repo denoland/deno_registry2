@@ -38,7 +38,7 @@ jobs:
 
       - name: Run Datastore Emulator
         run: |
-          "$(dirname "$(which gcloud)")/../platform/cloud-datastore-emulator/cloud_datastore_emulator" start --testing &
+          sh -c '"$(dirname "$(which gcloud)")/../platform/cloud-datastore-emulator/cloud_datastore_emulator" start --testing &'
           $(gcloud emulators datastore env-init)
 
       - name: Test
