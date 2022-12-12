@@ -31,12 +31,12 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
-          install_components: cloud-datastore-emulator
+          install_components: 'beta,cloud-datastore-emulator'
 
       - name: Run Datastore Emulator
         run: |
-          gcloud  beta emulators datastore env-init >> $GITHUB_ENV
           gcloud  beta emulators datastore start --testing &
+          gcloud  beta emulators datastore env-init >> $GITHUB_ENV
 
       - name: Docker build
         run: make build
