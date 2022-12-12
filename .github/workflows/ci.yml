@@ -28,9 +28,6 @@ jobs:
       - name: Lint
         run: deno lint --unstable
 
-      - name: Docker build
-        run: make build
-
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
@@ -40,6 +37,9 @@ jobs:
         run: |
           gcloud  beta emulators datastore env-init >> $GITHUB_ENV
           gcloud  beta emulators datastore start --testing &
+
+      - name: Docker build
+        run: make build
 
       - name: Test
         run: make test
