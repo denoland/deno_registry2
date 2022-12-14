@@ -14,7 +14,6 @@ jobs:
       AWS_BACKUP_REGION: eu-central-1
       GOOGLE_PROJECT_ID: test-project
       GOOGLE_PRIVATE_KEY: private-key
-      GOOGLE_PRIVATE_KEY: private-key
       GOOGLE_CLIENT_EMAIL: foo@example.com
       GOOGLE_PRIVATE_KEY_ID: 1234
     steps:
