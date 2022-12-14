@@ -17,22 +17,21 @@ import {
   SQSEvent,
   walk,
 } from "../../deps.ts";
-import { Build, BuildStats, Database } from "../../utils/database.ts";
+import { Build, Database } from "../../utils/database.ts";
 import { clone } from "../../utils/git.ts";
 import {
   getMeta,
-  getVersionMetaJson,
   uploadMetaJson,
   uploadVersionMetaJson,
   uploadVersionRaw,
 } from "../../utils/storage.ts";
 import type { DirectoryListingFile } from "../../utils/types.ts";
-import { DepGraph, runDenoInfo } from "../../utils/deno.ts";
 import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
-const remoteURL = Deno.env.get("REMOTE_URL")!;
+const apilandURL = Deno.env.get("APILAND_URL")!;
+const apilandAuthToken = Deno.env.get("APILAND_AUTH_TOKEN")!;
 
 const DEFAULT_MAX_TOTAL_SIZE = 1024 * 1024 * 20; // 20 mb in total
 
@@ -49,12 +48,10 @@ export async function handler(
       throw new Error("Build does not exist!");
     }
 
-    let stats: BuildStats | undefined = undefined;
-
     switch (build.options.type) {
       case "github":
         try {
-          stats = await publishGithub(build);
+          await publishGithub(build);
         } catch (err) {
           console.log("error", err, err?.response);
           await database.saveBuild({
@@ -71,26 +68,43 @@ export async function handler(
 
     let message = "Published module.";
 
-    await analyzeDependencies(build).catch((err) => {
-      console.error("failed dependency analysis", build, err, err?.response);
-      message += " Failed to run dependency analysis v2.";
+    // send a webhook request to apiland to do further indexing of the module
+    // this is temporary until apiland subsumes the functionality of registry2
+    const res = await fetch(apilandURL, {
+      method: "POST",
+      body: JSON.stringify({
+        event: "create",
+        module: build.options.moduleName,
+        version: build.options.version,
+      }),
+      headers: {
+        "authorization": `bearer ${apilandAuthToken}`,
+        "content-type": "application/json",
+      },
     });
+
+    if (res.status !== 200) {
+      console.error(
+        "failed to post webhook to apiland",
+        apilandURL,
+        res.status,
+        res.statusText,
+      );
+      message += " Failed to post webhook to apiland.";
+    }
+
+    // consume body, to not leak resources
+    await res.text();
 
     await database.saveBuild({
       ...build,
       status: "success",
       message: message,
-      stats,
     });
   }
 }
 
-async function publishGithub(
-  build: Build,
-): Promise<{
-  total_files: number;
-  total_size: number;
-}> {
+async function publishGithub(build: Build) {
   console.log(
     `Publishing ${build.options.moduleName} at ${build.options.ref} from GitHub`,
   );
@@ -187,12 +201,11 @@ async function publishGithub(
     await uploadVersionMetaJson(
       moduleName,
       version,
-      "meta.json",
       {
-        uploaded_at: new Date().toISOString(),
         directory_listing: directory.sort((a, b) =>
           a.path.localeCompare(b.path, "en-US")
         ),
+        uploaded_at: new Date().toISOString(),
         upload_options: {
           type: "github",
           repository,
@@ -200,101 +213,9 @@ async function publishGithub(
           ref,
         },
       },
-      true,
     );
-
-    return {
-      total_files: directory.filter((f) => f.type === "file").length,
-      total_size: totalSize,
-    };
   } finally {
     // Remove checkout
     await Deno.remove(clonePath, { recursive: true });
   }
-}
-
-export async function analyzeDependencies(build: Build): Promise<void> {
-  console.log(
-    `Analyzing dependencies for ${build.options.moduleName}@${build.options.version}`,
-  );
-  await database.saveBuild({
-    ...build,
-    status: "analyzing_dependencies",
-  });
-
-  const { options: { moduleName, version } } = build;
-  const denoDir = await Deno.makeTempDir();
-  const prefix = remoteURL.replace("%m", moduleName).replace("%v", version);
-
-  const rawMeta = await getVersionMetaJson(moduleName, version, "meta.json");
-  if (!rawMeta) {
-    throw new Error("Invalid module");
-  }
-  const meta: { directory_listing: DirectoryListingFile[] } = JSON.parse(
-    decoder.decode(rawMeta),
-  );
-
-  let total = 0;
-  let skipped = 0;
-
-  const totalGraph: DepGraph = {};
-
-  for await (const file of meta.directory_listing) {
-    if (file.type !== "file") {
-      continue;
-    }
-
-    // Skip non code files
-    if (
-      !(file.path.endsWith(".js") || file.path.endsWith(".jsx") ||
-        file.path.endsWith(".ts") || file.path.endsWith(".tsx"))
-    ) {
-      continue;
-    }
-
-    const url = new URL(prefix);
-    url.pathname = join(
-      url.pathname,
-      file.path,
-    );
-    const entrypoint = url.toString();
-
-    total++;
-
-    // We can skip analyzing a module if we have already analyzed
-    // and this already in the dependency graph.
-    if (totalGraph[entrypoint]) {
-      skipped++;
-      continue;
-    }
-
-    const graphToJoin = await runDenoInfo({ entrypoint, denoDir });
-    for (const dep of graphToJoin) {
-      if (dep.error || !dep.dependencies || !dep.size) {
-        throw new Error(`Failed to load ${dep.specifier}: ${dep.error}`);
-      }
-      const dependencies = dep.dependencies.map((d) => {
-        if (!d.code?.specifier) {
-          throw new Error(`Failed to load ${d.specifier}`);
-        }
-        return d.code.specifier;
-      });
-      totalGraph[dep.specifier] = {
-        size: dep.size,
-        deps: [...new Set(dependencies)],
-      };
-    }
-  }
-
-  console.log(">>>>>> total", total, "skipped", skipped);
-
-  await Deno.remove(denoDir, { recursive: true });
-
-  await uploadVersionMetaJson(
-    build.options.moduleName,
-    build.options.version,
-    "deps_v2.json",
-    { graph: { nodes: totalGraph } },
-    false,
-  );
 }

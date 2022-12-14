@@ -1,26 +1,20 @@
-variable "region" {
-  description = "the AWS region"
-  type        = string
-}
-
-variable "backup_region" {
-  description = "the AWS region used for backups"
-  type        = string
-}
-
-variable "mongodb_uri" {
-  description = "MongoDB conection string"
-  type        = string
-}
-
-variable "sqs_visibility_delay" {
-  description = "SQS delay before messages become visible again"
-  type        = number
-  default     = 301
-}
-
 variable "env" {
-  description = "the deployment environment (prod, staging)"
+  description = "The deployment environment (prod, staging)"
+  type        = string
+}
+
+variable "apiland_auth_token" {
+  description = "Authorization token for using apiland webhook"
+  type        = string
+}
+
+variable "aws_backup_region" {
+  description = "The AWS region used for backups"
+  type        = string
+}
+
+variable "aws_default_region" {
+  description = "The AWS regio used for most of the infrastructure"
   type        = string
 }
 
@@ -29,33 +23,37 @@ variable "docker_tag" {
   type        = string
 }
 
-variable "api_domain" {
-  description = "The domain that hosts the registry API."
-  type        = string
-}
-
-variable "cdn_domain" {
-  description = "The domain that hosts the registry CDN."
-  type        = string
-}
-
-# TODO(lucacasonato): autoprovision - then we can remove this.
-variable "certificate_arn" {
-  type        = string
-  description = "The certificate arn for the domain."
-}
-
-variable "cloudflare_account_id" {
-  description = "The account id for the Cloudflare account holding the zone for this domain."
-  type        = string
-}
-
-variable "cloudflare_zone_id" {
-  description = "The zone id for the Cloudflare zone for this domain."
-  type        = string
-}
-
 variable "github_token" {
   description = "GitHub personal access token"
   type        = string
+}
+
+variable "mongodb_atlas_org_id" {
+  description = "Organization ID for MongoDB Atlas"
+  type        = string
+}
+
+variable "mongodb_atlas_private_key" {
+  description = "Private key for MongoDB Atlas"
+  type        = string
+  nullable    = true
+  # If left unspecified, the MongoDB Atlas provider will use the environment
+  # variable MONGODB_ATLAS_PRIVATE_KEY.
+  default = null
+}
+
+variable "mongodb_atlas_public_key" {
+  description = "Public key for MongoDB Atlas"
+  type        = string
+  nullable    = true
+  sensitive   = true
+  # If left unspecified, the MongoDB Atlas provider will use the environment
+  # variable MONGODB_ATLAS_PUBLIC_KEY.
+  default = null
+}
+
+variable "sqs_visibility_delay" {
+  description = "SQS delay before messages become visible again"
+  type        = number
+  default     = 301
 }

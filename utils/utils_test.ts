@@ -1,5 +1,5 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
-import { assertEquals, bench, runBenchmarks } from "../test_deps.ts";
+import { assertEquals } from "../test_deps.ts";
 import { directorySize } from "./utils.ts";
 import type { DirectoryListingFile } from "./types.ts";
 
@@ -76,18 +76,3 @@ Deno.test({
     assertEquals(mock[1].size, 200);
   },
 });
-
-bench(function benchDirectorySize(b) {
-  const dir = JSON.parse(
-    Deno.readTextFileSync(
-      "./utils/testdata/deno-v1.3.2.json",
-    ),
-  ) as DirectoryListingFile[];
-  b.start();
-  for (let i = 0; i < 10000; i++) {
-    directorySize(dir);
-  }
-  b.stop();
-});
-
-runBenchmarks();

@@ -32,7 +32,6 @@ resource "aws_cloudwatch_metric_alarm" "data_lambda_errors" {
     get    = aws_lambda_function.modules_get.function_name,
     list   = aws_lambda_function.modules_list.function_name,
     builds = aws_lambda_function.builds_get.function_name,
-    stats  = aws_lambda_function.stats.function_name,
   }
 
   alarm_name          = "${local.prefix}-lambda-errors-alarm-${each.key}-${local.short_uuid}"
@@ -87,4 +86,28 @@ resource "aws_cloudwatch_metric_alarm" "dlq_messages" {
   treat_missing_data = "missing"
   alarm_actions      = [aws_sns_topic.alarm.arn]
   tags               = local.tags
+}
+
+resource "aws_sns_topic_subscription" "email-bert" {
+  endpoint  = "bert@deno.land"
+  protocol  = "email"
+  topic_arn = aws_sns_topic.alarm.arn
+}
+
+resource "aws_sns_topic_subscription" "email-luca" {
+  endpoint  = "lucacasonato@yahoo.com"
+  protocol  = "email"
+  topic_arn = aws_sns_topic.alarm.arn
+}
+
+resource "aws_sns_topic_subscription" "email-ryan" {
+  endpoint  = "ry@tinyclouds.org"
+  protocol  = "email"
+  topic_arn = aws_sns_topic.alarm.arn
+}
+
+resource "aws_sns_topic_subscription" "sms-luca" {
+  endpoint  = "+31615219593"
+  protocol  = "sms"
+  topic_arn = aws_sns_topic.alarm.arn
 }

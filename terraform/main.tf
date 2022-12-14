@@ -1,10 +1,16 @@
 resource "random_uuid" "this" {}
 
+data "google_dns_managed_zone" "dotland_dns_zone" {
+  provider = google.dns
+  name     = "deno-land"
+}
+
 data "aws_caller_identity" "this" {}
 
 locals {
   short_uuid             = substr(random_uuid.this.result, 0, 8)
   prefix                 = "deno-registry2-${var.env}"
+  domain_prefix          = var.env == "prod" ? "" : "${var.env}."
   lambda_default_timeout = 10
   ecr_image_url          = "${aws_ecr_repository.deployment_package.repository_url}:${var.docker_tag}"
   tags = {
@@ -24,68 +30,128 @@ resource "aws_ecr_repository" "deployment_package" {
   }
 }
 
+resource "aws_ecr_repository_policy" "deployment_package_policy" {
+  repository = aws_ecr_repository.deployment_package.name
+  policy     = data.aws_iam_policy_document.lambda_ecr_image_retrieval.json
+}
+
+data "aws_iam_policy_document" "lambda_ecr_image_retrieval" {
+  statement {
+    sid = "LambdaECRImageRetrievalPolicy"
+    actions = [
+      "ecr:BatchGetImage",
+      "ecr:DeleteRepositoryPolicy",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetRepositoryPolicy",
+      "ecr:SetRepositoryPolicy"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
 resource "aws_s3_bucket" "storage_bucket" {
   bucket = "${local.prefix}-storagebucket-${local.short_uuid}"
-  acl    = "private"
   tags   = local.tags
+}
 
-  cors_rule {
-    allowed_headers = []
-    allowed_methods = [
-      "GET",
-    ]
-    allowed_origins = [
-      "*",
-    ]
-    expose_headers  = []
-    max_age_seconds = 0
-  }
+resource "aws_s3_bucket_ownership_controls" "storage_bucket_ownership_controls" {
+  bucket = aws_s3_bucket.storage_bucket.id
 
-  versioning {
-    enabled = true
-  }
-
-  website {
-    index_document = "________________"
-  }
-
-  replication_configuration {
-    role = aws_iam_role.replication.arn
-    rules {
-      id     = local.short_uuid
-      status = "Enabled"
-      destination {
-        bucket        = aws_s3_bucket.storage_bucket_replication.arn
-        storage_class = "STANDARD"
-      }
-    }
+  rule {
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
 resource "aws_s3_bucket_public_access_block" "storage_bucket_public_access" {
   bucket                  = aws_s3_bucket.storage_bucket.id
-  block_public_acls       = false
+  block_public_acls       = true
   block_public_policy     = false
-  ignore_public_acls      = false
+  ignore_public_acls      = true
   restrict_public_buckets = false
+}
+
+resource "aws_s3_bucket_policy" "storage_bucket_policy" {
+  bucket = aws_s3_bucket.storage_bucket.id
+  policy = data.aws_iam_policy_document.allow_public_read.json
+}
+
+data "aws_iam_policy_document" "allow_public_read" {
+  statement {
+    actions = [
+      "s3:GetObject"
+    ]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    resources = [
+      "${aws_s3_bucket.storage_bucket.arn}/*"
+    ]
+  }
+}
+
+resource "aws_s3_bucket_cors_configuration" "storage_bucket_cors_configuration" {
+  bucket = aws_s3_bucket.storage_bucket.id
+
+  cors_rule {
+    allowed_headers = ["*"]
+    allowed_methods = ["GET", "HEAD"]
+    allowed_origins = ["*"]
+    expose_headers  = []
+  }
+}
+
+resource "aws_s3_bucket_versioning" "storage_bucket_versioning" {
+  bucket = aws_s3_bucket.storage_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_replication_configuration" "storage_bucket_replication_configuration" {
+  bucket = aws_s3_bucket.storage_bucket.id
+  role   = aws_iam_role.replication.arn
+
+  rule {
+    id     = "replication-rule"
+    status = "Enabled"
+
+    delete_marker_replication {
+      status = "Enabled"
+    }
+
+    destination {
+      bucket        = aws_s3_bucket.storage_bucket_replication.arn
+      storage_class = "STANDARD"
+
+      metrics {
+        status = "Enabled"
+      }
+    }
+
+    filter {}
+  }
+
+  # Bucket versioning must be enabled first.
+  depends_on = [aws_s3_bucket_versioning.storage_bucket_versioning]
 }
 
 resource "aws_s3_bucket" "storage_bucket_replication" {
   provider = aws.backup
   bucket   = "${local.prefix}-storagebucket-replication-${local.short_uuid}"
-  acl      = "private"
+  tags     = local.tags
+}
 
-  versioning {
-    enabled = true
-  }
+resource "aws_s3_bucket_ownership_controls" "storage_bucket_replication_ownership_controls" {
+  provider = aws.backup
+  bucket   = aws_s3_bucket.storage_bucket_replication.id
 
-  lifecycle_rule {
-    enabled = true
-
-    transition {
-      days          = 30
-      storage_class = "STANDARD_IA"
-    }
+  rule {
+    object_ownership = "BucketOwnerEnforced"
   }
 }
 
@@ -98,31 +164,34 @@ resource "aws_s3_bucket_public_access_block" "storage_replication_bucket_public_
   restrict_public_buckets = true
 }
 
-resource "cloudflare_record" "cdn" {
-  zone_id = var.cloudflare_zone_id
-  name    = var.cdn_domain
-  value   = aws_s3_bucket.storage_bucket.website_endpoint
-  type    = "CNAME"
-  ttl     = 1 # '1' = automatic
-  proxied = true
+resource "aws_s3_bucket_lifecycle_configuration" "storage_replication_bucket_lifecycle_configuration" {
+  provider = aws.backup
+  bucket   = aws_s3_bucket.storage_bucket_replication.id
+
+  rule {
+    id     = "transition-to-standard-ia"
+    status = "Enabled"
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+
+  }
+}
+
+resource "aws_s3_bucket_versioning" "storage_replication_bucket_versioning" {
+  provider = aws.backup
+  bucket   = aws_s3_bucket.storage_bucket_replication.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 resource "aws_s3_bucket" "moderation_bucket" {
   bucket = "${local.prefix}-moderationbucket-${local.short_uuid}"
-  acl    = "private"
   tags   = local.tags
-
-  versioning {
-    enabled = true
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
 }
 
 resource "aws_s3_bucket_public_access_block" "moderation_bucket_public_access" {
@@ -132,6 +201,23 @@ resource "aws_s3_bucket_public_access_block" "moderation_bucket_public_access" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+resource "aws_s3_bucket_ownership_controls" "moderation_bucket_ownership_controls" {
+  bucket = aws_s3_bucket.moderation_bucket.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "moderation_bucket_versioning" {
+  bucket = aws_s3_bucket.moderation_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 
 resource "aws_sqs_queue" "build_queue" {
   name                       = "${local.prefix}-build-queue-${local.short_uuid}"

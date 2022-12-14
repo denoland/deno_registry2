@@ -2,6 +2,7 @@
 import { handler } from "./publish.ts";
 import {
   cleanupDatabase,
+  createApiLandMock,
   createContext,
   createSQSEvent,
 } from "../../utils/test_utils.ts";
@@ -15,6 +16,7 @@ Deno.test({
   name: "publish success",
   async fn() {
     try {
+      createApiLandMock();
       const id = await database.createBuild({
         options: {
           moduleName: "ltest",
@@ -43,10 +45,6 @@ Deno.test({
         },
         status: "success",
         message: "Published module.",
-        stats: {
-          total_files: 11,
-          total_size: 2735,
-        },
       });
 
       // Check that versions.json file exists
@@ -166,124 +164,6 @@ Deno.test({
         },
       );
 
-      const deps = await s3.getObject("ltest/versions/0.0.9/meta/deps_v2.json");
-      assertEquals(deps?.cacheControl, "max-age=10, must-revalidate");
-      assertEquals(deps?.contentType, "application/json");
-      // Check that meta file exists
-      assert(deps);
-      assertEquals(
-        await new Response(deps.body).json(),
-        {
-          graph: {
-            nodes: {
-              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts":
-                {
-                  deps: ["https://deno.land/std@0.64.0/uuid/mod.ts"],
-                  size: 63,
-                },
-              "https://deno.land/std@0.64.0/uuid/mod.ts": {
-                deps: [
-                  "https://deno.land/std@0.64.0/uuid/v1.ts",
-                  "https://deno.land/std@0.64.0/uuid/v4.ts",
-                  "https://deno.land/std@0.64.0/uuid/v5.ts",
-                ],
-                size: 601,
-              },
-              "https://deno.land/std@0.64.0/uuid/v1.ts": {
-                deps: ["https://deno.land/std@0.64.0/uuid/_common.ts"],
-                size: 2545,
-              },
-              "https://deno.land/std@0.64.0/uuid/_common.ts": {
-                deps: [],
-                size: 1207,
-              },
-              "https://deno.land/std@0.64.0/uuid/v4.ts": {
-                deps: ["https://deno.land/std@0.64.0/uuid/_common.ts"],
-                size: 542,
-              },
-              "https://deno.land/std@0.64.0/uuid/v5.ts": {
-                deps: [
-                  "https://deno.land/std@0.64.0/_util/assert.ts",
-                  "https://deno.land/std@0.64.0/hash/sha1.ts",
-                  "https://deno.land/std@0.64.0/node/util.ts",
-                  "https://deno.land/std@0.64.0/uuid/_common.ts",
-                ],
-                size: 1340,
-              },
-              "https://deno.land/std@0.64.0/hash/sha1.ts": {
-                deps: [],
-                size: 11033,
-              },
-              "https://deno.land/std@0.64.0/node/util.ts": {
-                deps: [
-                  "https://deno.land/std@0.64.0/node/_util/_util_callbackify.ts",
-                  "https://deno.land/std@0.64.0/node/_util/_util_promisify.ts",
-                  "https://deno.land/std@0.64.0/node/_util/_util_types.ts",
-                  "https://deno.land/std@0.64.0/node/_utils.ts",
-                ],
-                size: 2298,
-              },
-              "https://deno.land/std@0.64.0/node/_util/_util_promisify.ts": {
-                deps: [],
-                size: 4839,
-              },
-              "https://deno.land/std@0.64.0/node/_util/_util_callbackify.ts": {
-                deps: [],
-                size: 4287,
-              },
-              "https://deno.land/std@0.64.0/node/_util/_util_types.ts": {
-                deps: [],
-                size: 7362,
-              },
-              "https://deno.land/std@0.64.0/node/_utils.ts": {
-                deps: [],
-                size: 3807,
-              },
-              "https://deno.land/std@0.64.0/_util/assert.ts": {
-                deps: [],
-                size: 405,
-              },
-              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/example.ts":
-                {
-                  deps: [
-                    "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts",
-                  ],
-                  size: 50,
-                },
-              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod.ts":
-                {
-                  deps: [
-                    "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/deps.ts",
-                  ],
-                  size: 139,
-                },
-              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/mod_test.ts":
-                {
-                  deps: ["https://deno.land/std@0.64.0/testing/asserts.ts"],
-                  size: 227,
-                },
-              "https://deno.land/std@0.64.0/testing/asserts.ts": {
-                deps: [
-                  "https://deno.land/std@0.64.0/fmt/colors.ts",
-                  "https://deno.land/std@0.64.0/testing/diff.ts",
-                ],
-                size: 12246,
-              },
-              "https://deno.land/std@0.64.0/fmt/colors.ts": {
-                deps: [],
-                size: 5774,
-              },
-              "https://deno.land/std@0.64.0/testing/diff.ts": {
-                deps: [],
-                size: 5473,
-              },
-              "http://localhost:9000/deno-registry2/ltest/versions/0.0.9/raw/subproject/mod.ts":
-                { deps: [], size: 71 },
-            },
-          },
-        },
-      );
-
       // Check the yml file was uploaded
       const yml = await s3.getObject(
         "ltest/versions/0.0.9/raw/.github/workflows/ci.yml",
@@ -323,6 +203,7 @@ Deno.test({
   name: "publish success subdir",
   async fn() {
     try {
+      createApiLandMock();
       const id = await database.createBuild({
         options: {
           moduleName: "ltest",
@@ -353,10 +234,6 @@ Deno.test({
         },
         status: "success",
         message: "Published module.",
-        stats: {
-          total_files: 2,
-          total_size: 425,
-        },
       });
 
       // Check that versions.json file exists
@@ -462,7 +339,6 @@ Deno.test({
         status: "error",
         message:
           "Module too large (26214825 bytes). Maximum allowed size is 20971520 bytes.",
-        stats: undefined,
       });
 
       // Check that versions.json file does not exists
@@ -486,6 +362,7 @@ Deno.test({
   name: "publish large custom quota",
   async fn() {
     try {
+      createApiLandMock();
       await database.saveOwnerQuota({
         owner: "luca-rand",
         type: "github",
@@ -522,10 +399,6 @@ Deno.test({
         },
         status: "success",
         message: "Published module.",
-        stats: {
-          total_files: 28,
-          total_size: 26214825,
-        },
       });
 
       // Check that versions.json file exists

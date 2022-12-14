@@ -41,20 +41,6 @@ export async function getMeta(
   return new Uint8Array(data);
 }
 
-export async function getVersionMetaJson(
-  module: string,
-  version: string,
-  file: string,
-): Promise<Uint8Array | undefined> {
-  const resp = await s3.getObject(
-    join(module, "versions", version, "meta", file),
-    {},
-  );
-  if (resp === undefined) return undefined;
-  const data = await new Response(resp.body).arrayBuffer();
-  return new Uint8Array(data);
-}
-
 const encoder = new TextEncoder();
 
 export async function uploadMetaJson(
@@ -66,7 +52,6 @@ export async function uploadMetaJson(
     join(module, "meta", file),
     encoder.encode(JSON.stringify(data)),
     {
-      acl: "public-read",
       // Global module meta data must always be fresh.
       cacheControl: "max-age=10, must-revalidate",
       contentType: "application/json",
@@ -91,7 +76,6 @@ export async function uploadVersionRaw(
     join(module, "versions", version, "raw", file),
     contents,
     {
-      acl: "public-read",
       // Versioned files can be cached indefinitely. (1 year)
       cacheControl: "public, max-age=31536000, immutable",
       contentType: type === "video/mp2t"
@@ -107,19 +91,14 @@ export async function uploadVersionRaw(
 export async function uploadVersionMetaJson(
   module: string,
   version: string,
-  file: string,
   data: unknown,
-  immutable: boolean,
 ): Promise<{ etag: string }> {
   const resp = await s3.putObject(
-    join(module, "versions", version, "meta", file),
+    join(module, "versions", version, "meta", "meta.json"),
     encoder.encode(JSON.stringify(data)),
     {
-      acl: "public-read",
       // Immutable files can be cached indefinitely. (1 year)
-      cacheControl: immutable
-        ? "public, max-age=31536000, immutable"
-        : "max-age=10, must-revalidate",
+      cacheControl: "public, max-age=31536000, immutable",
       contentType: "application/json",
     },
   );

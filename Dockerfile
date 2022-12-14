@@ -1,6 +1,6 @@
-FROM hayd/deno-lambda:1.17.3
+FROM hayd/deno-lambda:1.24.0
 
-RUN yum -y install https://packages.endpoint.com/rhel/7/main/x86_64/endpoint-repo-1.9-1.x86_64.rpm && \
+RUN yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm && \
     sed -i 's/$releasever/7/' /etc/yum.repos.d/endpoint.repo
 RUN yum install git -y && rm -rf /var/cache/yum
 
