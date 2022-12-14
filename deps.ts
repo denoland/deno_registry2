@@ -26,4 +26,4 @@ export {
   entityToObject,
   objectSetKey,
   objectToEntity,
-} from "https://deno.land/x/google_datastore@0.0.17/mod.ts";
+} from "https://deno.land/x/google_datastore@0.2.0/mod.ts";

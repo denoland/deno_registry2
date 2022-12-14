@@ -36,6 +36,7 @@ export class Database {
           : privateKey) as string,
       private_key_id: Deno.env.get("GOOGLE_PRIVATE_KEY_ID") ?? "",
       project_id: Deno.env.get("GOOGLE_PROJECT_ID") ?? "",
+      datastore_host: Deno.env.get("DATASTORE_HOST"),
     };
     this.db = new Datastore(keys);
   }
