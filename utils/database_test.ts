@@ -194,7 +194,12 @@ Deno.test({
     );
     assertEquals(
       ownerQuota,
-      ownerQuota1,
+      {
+        owner: "luca-rand",
+        type: "github",
+        max_modules: 5,
+        blocked: false,
+      },
     );
 
     await datastore.deleteOwnerQuota(ownerQuota1.owner);
