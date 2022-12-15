@@ -40,9 +40,9 @@ jobs:
       - name: Run Datastore Emulator
         run: |
           gcloud config set project $GOOGLE_PROJECT_ID
-          gcloud  beta emulators datastore start &
+          gcloud beta emulators datastore start --host-port=0.0.0.0:8081 &
           sleep 5
-          gcloud  beta emulators datastore env-init >> $GITHUB_ENV
+          echo "DATASTORE_HOST=http://localhost:8081" >> $GITHUB_ENV
 
       - name: Docker build
         run: make build
