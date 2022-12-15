@@ -458,7 +458,6 @@ async function checkBlocked(
   userName: string,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
   const user = await datastore.getOwnerQuota(userName);
-  console.log(user);
   if (user?.blocked ?? false) {
     return respondJSON({
       statusCode: 400,
