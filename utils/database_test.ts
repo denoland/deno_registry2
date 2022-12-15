@@ -2,7 +2,11 @@
 
 import { assert, assertEquals } from "../test_deps.ts";
 import { Build, Database, Module } from "./database.ts";
-import { Database as Datastore, OwnerQuota } from "./datastore_database.ts";
+import {
+  Database as Datastore,
+  kinds,
+  OwnerQuota,
+} from "./datastore_database.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
@@ -202,6 +206,14 @@ Deno.test({
       },
     );
 
-    await datastore.deleteOwnerQuota(ownerQuota1.owner);
+    const key = datastore.db.key([kinds.LEGACY_OWNER_QUOTAS, "luca-rand"]);
+
+    for await (
+      const _ of datastore.db.commit([{ delete: key }], {
+        transactional: false,
+      })
+    ) {
+      // empty
+    }
   },
 });

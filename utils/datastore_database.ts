@@ -69,16 +69,4 @@ export class Database {
       // empty
     }
   }
-
-  async deleteOwnerQuota(owner: string) {
-    const key = this.db.key([kinds.LEGACY_OWNER_QUOTAS, owner]);
-
-    for await (
-      const _ of this.db.commit([{ delete: key }], {
-        transactional: false,
-      })
-    ) {
-      // empty
-    }
-  }
 }

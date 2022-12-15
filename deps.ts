@@ -24,6 +24,7 @@ export { readAll } from "https://deno.land/std@0.149.0/streams/conversion.ts";
 export {
   Datastore,
   entityToObject,
+  objectGetKey,
   objectSetKey,
   objectToEntity,
 } from "https://deno.land/x/google_datastore@0.2.1/mod.ts";

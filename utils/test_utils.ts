@@ -1,16 +1,18 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
-import type {
-  APIGatewayProxyEventV2,
-  Context,
-  ScheduledEvent,
-  SQSEvent,
+import {
+  type APIGatewayProxyEventV2,
+  type Context,
+  objectGetKey,
+  type ScheduledEvent,
+  type SQSEvent,
 } from "../deps.ts";
 import { assert } from "../test_deps.ts";
 import type { Database } from "./database.ts";
+import { Database as Datastore, kinds } from "./datastore_database.ts";
+
 interface KV {
   [key: string]: string;
 }
-import { Database as Datastore } from "./datastore_database.ts";
 
 export function createApiLandMock() {
   const { port } = new URL(Deno.env.get("APILAND_URL")!);
@@ -220,6 +222,21 @@ export async function cleanupDatabase(
   await Promise.all([
     db._builds.deleteMany({}),
     db._modules.deleteMany({}),
-    datastore.deleteOwnerQuota("luca-rand"),
+    (async () => {
+      const query = await datastore.db.query(
+        datastore.db.createQuery(kinds.LEGACY_OWNER_QUOTAS),
+      );
+      const mutations = query.map((entry) => ({
+        delete: objectGetKey(entry)!,
+      }));
+
+      for await (
+        const _ of datastore.db.commit(mutations, {
+          transactional: false,
+        })
+      ) {
+        //;
+      }
+    })(),
   ]);
 }
