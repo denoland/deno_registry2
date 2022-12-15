@@ -38,6 +38,7 @@ export class Database {
       project_id: Deno.env.get("GOOGLE_PROJECT_ID") ?? "",
       datastore_host: Deno.env.get("DATASTORE_HOST"),
     };
+    console.log(Deno.env.get("DATASTORE_HOST"));
     this.db = new Datastore(keys);
   }
 
