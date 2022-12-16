@@ -85,6 +85,10 @@ jobs:
             -var docker_tag=$GITHUB_RUN_ID \
             -var github_token=${{ secrets.GH_TOKEN }} \
             -var mongodb_atlas_org_id=${{ secrets.MONGODB_ATLAS_ORG_ID }} \
+            -var google_private_key=${{ secrets.GOOGLE_PRIVATE_KEY }} \
+            -var google_private_key_id=${{ secrets.GOOGLE_CLIENT_EMAIL }} \
+            -var google_client_email=${{ secrets.GOOGLE_PRIVATE_KEY_ID }} \
+            -var google_project_id=${{ secrets.GOOGLE_PROJECT_ID }} \
             -out plan.tfplan
         env:
           TERRAFORM_STATE_BUCKET: deno-registry2-prod-terraform-state-b3a31d16
