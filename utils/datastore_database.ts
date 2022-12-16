@@ -119,7 +119,7 @@ export class Database {
 
   async getBuild(id: string): Promise<Build | null> {
     const result = await this.db.lookup(
-      this.db.key([kinds.LEGACY_BUILDS, id]),
+      this.db.key([kinds.LEGACY_BUILDS, +id]),
     );
 
     if (result.found && result.found.length) {
