@@ -48,7 +48,7 @@ export async function handler(
     console.log("handler Build ID:", buildID);
     const build = (await datastore.getBuild(buildID)) ??
       await database.getBuild(buildID);
-    console.log("handler Build ID:", build);
+    console.log("handler Build:", build);
     if (build === null) {
       throw new Error("Build does not exist!");
     }
