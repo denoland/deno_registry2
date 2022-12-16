@@ -108,7 +108,7 @@ export class Database {
   }
 
   // tests only
-  async listAllBuilds(): Promise<Build[]> {
+  listAllBuilds(): Promise<Build[]> {
     const query = this.db.createQuery(kinds.LEGACY_BUILDS);
     return this.db.query<Build>(query);
   }
