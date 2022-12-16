@@ -1,7 +1,6 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 import {
-  type CommitResponse,
   Datastore,
   datastoreValueToValue,
   entityToObject,
@@ -60,7 +59,9 @@ try {
     sessionToken: Deno.env.get("AWS_SESSION_TOKEN")!,
     endpointURL: Deno.env.get("SSM_ENDPOINT_URL")!,
   });
-} catch {}
+} catch {
+  //
+}
 
 const googlePrivateKeySecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_PRIVATE_KEY_SSM") ?? "",
