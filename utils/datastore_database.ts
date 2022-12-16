@@ -205,9 +205,9 @@ export class Database {
 
     for await (
       const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
-      transactional: false,
-    })
-      ) {
+        transactional: false,
+      })
+    ) {
       // empty
     }
 
