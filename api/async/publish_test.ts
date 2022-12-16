@@ -19,7 +19,7 @@ Deno.test({
   async fn() {
     try {
       createApiLandMock();
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest",
           ref: "0.0.9",
@@ -206,7 +206,7 @@ Deno.test({
   async fn() {
     try {
       createApiLandMock();
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest",
           ref: "0.0.7",
@@ -312,7 +312,7 @@ Deno.test({
   name: "publish too large",
   async fn() {
     try {
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest_big",
           ref: "0.0.1",
@@ -373,7 +373,7 @@ Deno.test({
         blocked: false,
       });
 
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest_big",
           ref: "0.0.1",

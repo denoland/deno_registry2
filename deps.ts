@@ -27,4 +27,6 @@ export {
   objectGetKey,
   objectSetKey,
   objectToEntity,
+  datastoreValueToValue,
 } from "https://deno.land/x/google_datastore@0.2.1/mod.ts";
+export type { CommitResponse } from "https://deno.land/x/google_datastore@0.2.1/types.d.ts";

@@ -771,7 +771,7 @@ Deno.test({
   name: "push event already queued",
   async fn() {
     try {
-      await database.createBuild({
+      await datastore.createBuild({
         options: {
           moduleName: "ltest2",
           ref: "0.0.7",
@@ -831,7 +831,7 @@ Deno.test({
   name: "push event previously failed",
   async fn() {
     try {
-      await database.createBuild({
+      await datastore.createBuild({
         options: {
           moduleName: "ltest2",
           ref: "0.0.7",
@@ -1073,7 +1073,7 @@ Deno.test({
   name: "push event rename repository already queued",
   async fn() {
     try {
-      await database.createBuild({
+      await datastore.createBuild({
         options: {
           moduleName: "ltest",
           ref: "0.0.7",

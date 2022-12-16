@@ -17,7 +17,7 @@ Deno.test({
   name: "`/builds/:id` success",
   async fn() {
     try {
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest",
           ref: "0.0.7",

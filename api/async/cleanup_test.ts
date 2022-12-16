@@ -160,7 +160,7 @@ Deno.test({
   async fn() {
     try {
       await database.saveModule(utest);
-      await database.createBuild({
+      await datastore.createBuild({
         options: {
           moduleName: "old",
           type: "github",
@@ -195,7 +195,7 @@ Deno.test({
   async fn() {
     try {
       await database.saveModule(utest);
-      await database.createBuild({
+      await datastore.createBuild({
         options: {
           moduleName: "old",
           type: "github",

@@ -340,38 +340,4 @@ export class Database {
       message: build.message,
     };
   }
-
-  countAllVersions(): Promise<number> {
-    return this._builds.countDocuments({});
-  }
-
-  async createBuild(
-    build: Omit<Omit<Build, "id">, "created_at">,
-  ): Promise<string> {
-    const id = await this._builds.insertOne({
-      created_at: new Date(),
-      options: build.options,
-      status: build.status,
-      message: build.message,
-    });
-    return id.toHexString();
-  }
-
-  async saveBuild(build: Build): Promise<void> {
-    await this._builds.updateOne(
-      {
-        _id: new Bson.ObjectId(build.id),
-      },
-      {
-        $set: {
-          _id: new Bson.ObjectId(build.id),
-          created_at: build.created_at,
-          options: build.options,
-          status: build.status,
-          message: build.message,
-        },
-      },
-      { upsert: true },
-    );
-  }
 }
