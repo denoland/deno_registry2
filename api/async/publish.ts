@@ -45,8 +45,10 @@ export async function handler(
 ): Promise<void> {
   for (const record of event.Records) {
     const { buildID } = JSON.parse(record.body);
+    console.log("handler Build ID:", buildID);
     const build = (await datastore.getBuild(buildID)) ??
       await database.getBuild(buildID);
+    console.log("handler Build ID:", build);
     if (build === null) {
       throw new Error("Build does not exist!");
     }
