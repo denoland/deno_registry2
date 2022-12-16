@@ -16,7 +16,6 @@ import {
 } from "../../deps.ts";
 import { parseRequestBody, respondJSON } from "../../utils/http.ts";
 import { Database, Module } from "../../utils/database.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
 import {
   getForbiddenWords,
   getMeta,
@@ -45,7 +44,6 @@ interface WebhookEvent {
 const decoder = new TextDecoder();
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
-const datastore = new Datastore();
 
 // deno-lint-ignore require-await
 export async function handler(
@@ -457,7 +455,7 @@ function checkSubdir(
 async function checkBlocked(
   userName: string,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
-  const user = await datastore.getOwnerQuota(userName);
+  const user = await database.getOwnerQuota(userName);
   if (user?.blocked ?? false) {
     return respondJSON({
       statusCode: 400,
@@ -516,7 +514,7 @@ async function hasReachedQuota(
   entry: Module | null,
   owner: string,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
-  const ownerQuota = await datastore.getOwnerQuota(owner);
+  const ownerQuota = await database.getOwnerQuota(owner);
   const maxModuleQuota = ownerQuota?.max_modules ??
     MAX_MODULES_PER_OWNER_DEFAULT;
   if (
