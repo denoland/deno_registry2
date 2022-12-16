@@ -386,6 +386,7 @@ async function initiateBuild(
       subdir: subdir ?? undefined,
     },
     status: "queued",
+    created_at: new Date(),
   });
 
   await queueBuild(buildID);

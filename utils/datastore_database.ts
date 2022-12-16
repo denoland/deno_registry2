@@ -108,9 +108,13 @@ export class Database {
   }
 
   // tests only
-  listAllBuilds(): Promise<Build[]> {
+  async listAllBuilds(): Promise<Build[]> {
     const query = this.db.createQuery(kinds.LEGACY_BUILDS);
-    return this.db.query<Build>(query);
+    const builds = await this.db.query<Build>(query);
+    for (const build of builds) {
+      build.id = objectGetKey(build)!.path[0].id!;
+    }
+    return builds;
   }
 
   async getBuild(id: string): Promise<Build | null> {
@@ -155,7 +159,7 @@ export class Database {
     return builds;
   }
 
-  async createBuild(build: Omit<Build, "id" | "created_at">): Promise<string> {
+  async createBuild(build: Omit<Build, "id">): Promise<string> {
     const key = this.db.key(kinds.LEGACY_BUILDS);
     objectSetKey(build, key);
 

@@ -28,6 +28,7 @@ Deno.test({
           version: "0.0.9",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       await handler(
@@ -216,6 +217,7 @@ Deno.test({
           subdir: "subproject/",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       await handler(
@@ -321,6 +323,7 @@ Deno.test({
           version: "0.0.1",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       await handler(
@@ -382,6 +385,7 @@ Deno.test({
           version: "0.0.1",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       await handler(

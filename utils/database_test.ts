@@ -100,7 +100,7 @@ Deno.test({
   },
 });
 
-const build1: Omit<Omit<Build, "id">, "created_at"> = {
+const build1: Omit<Build, "id"> = {
   options: {
     moduleName: "ltest",
     type: "github",
@@ -111,9 +111,10 @@ const build1: Omit<Omit<Build, "id">, "created_at"> = {
   },
   status: "success",
   message: "bla bla bla",
+  created_at: new Date(),
 };
 
-const build2: Omit<Omit<Build, "id">, "created_at"> = {
+const build2: Omit<Build, "id"> = {
   options: {
     moduleName: "wtest",
     type: "github",
@@ -124,6 +125,7 @@ const build2: Omit<Omit<Build, "id">, "created_at"> = {
   },
   status: "success",
   message: "bla bla bla",
+  created_at: new Date(),
 };
 
 Deno.test({

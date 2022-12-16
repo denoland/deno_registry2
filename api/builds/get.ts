@@ -10,7 +10,6 @@ import type {
   APIGatewayProxyResultV2,
   Context,
 } from "../../deps.ts";
-import { Bson } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
@@ -33,17 +32,6 @@ export async function handler(
       statusCode: 400,
       body: JSON.stringify(
         { success: false, error: "no build id provided" } as APIErrorResponse,
-      ),
-    });
-  }
-
-  try {
-    new Bson.ObjectId(id);
-  } catch (_err: unknown) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify(
-        { success: false, error: "invalid build id" } as APIErrorResponse,
       ),
     });
   }

@@ -26,6 +26,7 @@ Deno.test({
           version: "0.0.7",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       assertEquals(
@@ -66,29 +67,6 @@ Deno.test({
       ),
       {
         body: `{"success":false,"error":"no build id provided"}`,
-        headers: {
-          "content-type": "application/json",
-        },
-        statusCode: 400,
-      },
-    );
-  },
-});
-
-Deno.test({
-  name: "`/builds/:id` invalid id",
-  async fn() {
-    assertEquals(
-      await handler(
-        createAPIGatewayProxyEventV2("GET", `/builds/xdxdxd`, {
-          pathParameters: {
-            id: "xdxdxd",
-          },
-        }),
-        createContext(),
-      ),
-      {
-        body: `{"success":false,"error":"invalid build id"}`,
         headers: {
           "content-type": "application/json",
         },

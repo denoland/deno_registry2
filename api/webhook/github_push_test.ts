@@ -780,6 +780,7 @@ Deno.test({
           version: "0.0.7",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       // Send push event
@@ -840,6 +841,7 @@ Deno.test({
           version: "0.0.7",
         },
         status: "error",
+        created_at: new Date(),
       });
 
       // Send push event
@@ -1082,6 +1084,7 @@ Deno.test({
           version: "0.0.7",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       const repoId = 274939732;

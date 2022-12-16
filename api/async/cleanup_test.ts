@@ -170,6 +170,7 @@ Deno.test({
         },
         status: "success",
         message: "bla bla bla",
+        created_at: new Date(),
       });
 
       Deno.env.set("DRYRUN", "");
@@ -205,6 +206,7 @@ Deno.test({
         },
         status: "error",
         message: "bla bla bla",
+        created_at: new Date(),
       });
 
       Deno.env.set("DRYRUN", "");
