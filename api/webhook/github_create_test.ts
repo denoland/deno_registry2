@@ -361,6 +361,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -376,7 +377,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0].id
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -434,6 +435,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -449,7 +451,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0].id
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -584,6 +586,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -599,7 +602,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0].id
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -698,6 +701,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -714,7 +718,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0].id
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -772,6 +776,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -788,7 +793,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0].id
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -846,6 +851,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -862,7 +868,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0].id
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -1053,6 +1059,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -1067,7 +1074,7 @@ Deno.test({
       assertEquals(
         builds[1],
         {
-          _id: builds[1]._id,
+          id: builds[1].id,
           created_at: builds[1].created_at,
           options: {
             moduleName: "ltest2",
@@ -1083,7 +1090,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest2","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[1]._id.toHexString()
+            builds[1].id
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -1153,6 +1160,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest",
@@ -1168,7 +1176,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"ltest","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0].id
           }"}}`,
         headers: {
           "content-type": "application/json",
@@ -1411,6 +1419,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest4",
@@ -1429,7 +1438,7 @@ Deno.test({
         {
           body:
             `{"success":true,"data":{"module":"ltest4","version":"0.0.7","repository":"luca-rand/testing","status_url":"https://deno.land/status/${
-              builds[0]._id.toHexString()
+              builds[0].id
             }"}}`,
           headers: {
             "content-type": "application/json",
@@ -1480,6 +1489,7 @@ Deno.test({
       assertEquals(
         builds[0],
         {
+          id: builds[0].id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "frisbee",
@@ -1495,7 +1505,7 @@ Deno.test({
       assertEquals(resp, {
         body:
           `{"success":true,"data":{"module":"frisbee","version":"0.0.7","repository":"luca-rand/frisbee","status_url":"https://deno.land/status/${
-            builds[0]._id.toHexString()
+            builds[0].id
           }"}}`,
         headers: {
           "content-type": "application/json",
