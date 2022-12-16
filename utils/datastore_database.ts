@@ -152,7 +152,7 @@ export class Database {
     const query = this.db.createQuery(kinds.LEGACY_BUILDS);
     const builds = await this.db.query<Build>(query);
     for (const build of builds) {
-      build.id = objectGetKey(build)!.path[0].id!;
+      build.id = objectGetKey(build)!.path[0].name!;
     }
     return builds;
   }
@@ -164,7 +164,7 @@ export class Database {
 
     if (result.found && result.found.length) {
       const obj = entityToObject<Build>(result.found[0].entity);
-      obj.id = objectGetKey(obj)!.path[0].id!;
+      obj.id = objectGetKey(obj)!.path[0].name!;
       return obj;
     } else {
       return null;
@@ -182,7 +182,7 @@ export class Database {
 
     const builds = await this.db.query<Build>(query);
     if (builds.length === 0) return null;
-    builds[0].id = objectGetKey(builds[0])!.path[0].id!;
+    builds[0].id = objectGetKey(builds[0])!.path[0].name!;
     return builds[0];
   }
 
@@ -194,7 +194,7 @@ export class Database {
 
     const builds = await this.db.query<Build>(query);
     for (const build of builds) {
-      build.id = objectGetKey(build)!.path[0].id!;
+      build.id = objectGetKey(build)!.path[0].name!;
     }
     return builds;
   }
