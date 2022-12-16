@@ -1031,7 +1031,7 @@ Deno.test({
   name: "create event previously failed",
   async fn() {
     try {
-      await datastore.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest2",
           ref: "0.0.7",
@@ -1042,6 +1042,7 @@ Deno.test({
         status: "error",
         created_at: new Date(),
       });
+      console.log("failed ID:", id);
 
       // Send push event
       const resp = await handler(
