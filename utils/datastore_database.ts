@@ -207,7 +207,7 @@ export class Database {
   }
 
   async saveBuild(build: Build) {
-    const key = this.db.key([kinds.LEGACY_BUILDS, build.id]);
+    const key = this.db.key([kinds.LEGACY_BUILDS, +build.id]);
     objectSetKey(build, key);
 
     for await (
