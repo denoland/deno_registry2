@@ -30,6 +30,7 @@ Deno.test({
         status: "queued",
         created_at: new Date(),
       });
+      console.log("Build id frm createBuild:", id);
 
       await handler(
         createSQSEvent({ buildID: id }),
