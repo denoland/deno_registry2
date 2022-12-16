@@ -47,9 +47,6 @@ Deno.test({
           statusCode: 200,
         },
       );
-
-      // Cleanup
-      await database._builds.deleteMany({});
     } finally {
       await cleanupDatabase(database, datastore);
       await s3.empty();

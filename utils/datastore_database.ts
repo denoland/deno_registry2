@@ -97,6 +97,7 @@ export class Database {
     }
   }
 
+  // tests only
   async countAllBuilds(): Promise<number> {
     const query = await this.db.runGqlAggregationQuery({
       queryString: `SELECT COUNT(*) FROM ${kinds.LEGACY_BUILDS}`,
@@ -104,6 +105,12 @@ export class Database {
     return datastoreValueToValue(
       query.batch.aggregationResults[0].aggregateProperties.property_1,
     ) as number;
+  }
+
+  // tests only
+  async listAllBuilds(): Promise<Build[]> {
+    const query = this.db.createQuery(kinds.LEGACY_BUILDS);
+    return this.db.query<Build>(query);
   }
 
   async getBuild(id: string): Promise<Build | null> {

@@ -94,7 +94,7 @@ Deno.test({
       assertEquals(await getMeta("ltest-2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest-2"), null);
@@ -132,7 +132,7 @@ Deno.test({
       assertEquals(await getMeta("frisbee", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("frisbee"), null);
@@ -210,7 +210,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest5"), null);
 
       // Check that builds were queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
     } finally {
       await cleanupDatabase(database, datastore);
       await s3.empty();
@@ -265,7 +265,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest17"), null);
 
       // Check that builds were queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
 
       // Clean up
       await database._modules.deleteMany({});
@@ -330,7 +330,7 @@ Deno.test({
       assertEquals(await database.getModule("ltest9"), null);
 
       // Check that builds were queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
     } finally {
       await cleanupDatabase(database, datastore);
       await s3.empty();
@@ -354,14 +354,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -428,14 +427,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -513,7 +511,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
@@ -552,7 +550,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
@@ -579,14 +577,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -667,7 +664,7 @@ Deno.test({
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
 
       // Check that no builds are queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
@@ -694,14 +691,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -769,14 +765,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -844,14 +839,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -957,7 +951,7 @@ Deno.test({
       );
 
       // Check that no new build was queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
     } finally {
       await cleanupDatabase(database, datastore);
       await s3.empty();
@@ -1052,14 +1046,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued in addition to the errored build
       assertEquals(builds.length, 2);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest2",
@@ -1153,14 +1146,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest",
@@ -1280,7 +1272,7 @@ Deno.test({
       );
 
       // Check that no new build was queued
-      assertEquals(await database._builds.find({}).toArray(), []);
+      assertEquals(await datastore.listAllBuilds(), []);
     } finally {
       await cleanupDatabase(database, datastore);
       await s3.empty();
@@ -1412,14 +1404,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "ltest4",
@@ -1482,14 +1473,13 @@ Deno.test({
         createContext(),
       );
 
-      const builds = await database._builds.find({}).toArray();
+      const builds = await datastore.listAllBuilds();
 
       // Check that a new build was queued
       assertEquals(builds.length, 1);
       assertEquals(
         builds[0],
         {
-          _id: builds[0]._id,
           created_at: builds[0].created_at,
           options: {
             moduleName: "frisbee",
