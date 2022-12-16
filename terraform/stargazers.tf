@@ -21,10 +21,14 @@ resource "aws_lambda_function" "stargazers" {
 
   environment {
     variables = {
-      "DENO_UNSTABLE"    = "1"
-      "MONGO_URI"        = local.mongodb_uri
-      "STORAGE_BUCKET"   = aws_s3_bucket.storage_bucket.id
-      "GITHUB_TOKEN_SSM" = aws_ssm_parameter.github_token.name
+      "DENO_UNSTABLE"             = "1"
+      "MONGO_URI"                 = local.mongodb_uri
+      "STORAGE_BUCKET"            = aws_s3_bucket.storage_bucket.id
+      "GITHUB_TOKEN_SSM"          = aws_ssm_parameter.github_token.name
+      "GOOGLE_PRIVATE_KEY_SSM"    = aws_ssm_parameter.google_private_key.name
+      "GOOGLE_CLIENT_EMAIL_SSM"   = aws_ssm_parameter.google_client_email.name
+      "GOOGLE_PRIVATE_KEY_ID_SSM" = aws_ssm_parameter.google_private_key_id.name
+      "GOOGLE_PROJECT_ID_SSM"     = aws_ssm_parameter.google_project_id.name
     }
   }
 
