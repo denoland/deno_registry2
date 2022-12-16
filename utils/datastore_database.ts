@@ -155,7 +155,7 @@ export class Database {
 
   async getBuild(id: string): Promise<Build | null> {
     const result = await this.db.lookup(
-      this.db.key([kinds.LEGACY_BUILDS, +id]),
+      this.db.key([kinds.LEGACY_BUILDS, id]),
     );
 
     if (result.found && result.found.length) {
@@ -196,7 +196,8 @@ export class Database {
   }
 
   async createBuild(build: Omit<Build, "id">): Promise<string> {
-    const key = this.db.key(kinds.LEGACY_BUILDS);
+    const id = crypto.randomUUID();
+    const key = this.db.key([kinds.LEGACY_BUILDS, id]);
     objectSetKey(build, key);
 
     const commits = this.db.commit([{ insert: objectToEntity(build) }], {
@@ -207,7 +208,7 @@ export class Database {
   }
 
   async saveBuild(build: Build) {
-    const key = this.db.key([kinds.LEGACY_BUILDS, +build.id]);
+    const key = this.db.key([kinds.LEGACY_BUILDS, build.id]);
     objectSetKey(build, key);
 
     for await (
