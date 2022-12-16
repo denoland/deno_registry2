@@ -27,7 +27,9 @@ export async function handler(
     const successfulBuilds = (await Promise.all([
       datastore.listSuccessfulBuilds(module.name),
       database.listSuccessfulBuilds(module.name),
-    ])).flat().filter((build, i, arr) => arr.findIndex((build2) => build2.id === build.id) == i);
+    ])).flat().filter((build, i, arr) =>
+      arr.findIndex((build2) => build2.id === build.id) == i
+    );
     console.log(successfulBuilds);
     if (
       successfulBuilds.length === 0 &&

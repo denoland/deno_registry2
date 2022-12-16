@@ -23,10 +23,10 @@ export { pooledMap } from "https://deno.land/std@0.149.0/async/pool.ts";
 export { readAll } from "https://deno.land/std@0.149.0/streams/conversion.ts";
 export {
   Datastore,
+  datastoreValueToValue,
   entityToObject,
   objectGetKey,
   objectSetKey,
   objectToEntity,
-  datastoreValueToValue,
 } from "https://deno.land/x/google_datastore@0.2.1/mod.ts";
 export type { CommitResponse } from "https://deno.land/x/google_datastore@0.2.1/types.d.ts";

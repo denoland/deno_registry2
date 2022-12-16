@@ -3,11 +3,11 @@
 import {
   type CommitResponse,
   Datastore,
+  datastoreValueToValue,
   entityToObject,
   objectGetKey,
   objectSetKey,
   objectToEntity,
-  datastoreValueToValue,
 } from "../deps.ts";
 
 export interface OwnerQuota {
@@ -99,9 +99,11 @@ export class Database {
 
   async countAllBuilds(): Promise<number> {
     const query = await this.db.runGqlAggregationQuery({
-      queryString: `SELECT COUNT(*) FROM ${kinds.LEGACY_BUILDS}`
+      queryString: `SELECT COUNT(*) FROM ${kinds.LEGACY_BUILDS}`,
     });
-    return datastoreValueToValue(query.batch.aggregationResults[0].aggregateProperties.property_1) as number;
+    return datastoreValueToValue(
+      query.batch.aggregationResults[0].aggregateProperties.property_1,
+    ) as number;
   }
 
   async getBuild(id: string): Promise<Build | null> {

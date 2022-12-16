@@ -151,34 +151,34 @@ Deno.test({
 Deno.test({
   name: "count builds",
   async fn() {
-   try {
-     // check there are no versions in a clean database
-     let count = await datastore.countAllBuilds();
-     assertEquals(count, 0);
+    try {
+      // check there are no versions in a clean database
+      let count = await datastore.countAllBuilds();
+      assertEquals(count, 0);
 
-     // check count after adding 1 build
-     const id = await datastore.createBuild(build1);
-     const build = await datastore.getBuild(id) as Build;
-     count = await datastore.countAllBuilds();
-     assertEquals(count, 1);
+      // check count after adding 1 build
+      const id = await datastore.createBuild(build1);
+      const build = await datastore.getBuild(id) as Build;
+      count = await datastore.countAllBuilds();
+      assertEquals(count, 1);
 
-     // check count after adding 5 new versions
-     for (let i = 5; i < 10; i++) {
-       build.options.ref = `v.0.${i}.0`;
-       build.options.version = `0.${i}.0`;
-       await datastore.createBuild(build);
-     }
+      // check count after adding 5 new versions
+      for (let i = 5; i < 10; i++) {
+        build.options.ref = `v.0.${i}.0`;
+        build.options.version = `0.${i}.0`;
+        await datastore.createBuild(build);
+      }
 
-     count = await datastore.countAllBuilds();
-     assertEquals(count, 6);
+      count = await datastore.countAllBuilds();
+      assertEquals(count, 6);
 
-     // check count after adding second module
-     await datastore.createBuild(build2);
-     count = await datastore.countAllBuilds();
-     assertEquals(count, 7);
-   } finally {
-     await cleanupDatabase(database, datastore);
-   }
+      // check count after adding second module
+      await datastore.createBuild(build2);
+      count = await datastore.countAllBuilds();
+      assertEquals(count, 7);
+    } finally {
+      await cleanupDatabase(database, datastore);
+    }
   },
 });
 
