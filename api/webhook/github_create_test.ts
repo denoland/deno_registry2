@@ -353,6 +353,7 @@ Deno.test({
         ),
         createContext(),
       );
+      console.log(resp);
 
       const builds = await datastore.listAllBuilds();
 
