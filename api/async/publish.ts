@@ -45,9 +45,6 @@ export async function handler(
 ): Promise<void> {
   for (const record of event.Records) {
     const { buildID } = JSON.parse(record.body);
-    console.log("handler builds list:", await datastore.listAllBuilds());
-    console.log("handler build id:", buildID);
-    console.log("handler build:", await datastore.getBuild(buildID));
     const build = (await datastore.getBuild(buildID)) ??
       await database.getBuild(buildID);
     if (build === null) {
