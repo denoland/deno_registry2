@@ -32,6 +32,7 @@ variable "google_private_key" {
   description = "GCP private key"
   type        = string
 }
+
 variable "google_private_key_id" {
   description = "GCP private key ID"
   type        = string
