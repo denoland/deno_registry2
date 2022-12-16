@@ -51,33 +51,36 @@ export const kinds = {
   LEGACY_BUILDS: "legacy_builds",
 };
 
-const ssm = new SSM({
-  region: Deno.env.get("AWS_REGION")!,
-  accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
-  secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
-  sessionToken: Deno.env.get("AWS_SESSION_TOKEN")!,
-  endpointURL: Deno.env.get("SSM_ENDPOINT_URL")!,
-});
+let ssm;
+try {
+  ssm = new SSM({
+    region: Deno.env.get("AWS_REGION")!,
+    accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
+    secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
+    sessionToken: Deno.env.get("AWS_SESSION_TOKEN")!,
+    endpointURL: Deno.env.get("SSM_ENDPOINT_URL")!,
+  });
+} catch {}
 
-const googlePrivateKeySecret = await ssm.getParameter({
+const googlePrivateKeySecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_PRIVATE_KEY_SSM") ?? "",
   WithDecryption: true,
 });
 const GOOGLE_PRIVATE_KEY = googlePrivateKeySecret?.Parameter?.Value;
 
-const googleClientEmailSecret = await ssm.getParameter({
+const googleClientEmailSecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_CLIENT_EMAIL_SSM") ?? "",
   WithDecryption: true,
 });
 const GOOGLE_CLIENT_EMAIL = googleClientEmailSecret?.Parameter?.Value;
 
-const googlePrivateKeyIdSecret = await ssm.getParameter({
+const googlePrivateKeyIdSecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_PRIVATE_KEY_ID_SSM") ?? "",
   WithDecryption: true,
 });
 const GOOGLE_PRIVATE_KEY_ID = googlePrivateKeyIdSecret?.Parameter?.Value;
 
-const googleProjectIdSecret = await ssm.getParameter({
+const googleProjectIdSecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_PROJECT_ID_SSM") ?? "",
   WithDecryption: true,
 });
@@ -200,11 +203,15 @@ export class Database {
     const key = this.db.key([kinds.LEGACY_BUILDS, id]);
     objectSetKey(build, key);
 
-    const commits = this.db.commit([{ insert: objectToEntity(build) }], {
+    for await (
+      const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
       transactional: false,
-    });
-    const commit: CommitResponse = (await commits.next()).value;
-    return commit.mutationResults[0].key!.path[0].id!;
+    })
+      ) {
+      // empty
+    }
+
+    return id;
   }
 
   async saveBuild(build: Build) {
