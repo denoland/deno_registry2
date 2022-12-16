@@ -35,7 +35,7 @@ Deno.test({
         createContext(),
       );
 
-      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
         options: {
@@ -223,7 +223,7 @@ Deno.test({
         createContext(),
       );
 
-      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
         options: {
@@ -328,7 +328,7 @@ Deno.test({
         createContext(),
       );
 
-      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
         options: {
@@ -389,7 +389,7 @@ Deno.test({
         createContext(),
       );
 
-      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
         options: {

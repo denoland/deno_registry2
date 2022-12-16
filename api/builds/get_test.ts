@@ -39,7 +39,7 @@ Deno.test({
         ),
         {
           body: `{"success":true,"data":${
-            JSON.stringify({ build: await database.getBuild(id) })
+            JSON.stringify({ build: await datastore.getBuild(id) })
           }}`,
           headers: {
             "content-type": "application/json",
