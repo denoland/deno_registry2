@@ -28,26 +28,6 @@ variable "github_token" {
   type        = string
 }
 
-variable "google_private_key" {
-  description = "GCP private key"
-  type        = string
-}
-
-variable "google_private_key_id" {
-  description = "GCP private key ID"
-  type        = string
-}
-
-variable "google_client_email" {
-  description = "GCP client email"
-  type        = string
-}
-
-variable "google_project_id" {
-  description = "GCP project ID"
-  type        = string
-}
-
 variable "mongodb_atlas_org_id" {
   description = "Organization ID for MongoDB Atlas"
   type        = string
