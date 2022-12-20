@@ -1,19 +1,13 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 import { assert, assertEquals } from "../test_deps.ts";
-import { Build, Database, Module } from "./database.ts";
-import {
-  Database as Datastore,
-  kinds,
-  OwnerQuota,
-} from "./datastore_database.ts";
+import { Build, Database, Module, OwnerQuota } from "./database.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 await database._modules.deleteMany({});
 await database._builds.deleteMany({});
-
-const datastore = new Datastore();
+await database._owner_quotas.deleteMany({});
 
 const ltest: Module = {
   name: "ltest",
@@ -192,28 +186,16 @@ const ownerQuota1: OwnerQuota = {
 Deno.test({
   name: "add and get owner quotas in database",
   async fn() {
-    await datastore.saveOwnerQuota(ownerQuota1);
-    const ownerQuota = await datastore.getOwnerQuota(
+    await database.saveOwnerQuota(ownerQuota1);
+    const ownerQuota = await database.getOwnerQuota(
       ownerQuota1.owner,
     );
     assertEquals(
       ownerQuota,
-      {
-        owner: "luca-rand",
-        type: "github",
-        max_modules: 5,
-        blocked: false,
-      },
+      ownerQuota1,
     );
 
-    const key = datastore.db.key([kinds.LEGACY_OWNER_QUOTAS, "luca-rand"]);
-
-    for await (
-      const _ of datastore.db.commit([{ delete: key }], {
-        transactional: false,
-      })
-    ) {
-      // empty
-    }
+    // Cleanup
+    await database._owner_quotas.deleteMany({});
   },
 });
