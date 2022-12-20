@@ -1,12 +1,15 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
-import type {
-  APIGatewayProxyEventV2,
-  Context,
-  ScheduledEvent,
-  SQSEvent,
+import {
+  type APIGatewayProxyEventV2,
+  type Context,
+  objectGetKey,
+  type ScheduledEvent,
+  type SQSEvent,
 } from "../deps.ts";
 import { assert } from "../test_deps.ts";
 import type { Database } from "./database.ts";
+import { Database as Datastore, kinds } from "./datastore_database.ts";
+
 interface KV {
   [key: string]: string;
 }
@@ -212,10 +215,28 @@ export function createContext(): Context {
   };
 }
 
-export async function cleanupDatabase(db: Database): Promise<void> {
+export async function cleanupDatabase(
+  db: Database,
+  datastore: Datastore,
+): Promise<void> {
   await Promise.all([
     db._builds.deleteMany({}),
     db._modules.deleteMany({}),
-    db._owner_quotas.deleteMany({}),
+    (async () => {
+      const query = await datastore.db.query(
+        datastore.db.createQuery(kinds.LEGACY_OWNER_QUOTAS),
+      );
+      const mutations = query.map((entry) => ({
+        delete: objectGetKey(entry)!,
+      }));
+
+      for await (
+        const _ of datastore.db.commit(mutations, {
+          transactional: false,
+        })
+      ) {
+        //;
+      }
+    })(),
   ]);
 }
