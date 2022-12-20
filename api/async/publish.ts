@@ -18,7 +18,6 @@ import {
   walk,
 } from "../../deps.ts";
 import { Build, Database } from "../../utils/database.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
 import { clone } from "../../utils/git.ts";
 import {
   getMeta,
@@ -30,7 +29,6 @@ import type { DirectoryListingFile } from "../../utils/types.ts";
 import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
-const datastore = new Datastore();
 
 const apilandURL = Deno.env.get("APILAND_URL")!;
 const apilandAuthToken = Deno.env.get("APILAND_AUTH_TOKEN")!;
@@ -110,7 +108,7 @@ async function publishGithub(build: Build) {
   console.log(
     `Publishing ${build.options.moduleName} at ${build.options.ref} from GitHub`,
   );
-  const quota = await datastore.getOwnerQuota(
+  const quota = await database.getOwnerQuota(
     build.options.repository.split("/")[0] as string,
   );
   await database.saveBuild({
