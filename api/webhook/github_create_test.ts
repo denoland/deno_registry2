@@ -9,7 +9,9 @@ import {
 import { Database } from "../../utils/database.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
 import { getMeta, s3, uploadMetaJson } from "../../utils/storage.ts";
+import { Database as Datastore } from "../../utils/datastore_database.ts";
 
+const datastore = new Datastore();
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
@@ -60,7 +62,7 @@ Deno.test({
         statusCode: 400,
       });
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
     }
   },
 });
@@ -97,7 +99,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest-2"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -135,7 +137,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("frisbee"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -210,7 +212,7 @@ Deno.test({
       // Check that builds were queued
       assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -268,7 +270,7 @@ Deno.test({
       // Clean up
       await database._modules.deleteMany({});
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -278,7 +280,7 @@ Deno.test({
   name: "create event max registered to repository with dynamic owner quota",
   async fn() {
     try {
-      await database.saveOwnerQuota({
+      await datastore.saveOwnerQuota({
         owner: "luca-rand",
         type: "github",
         max_modules: 7,
@@ -330,7 +332,7 @@ Deno.test({
       // Check that builds were queued
       assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -404,7 +406,7 @@ Deno.test({
       // Check that no versions.json file was created
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -478,7 +480,7 @@ Deno.test({
       // Check that no versions.json file was created
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -516,7 +518,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -555,7 +557,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -629,7 +631,7 @@ Deno.test({
       // Check that no versions.json file was created
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -670,7 +672,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -745,7 +747,7 @@ Deno.test({
       // Check that no versions.json file was created
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -820,7 +822,7 @@ Deno.test({
       // Check that no versions.json file was created
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -895,7 +897,7 @@ Deno.test({
       // Check that no versions.json file was created
       assertEquals(await getMeta("ltest2", "versions.json"), undefined);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -957,7 +959,7 @@ Deno.test({
       // Check that no new build was queued
       assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -1017,7 +1019,7 @@ Deno.test({
         created_at: new Date(2020, 1, 1),
       });
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -1115,7 +1117,7 @@ Deno.test({
         created_at: new Date(2020, 1, 1),
       });
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -1203,7 +1205,7 @@ Deno.test({
       // Check that no versions.json file was created
       assertEquals(await getMeta("ltest", "versions.json"), undefined);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -1280,7 +1282,7 @@ Deno.test({
       // Check that no new build was queued
       assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -1355,7 +1357,7 @@ Deno.test({
         created_at: new Date(2020, 1, 1),
       });
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -1445,7 +1447,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -1511,7 +1513,7 @@ Deno.test({
         statusCode: 200,
       });
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },

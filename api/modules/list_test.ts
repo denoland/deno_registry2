@@ -7,7 +7,9 @@ import {
 } from "../../utils/test_utils.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
 import { Database } from "../../utils/database.ts";
+import { Database as Datastore } from "../../utils/datastore_database.ts";
 
+const datastore = new Datastore();
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
@@ -104,7 +106,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
     }
   },
 });
@@ -222,7 +224,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
     }
   },
 });
@@ -337,7 +339,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
     }
   },
 });
@@ -400,7 +402,7 @@ Deno.test({
         );
       }
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
     }
   },
 });
@@ -442,7 +444,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
     }
   },
 });
