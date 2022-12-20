@@ -9,6 +9,9 @@ import {
 import { Database } from "../../utils/database.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
 import { getMeta, s3 } from "../../utils/storage.ts";
+import { Database as Datastore } from "../../utils/datastore_database.ts";
+
+const datastore = new Datastore();
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
@@ -58,7 +61,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest-2"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -96,7 +99,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest-2"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -134,7 +137,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("frisbee"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -191,7 +194,7 @@ Deno.test({
       // Check that no new build was queued
       assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -248,7 +251,7 @@ Deno.test({
       // Check that no new build was queued
       assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -323,7 +326,7 @@ Deno.test({
       // Check that builds were queued
       assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -371,7 +374,7 @@ Deno.test({
       assert(ltest2);
       assertEquals(ltest2.repo_id, repoId);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -440,7 +443,7 @@ Deno.test({
         created_at: new Date(2020, 1, 1),
       });
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -509,7 +512,7 @@ Deno.test({
       // Check that no new build was queued
       assertEquals(await database._builds.find({}).toArray(), []);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -519,7 +522,7 @@ Deno.test({
   name: "ping event blocked owner",
   async fn() {
     try {
-      await database.saveOwnerQuota({
+      await datastore.saveOwnerQuota({
         type: "github",
         owner: "luca-rand",
         max_modules: 0,
@@ -555,7 +558,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
@@ -565,7 +568,7 @@ Deno.test({
   name: "ping event blocked sender",
   async fn() {
     try {
-      await database.saveOwnerQuota({
+      await datastore.saveOwnerQuota({
         type: "github",
         owner: "lucacasonato",
         max_modules: 0,
@@ -601,7 +604,7 @@ Deno.test({
       // Check that there is no module entry in the database
       assertEquals(await database.getModule("ltest2"), null);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },
