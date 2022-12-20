@@ -8,9 +8,7 @@ import {
 import { handler } from "./stargazers.ts";
 import { Database, Module } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
 
-const datastore = new Datastore();
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const ltest: Module = {
@@ -61,7 +59,7 @@ Deno.test({
       assert(updated?.star_count ?? 0 >= 1);
       assertEquals(updated?.created_at, ltest.created_at);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(database);
       await s3.empty();
     }
   },
