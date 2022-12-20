@@ -13,9 +13,13 @@ resource "aws_lambda_function" "cleanup" {
 
   environment {
     variables = {
-      "DENO_UNSTABLE" = "1"
-      "MONGO_URI"     = local.mongodb_uri
-      "DRYRUN"        = "1"
+      "DENO_UNSTABLE"             = "1"
+      "MONGO_URI"                 = local.mongodb_uri
+      "DRYRUN"                    = "1"
+      "GOOGLE_PRIVATE_KEY_SSM"    = aws_ssm_parameter.google_private_key.name
+      "GOOGLE_CLIENT_EMAIL_SSM"   = aws_ssm_parameter.google_client_email.name
+      "GOOGLE_PRIVATE_KEY_ID_SSM" = aws_ssm_parameter.google_private_key_id.name
+      "GOOGLE_PROJECT_ID_SSM"     = aws_ssm_parameter.google_project_id.name
     }
   }
 
