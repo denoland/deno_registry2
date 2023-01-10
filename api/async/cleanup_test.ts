@@ -7,7 +7,9 @@ import {
 import { handler } from "./cleanup.ts";
 import { Database, Module } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
+import { Database as Datastore } from "../../utils/datastore_database.ts";
 
+const datastore = new Datastore();
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const ltest: Module = {
@@ -73,7 +75,7 @@ Deno.test({
       const list = await database.listAllModuleNames();
       assert(list.length === 2);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -97,7 +99,7 @@ Deno.test({
       const list = await database.listAllModuleNames();
       assert(list.length === 2);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -122,7 +124,7 @@ Deno.test({
       assert(list.length === 1);
       assertEquals(list[0], "recent");
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -146,7 +148,7 @@ Deno.test({
       assert(list.length === 1);
       assertEquals(list[0].name, "old_unlisted");
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -181,7 +183,7 @@ Deno.test({
       assertEquals(list.length, 1);
       assertEquals(list[0].name, "old");
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -215,7 +217,7 @@ Deno.test({
       const list = await database.listAllModules();
       assert(list.length === 0);
     } finally {
-      await cleanupDatabase(database);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
