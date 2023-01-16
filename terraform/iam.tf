@@ -53,8 +53,14 @@ data "aws_iam_policy_document" "lambda_permissions" {
   }
 
   statement {
-    actions   = ["ssm:GetParameter"]
-    resources = [aws_ssm_parameter.github_token.arn]
+    actions = ["ssm:GetParameter"]
+    resources = [
+      aws_ssm_parameter.github_token.arn,
+      aws_ssm_parameter.google_private_key.arn,
+      aws_ssm_parameter.google_client_email.arn,
+      aws_ssm_parameter.google_private_key_id.arn,
+      aws_ssm_parameter.google_project_id.arn
+    ]
   }
 
   statement {
