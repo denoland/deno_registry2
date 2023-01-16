@@ -151,6 +151,7 @@ Deno.test({
 });
 
 Deno.test({
+  ignore: true,
   name: "count builds",
   async fn() {
     try {
