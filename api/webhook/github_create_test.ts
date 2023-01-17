@@ -1057,6 +1057,7 @@ Deno.test({
       );
 
       const builds = await datastore.listAllBuilds();
+      console.log(builds);
 
       // Check that a new build was queued in addition to the errored build
       assertEquals(builds.length, 2);
