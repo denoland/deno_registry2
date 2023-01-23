@@ -353,7 +353,6 @@ Deno.test({
         ),
         createContext(),
       );
-      console.log(resp);
 
       const builds = await datastore.listAllBuilds();
 
@@ -1042,7 +1041,6 @@ Deno.test({
         status: "error",
         created_at: new Date(),
       });
-      console.log("failed ID:", id);
 
       // Send push event
       const resp = await handler(
@@ -1057,7 +1055,6 @@ Deno.test({
       );
 
       const builds = await datastore.listAllBuilds();
-      console.log(builds);
 
       // Check that a new build was queued in addition to the errored build
       assertEquals(builds.length, 2);

@@ -345,7 +345,6 @@ async function initiateBuild(
   }
 
   const entry = await database.getModule(moduleName);
-  console.log("entry:", entry);
 
   const resp = await checkModuleInfo(
     entry,
@@ -375,7 +374,6 @@ async function initiateBuild(
 
   const version = ref.substring(versionPrefix.length);
   const invalidVersion = await checkVersion(moduleName, version);
-  console.log("invalid version:", invalidVersion);
   if (invalidVersion) return invalidVersion;
 
   const buildID = await datastore.createBuild({
@@ -390,7 +388,6 @@ async function initiateBuild(
     status: "queued",
     created_at: new Date(),
   });
-  console.log("build id:", buildID);
 
   await queueBuild(buildID);
 
