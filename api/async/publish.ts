@@ -129,13 +129,13 @@ async function publishGithub(build: Build) {
 
   try {
     // Create path that has possible subdir prefix
-    const path = (subdir === undefined ? clonePath : join(
+    const path = subdir === undefined ? clonePath : join(
       clonePath,
       subdir.replace(
         /(^\/|\/$)/g,
         "",
       ),
-    ));
+    );
 
     // Walk all files in the repository (that start with the subdir if present)
     const entries = [];

@@ -1030,7 +1030,7 @@ Deno.test({
   name: "create event previously failed",
   async fn() {
     try {
-      const id = await datastore.createBuild({
+      await datastore.createBuild({
         options: {
           moduleName: "ltest2",
           ref: "0.0.7",
