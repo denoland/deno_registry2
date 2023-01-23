@@ -154,7 +154,7 @@ export class Database {
     for (const build of builds) {
       build.id = objectGetKey(build)!.path[0].name!;
     }
-    builds.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
+    builds.sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
     return builds;
   }
 
