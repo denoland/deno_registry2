@@ -17,8 +17,10 @@ import {
   SQSEvent,
   walk,
 } from "../../deps.ts";
-import { Build, Database } from "../../utils/database.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
+import {
+  Build,
+  Database as Datastore,
+} from "../../utils/datastore_database.ts";
 import { clone } from "../../utils/git.ts";
 import {
   getMeta,

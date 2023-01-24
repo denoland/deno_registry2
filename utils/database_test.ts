@@ -1,8 +1,9 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 import { assert, assertEquals } from "../test_deps.ts";
-import { Build, Database, Module } from "./database.ts";
+import { Database, Module } from "./database.ts";
 import {
+  Build,
   Database as Datastore,
   kinds,
   OwnerQuota,
@@ -12,7 +13,6 @@ import { cleanupDatabase } from "./test_utils.ts";
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 await database._modules.deleteMany({});
-await database._builds.deleteMany({});
 
 const datastore = new Datastore();
 

@@ -11,7 +11,6 @@ import type {
   Context,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { Database } from "../../utils/database.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
 import type {
   APIBuildGetResponseSuccess,
