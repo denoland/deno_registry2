@@ -29,7 +29,6 @@ import {
 import type { DirectoryListingFile } from "../../utils/types.ts";
 import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 const datastore = new Datastore();
 
 const apilandURL = Deno.env.get("APILAND_URL")!;

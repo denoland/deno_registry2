@@ -18,7 +18,6 @@ import type {
   APIErrorResponse,
 } from "../../utils/types.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 const datastore = new Datastore();
 
 export async function handler(
