@@ -36,7 +36,7 @@ export async function handler(
     });
   }
 
-  const build = (await datastore.getBuild(id)) ?? await database.getBuild(id);
+  const build = await datastore.getBuild(id);
 
   if (build === null) {
     return respondJSON({

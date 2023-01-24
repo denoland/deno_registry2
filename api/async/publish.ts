@@ -45,8 +45,7 @@ export async function handler(
 ): Promise<void> {
   for (const record of event.Records) {
     const { buildID } = JSON.parse(record.body);
-    const build = (await datastore.getBuild(buildID)) ??
-      await database.getBuild(buildID);
+    const build = await datastore.getBuild(buildID);
     if (build === null) {
       throw new Error("Build does not exist!");
     }
