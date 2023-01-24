@@ -599,8 +599,7 @@ async function checkVersion(
   }
 
   // Check that a build has not already been queued
-  const build = (await datastore.getBuildForVersion(moduleName, version)) ??
-    await database.getBuildForVersion(moduleName, version);
+  const build = await datastore.getBuildForVersion(moduleName, version);
   if (build !== null && build.status !== "error") {
     return respondJSON({
       statusCode: 400,

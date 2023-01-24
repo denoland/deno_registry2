@@ -17,8 +17,10 @@ import {
   SQSEvent,
   walk,
 } from "../../deps.ts";
-import { Build, Database } from "../../utils/database.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
+import {
+  Build,
+  Database as Datastore,
+} from "../../utils/datastore_database.ts";
 import { clone } from "../../utils/git.ts";
 import {
   getMeta,
@@ -29,7 +31,6 @@ import {
 import type { DirectoryListingFile } from "../../utils/types.ts";
 import { collectAsyncIterable, directorySize } from "../../utils/utils.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 const datastore = new Datastore();
 
 const apilandURL = Deno.env.get("APILAND_URL")!;
@@ -45,8 +46,7 @@ export async function handler(
 ): Promise<void> {
   for (const record of event.Records) {
     const { buildID } = JSON.parse(record.body);
-    const build = (await datastore.getBuild(buildID)) ??
-      await database.getBuild(buildID);
+    const build = await datastore.getBuild(buildID);
     if (build === null) {
       throw new Error("Build does not exist!");
     }

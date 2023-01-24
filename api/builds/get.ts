@@ -11,14 +11,12 @@ import type {
   Context,
 } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
-import { Database } from "../../utils/database.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
 import type {
   APIBuildGetResponseSuccess,
   APIErrorResponse,
 } from "../../utils/types.ts";
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 const datastore = new Datastore();
 
 export async function handler(
@@ -36,7 +34,7 @@ export async function handler(
     });
   }
 
-  const build = (await datastore.getBuild(id)) ?? await database.getBuild(id);
+  const build = await datastore.getBuild(id);
 
   if (build === null) {
     return respondJSON({

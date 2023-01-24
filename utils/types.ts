@@ -1,12 +1,12 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 import {
-  Build,
   RecentlyAddedModuleResult,
   RecentlyAddedUploadedVersions,
   SearchOptions,
   SearchResult,
 } from "./database.ts";
+import { Build } from "./datastore_database.ts";
 
 export type APIResponseBase = {
   success: boolean;

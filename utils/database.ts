@@ -1,6 +1,6 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
-import { Bson, MongoClient, MongoCollection, MongoDatabase } from "../deps.ts";
+import { MongoClient, MongoCollection, MongoDatabase } from "../deps.ts";
 
 export type DBModule = Omit<Module, "name"> & { _id: string };
 export type ScoredModule = DBModule & { search_score: number };
@@ -31,13 +31,6 @@ export interface SearchOptions {
 export type ListModuleResult = [SearchOptions, ScoredModule[]];
 
 export type Sort = "stars" | "newest" | "oldest";
-
-export type BuildStatus =
-  | "queued"
-  | "success"
-  | "error"
-  | "publishing"
-  | "analyzing_dependencies";
 
 const sort = {
   stars: { "star_count": -1 },
@@ -75,33 +68,13 @@ export interface RecentlyAddedUploadedVersions {
   created_at: Date;
 }
 
-export interface Build {
-  id: string;
-  // deno-lint-ignore camelcase
-  created_at: Date;
-  options: {
-    moduleName: string;
-    type: string;
-    repository: string;
-    ref: string;
-    version: string;
-    subdir?: string;
-  };
-  status: BuildStatus;
-  message?: string;
-}
-
 export class Database {
   protected db: MongoDatabase;
   _modules: MongoCollection<DBModule>;
-  _builds: MongoCollection<Omit<Build, "id"> & { _id: Bson.ObjectId }>;
 
   constructor(db: MongoDatabase) {
     this.db = db;
     this._modules = db.collection<DBModule>("modules");
-    this._builds = db.collection<Omit<Build, "id"> & { _id: Bson.ObjectId }>(
-      "builds",
-    );
   }
 
   static async connect(mongoUri: string): Promise<Database> {
@@ -289,55 +262,5 @@ export class Database {
       throw new Error(`Failed to delete module [ ${name} ]`);
     }
     return;
-  }
-
-  async getBuild(id: string): Promise<Build | null> {
-    const build = await this._builds.findOne({ _id: new Bson.ObjectId(id) });
-    if (build === undefined) return null;
-    return {
-      id: build._id.toHexString(),
-      created_at: build.created_at,
-      options: build.options,
-      status: build.status,
-      message: build.message,
-    };
-  }
-
-  async listSuccessfulBuilds(name: string): Promise<Build[]> {
-    const cursor = this._builds.aggregate<Build & { _id: Bson.ObjectId }>([
-      {
-        $match: {
-          "options.moduleName": { $eq: name },
-          status: { $eq: "success" as BuildStatus },
-        },
-      },
-    ]);
-    return await cursor.map((b) => {
-      return {
-        id: b._id.toHexString(),
-        created_at: b.created_at,
-        options: b.options,
-        status: b.status,
-        message: b.message,
-      };
-    });
-  }
-
-  async getBuildForVersion(
-    name: string,
-    version: string,
-  ): Promise<Build | null> {
-    const build = await this._builds.findOne({
-      "options.moduleName": name,
-      "options.version": version,
-    });
-    if (build === undefined) return null;
-    return {
-      id: build._id.toHexString(),
-      created_at: build.created_at,
-      options: build.options,
-      status: build.status,
-      message: build.message,
-    };
   }
 }

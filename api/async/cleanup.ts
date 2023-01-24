@@ -24,12 +24,7 @@ export async function handler(
   const modules = await database.listAllModules();
   const now = new Date();
   for (const module of modules.filter((m) => m.is_unlisted === false)) {
-    const successfulBuilds = (await Promise.all([
-      datastore.listSuccessfulBuilds(module.name),
-      database.listSuccessfulBuilds(module.name),
-    ])).flat().filter((build, i, arr) =>
-      arr.findIndex((build2) => build2.id === build.id) == i
-    );
+    const successfulBuilds = await datastore.listSuccessfulBuilds(module.name);
     console.log(successfulBuilds);
     if (
       successfulBuilds.length === 0 &&
