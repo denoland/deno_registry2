@@ -220,8 +220,23 @@ export async function cleanupDatabase(
   datastore: Datastore,
 ): Promise<void> {
   await Promise.all([
-    db._builds.deleteMany({}),
     db._modules.deleteMany({}),
+    (async () => {
+      const query = await datastore.db.query(
+        datastore.db.createQuery(kinds.LEGACY_BUILDS),
+      );
+      const mutations = query.map((entry) => ({
+        delete: objectGetKey(entry)!,
+      }));
+
+      for await (
+        const _ of datastore.db.commit(mutations, {
+          transactional: false,
+        })
+      ) {
+        //
+      }
+    })(),
     (async () => {
       const query = await datastore.db.query(
         datastore.db.createQuery(kinds.LEGACY_OWNER_QUOTAS),
@@ -235,7 +250,7 @@ export async function cleanupDatabase(
           transactional: false,
         })
       ) {
-        //;
+        //
       }
     })(),
   ]);

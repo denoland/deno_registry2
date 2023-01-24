@@ -19,7 +19,7 @@ Deno.test({
   async fn() {
     try {
       createApiLandMock();
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest",
           ref: "0.0.9",
@@ -28,6 +28,7 @@ Deno.test({
           version: "0.0.9",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       await handler(
@@ -35,7 +36,7 @@ Deno.test({
         createContext(),
       );
 
-      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
         options: {
@@ -206,7 +207,7 @@ Deno.test({
   async fn() {
     try {
       createApiLandMock();
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest",
           ref: "0.0.7",
@@ -216,6 +217,7 @@ Deno.test({
           subdir: "subproject/",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       await handler(
@@ -223,7 +225,7 @@ Deno.test({
         createContext(),
       );
 
-      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
         options: {
@@ -312,7 +314,7 @@ Deno.test({
   name: "publish too large",
   async fn() {
     try {
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest_big",
           ref: "0.0.1",
@@ -321,6 +323,7 @@ Deno.test({
           version: "0.0.1",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       await handler(
@@ -328,7 +331,7 @@ Deno.test({
         createContext(),
       );
 
-      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
         options: {
@@ -373,7 +376,7 @@ Deno.test({
         blocked: false,
       });
 
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest_big",
           ref: "0.0.1",
@@ -382,6 +385,7 @@ Deno.test({
           version: "0.0.1",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       await handler(
@@ -389,7 +393,7 @@ Deno.test({
         createContext(),
       );
 
-      assertEquals({ ...await database.getBuild(id), created_at: undefined }, {
+      assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
         options: {

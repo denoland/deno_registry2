@@ -45,7 +45,8 @@ export async function handler(
 ): Promise<void> {
   for (const record of event.Records) {
     const { buildID } = JSON.parse(record.body);
-    const build = await database.getBuild(buildID);
+    const build = (await datastore.getBuild(buildID)) ??
+      await database.getBuild(buildID);
     if (build === null) {
       throw new Error("Build does not exist!");
     }
@@ -56,7 +57,7 @@ export async function handler(
           await publishGithub(build);
         } catch (err) {
           console.log("error", err, err?.response);
-          await database.saveBuild({
+          await datastore.saveBuild({
             ...build,
             status: "error",
             message: err.message,
@@ -98,7 +99,7 @@ export async function handler(
     // consume body, to not leak resources
     await res.text();
 
-    await database.saveBuild({
+    await datastore.saveBuild({
       ...build,
       status: "success",
       message: message,
@@ -113,7 +114,7 @@ async function publishGithub(build: Build) {
   const quota = await datastore.getOwnerQuota(
     build.options.repository.split("/")[0] as string,
   );
-  await database.saveBuild({
+  await datastore.saveBuild({
     ...build,
     status: "publishing",
   });
@@ -128,13 +129,13 @@ async function publishGithub(build: Build) {
 
   try {
     // Create path that has possible subdir prefix
-    const path = (subdir === undefined ? clonePath : join(
+    const path = subdir === undefined ? clonePath : join(
       clonePath,
       subdir.replace(
         /(^\/|\/$)/g,
         "",
       ),
-    ));
+    );
 
     // Walk all files in the repository (that start with the subdir if present)
     const entries = [];

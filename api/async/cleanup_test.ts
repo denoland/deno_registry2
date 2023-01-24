@@ -160,7 +160,7 @@ Deno.test({
   async fn() {
     try {
       await database.saveModule(utest);
-      await database.createBuild({
+      await datastore.createBuild({
         options: {
           moduleName: "old",
           type: "github",
@@ -170,6 +170,7 @@ Deno.test({
         },
         status: "success",
         message: "bla bla bla",
+        created_at: new Date(),
       });
 
       Deno.env.set("DRYRUN", "");
@@ -195,7 +196,7 @@ Deno.test({
   async fn() {
     try {
       await database.saveModule(utest);
-      await database.createBuild({
+      await datastore.createBuild({
         options: {
           moduleName: "old",
           type: "github",
@@ -205,6 +206,7 @@ Deno.test({
         },
         status: "error",
         message: "bla bla bla",
+        created_at: new Date(),
       });
 
       Deno.env.set("DRYRUN", "");

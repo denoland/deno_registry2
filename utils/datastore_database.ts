@@ -2,7 +2,9 @@
 
 import {
   Datastore,
+  datastoreValueToValue,
   entityToObject,
+  objectGetKey,
   objectSetKey,
   objectToEntity,
   SSM,
@@ -19,38 +21,67 @@ export interface OwnerQuota {
   note?: string;
 }
 
+export type BuildStatus =
+  | "queued"
+  | "success"
+  | "error"
+  | "publishing"
+  | "analyzing_dependencies";
+
+export interface Build {
+  id: string;
+  // deno-lint-ignore camelcase
+  created_at: Date;
+  options: {
+    moduleName: string;
+    type: string;
+    repository: string;
+    ref: string;
+    version: string;
+    subdir?: string;
+  };
+  status: BuildStatus;
+  message?: string;
+}
+
 export const kinds = {
   /** An object which contains information about the usage of built-in APIs. */
   LEGACY_OWNER_QUOTAS: "legacy_owner_quotas",
+  LEGACY_BUILDS: "legacy_builds",
 };
 
-const ssm = new SSM({
-  region: Deno.env.get("AWS_REGION")!,
-  accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
-  secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
-  sessionToken: Deno.env.get("AWS_SESSION_TOKEN")!,
-  endpointURL: Deno.env.get("SSM_ENDPOINT_URL")!,
-});
+let ssm;
+try {
+  ssm = new SSM({
+    region: Deno.env.get("AWS_REGION")!,
+    accessKeyID: Deno.env.get("AWS_ACCESS_KEY_ID")!,
+    secretKey: Deno.env.get("AWS_SECRET_ACCESS_KEY")!,
+    sessionToken: Deno.env.get("AWS_SESSION_TOKEN")!,
+    endpointURL: Deno.env.get("SSM_ENDPOINT_URL")!,
+  });
+} catch {
+  //
+}
 
-const googlePrivateKeySecret = await ssm.getParameter({
+const googlePrivateKeySecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_PRIVATE_KEY_SSM") ?? "",
   WithDecryption: true,
 });
 const GOOGLE_PRIVATE_KEY = googlePrivateKeySecret?.Parameter?.Value;
 
-const googleClientEmailSecret = await ssm.getParameter({
+const googleClientEmailSecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_CLIENT_EMAIL_SSM") ?? "",
   WithDecryption: true,
 });
 const GOOGLE_CLIENT_EMAIL = googleClientEmailSecret?.Parameter?.Value;
 
-const googlePrivateKeyIdSecret = await ssm.getParameter({
+const googlePrivateKeyIdSecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_PRIVATE_KEY_ID_SSM") ?? "",
   WithDecryption: true,
 });
 const GOOGLE_PRIVATE_KEY_ID = googlePrivateKeyIdSecret?.Parameter?.Value;
 
-const googleProjectIdSecret = await ssm.getParameter({
+const googleProjectIdSecret = await ssm?.getParameter({
   Name: Deno.env.get("GOOGLE_PROJECT_ID_SSM") ?? "",
   WithDecryption: true,
 });
@@ -99,6 +130,99 @@ export class Database {
 
     for await (
       const _ of this.db.commit([{ upsert: objectToEntity(ownerQuota) }], {
+        transactional: false,
+      })
+    ) {
+      // empty
+    }
+  }
+
+  // tests only
+  async countAllBuilds(): Promise<number> {
+    const query = await this.db.runGqlAggregationQuery({
+      queryString: `SELECT COUNT(*) FROM ${kinds.LEGACY_BUILDS}`,
+    });
+    return datastoreValueToValue(
+      query.batch.aggregationResults[0].aggregateProperties.property_1,
+    ) as number;
+  }
+
+  // tests only
+  async listAllBuilds(): Promise<Build[]> {
+    const query = this.db.createQuery(kinds.LEGACY_BUILDS);
+    const builds = await this.db.query<Build>(query);
+    for (const build of builds) {
+      build.id = objectGetKey(build)!.path[0].name!;
+    }
+    builds.sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
+    return builds;
+  }
+
+  async getBuild(id: string): Promise<Build | null> {
+    const result = await this.db.lookup(
+      this.db.key([kinds.LEGACY_BUILDS, id]),
+    );
+
+    if (result.found && result.found.length) {
+      const obj = entityToObject<Build>(result.found[0].entity);
+      obj.id = objectGetKey(obj)!.path[0].name!;
+      return obj;
+    } else {
+      return null;
+    }
+  }
+
+  async getBuildForVersion(
+    name: string,
+    version: string,
+  ): Promise<Build | null> {
+    const query = this.db
+      .createQuery(kinds.LEGACY_BUILDS)
+      .filter("options.moduleName", name)
+      .filter("options.version", version);
+
+    const builds = await this.db.query<Build>(query);
+    if (builds.length === 0) return null;
+    builds[0].id = objectGetKey(builds[0])!.path[0].name!;
+    return builds[0];
+  }
+
+  async listSuccessfulBuilds(name: string): Promise<Build[]> {
+    const query = this.db
+      .createQuery(kinds.LEGACY_BUILDS)
+      .filter("options.moduleName", name)
+      .filter("status", "success");
+
+    const builds = await this.db.query<Build>(query);
+    for (const build of builds) {
+      build.id = objectGetKey(build)!.path[0].name!;
+    }
+    builds.sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
+    return builds;
+  }
+
+  async createBuild(build: Omit<Build, "id">): Promise<string> {
+    const id = crypto.randomUUID();
+    const key = this.db.key([kinds.LEGACY_BUILDS, id]);
+    objectSetKey(build, key);
+
+    for await (
+      const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
+        transactional: false,
+      })
+    ) {
+      // empty
+    }
+
+    return id;
+  }
+
+  async saveBuild(build: Build) {
+    const key = this.db.key([kinds.LEGACY_BUILDS, build.id]);
+    objectSetKey(build, key);
+
+    for await (
+      const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
         transactional: false,
       })
     ) {

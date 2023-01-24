@@ -10,15 +10,16 @@ import type {
   APIGatewayProxyResultV2,
   Context,
 } from "../../deps.ts";
-import { Bson } from "../../deps.ts";
 import { respondJSON } from "../../utils/http.ts";
 import { Database } from "../../utils/database.ts";
+import { Database as Datastore } from "../../utils/datastore_database.ts";
 import type {
   APIBuildGetResponseSuccess,
   APIErrorResponse,
 } from "../../utils/types.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const datastore = new Datastore();
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -35,18 +36,7 @@ export async function handler(
     });
   }
 
-  try {
-    new Bson.ObjectId(id);
-  } catch (_err: unknown) {
-    return respondJSON({
-      statusCode: 400,
-      body: JSON.stringify(
-        { success: false, error: "invalid build id" } as APIErrorResponse,
-      ),
-    });
-  }
-
-  const build = await database.getBuild(id);
+  const build = (await datastore.getBuild(id)) ?? await database.getBuild(id);
 
   if (build === null) {
     return respondJSON({

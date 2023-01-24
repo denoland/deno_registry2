@@ -9,8 +9,10 @@
 
 import type { Context, ScheduledEvent } from "../../deps.ts";
 import { Database } from "../../utils/database.ts";
+import { Database as Datastore } from "../../utils/datastore_database.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const datastore = new Datastore();
 const INACTIVITY_PERIOD = 1000 * 60 * 60 * 24 * 30; // 30 days
 
 export async function handler(
@@ -22,7 +24,12 @@ export async function handler(
   const modules = await database.listAllModules();
   const now = new Date();
   for (const module of modules.filter((m) => m.is_unlisted === false)) {
-    const successfulBuilds = await database.listSuccessfulBuilds(module.name);
+    const successfulBuilds = (await Promise.all([
+      datastore.listSuccessfulBuilds(module.name),
+      database.listSuccessfulBuilds(module.name),
+    ])).flat().filter((build, i, arr) =>
+      arr.findIndex((build2) => build2.id === build.id) == i
+    );
     console.log(successfulBuilds);
     if (
       successfulBuilds.length === 0 &&

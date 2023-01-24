@@ -376,7 +376,7 @@ async function initiateBuild(
   const invalidVersion = await checkVersion(moduleName, version);
   if (invalidVersion) return invalidVersion;
 
-  const buildID = await database.createBuild({
+  const buildID = await datastore.createBuild({
     options: {
       type: "github",
       moduleName,
@@ -386,6 +386,7 @@ async function initiateBuild(
       subdir: subdir ?? undefined,
     },
     status: "queued",
+    created_at: new Date(),
   });
 
   await queueBuild(buildID);
@@ -598,7 +599,8 @@ async function checkVersion(
   }
 
   // Check that a build has not already been queued
-  const build = await database.getBuildForVersion(moduleName, version);
+  const build = (await datastore.getBuildForVersion(moduleName, version)) ??
+    await database.getBuildForVersion(moduleName, version);
   if (build !== null && build.status !== "error") {
     return respondJSON({
       statusCode: 400,

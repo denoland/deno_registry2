@@ -17,7 +17,7 @@ Deno.test({
   name: "`/builds/:id` success",
   async fn() {
     try {
-      const id = await database.createBuild({
+      const id = await datastore.createBuild({
         options: {
           moduleName: "ltest",
           ref: "0.0.7",
@@ -26,6 +26,7 @@ Deno.test({
           version: "0.0.7",
         },
         status: "queued",
+        created_at: new Date(),
       });
 
       assertEquals(
@@ -39,7 +40,7 @@ Deno.test({
         ),
         {
           body: `{"success":true,"data":${
-            JSON.stringify({ build: await database.getBuild(id) })
+            JSON.stringify({ build: await datastore.getBuild(id) })
           }}`,
           headers: {
             "content-type": "application/json",
@@ -47,9 +48,6 @@ Deno.test({
           statusCode: 200,
         },
       );
-
-      // Cleanup
-      await database._builds.deleteMany({});
     } finally {
       await cleanupDatabase(database, datastore);
       await s3.empty();
@@ -69,29 +67,6 @@ Deno.test({
       ),
       {
         body: `{"success":false,"error":"no build id provided"}`,
-        headers: {
-          "content-type": "application/json",
-        },
-        statusCode: 400,
-      },
-    );
-  },
-});
-
-Deno.test({
-  name: "`/builds/:id` invalid id",
-  async fn() {
-    assertEquals(
-      await handler(
-        createAPIGatewayProxyEventV2("GET", `/builds/xdxdxd`, {
-          pathParameters: {
-            id: "xdxdxd",
-          },
-        }),
-        createContext(),
-      ),
-      {
-        body: `{"success":false,"error":"invalid build id"}`,
         headers: {
           "content-type": "application/json",
         },

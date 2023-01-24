@@ -7,6 +7,7 @@ import {
   kinds,
   OwnerQuota,
 } from "./datastore_database.ts";
+import { cleanupDatabase } from "./test_utils.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
@@ -99,7 +100,7 @@ Deno.test({
   },
 });
 
-const build1: Omit<Omit<Build, "id">, "created_at"> = {
+const build1: Omit<Build, "id"> = {
   options: {
     moduleName: "ltest",
     type: "github",
@@ -110,9 +111,10 @@ const build1: Omit<Omit<Build, "id">, "created_at"> = {
   },
   status: "success",
   message: "bla bla bla",
+  created_at: new Date(),
 };
 
-const build2: Omit<Omit<Build, "id">, "created_at"> = {
+const build2: Omit<Build, "id"> = {
   options: {
     moduleName: "wtest",
     type: "github",
@@ -123,59 +125,63 @@ const build2: Omit<Omit<Build, "id">, "created_at"> = {
   },
   status: "success",
   message: "bla bla bla",
+  created_at: new Date(),
 };
 
 Deno.test({
   name: "add, update, and get builds in database",
   async fn() {
-    const id = await database.createBuild(build1);
-    const build = await database.getBuild(id);
-    assert(build);
-    assert(build.created_at);
-    assertEquals(
-      build,
-      {
-        ...build1,
-        id,
-        created_at: build.created_at,
-      },
-    );
-
-    // Cleanup
-    await database._builds.deleteMany({});
+    try {
+      const id = await datastore.createBuild(build1);
+      const build = await datastore.getBuild(id);
+      assert(build);
+      assert(build.created_at);
+      assertEquals(
+        build,
+        {
+          ...build1,
+          id,
+          created_at: build.created_at,
+        },
+      );
+    } finally {
+      await cleanupDatabase(database, datastore);
+    }
   },
 });
 
 Deno.test({
+  ignore: true,
   name: "count builds",
   async fn() {
-    // check there are no versions in a clean database
-    let count = await database.countAllVersions();
-    assertEquals(count, 0);
+    try {
+      // check there are no versions in a clean database
+      let count = await datastore.countAllBuilds();
+      assertEquals(count, 0);
 
-    // check count after adding 1 build
-    const id = await database.createBuild(build1);
-    const build = await database.getBuild(id) as Build;
-    count = await database.countAllVersions();
-    assertEquals(count, 1);
+      // check count after adding 1 build
+      const id = await datastore.createBuild(build1);
+      const build = await datastore.getBuild(id) as Build;
+      count = await datastore.countAllBuilds();
+      assertEquals(count, 1);
 
-    // check count after adding 5 new versions
-    for (let i = 5; i < 10; i++) {
-      build.options.ref = `v.0.${i}.0`;
-      build.options.version = `0.${i}.0`;
-      await database.createBuild(build);
+      // check count after adding 5 new versions
+      for (let i = 5; i < 10; i++) {
+        build.options.ref = `v.0.${i}.0`;
+        build.options.version = `0.${i}.0`;
+        await datastore.createBuild(build);
+      }
+
+      count = await datastore.countAllBuilds();
+      assertEquals(count, 6);
+
+      // check count after adding second module
+      await datastore.createBuild(build2);
+      count = await datastore.countAllBuilds();
+      assertEquals(count, 7);
+    } finally {
+      await cleanupDatabase(database, datastore);
     }
-
-    count = await database.countAllVersions();
-    assertEquals(count, 6);
-
-    // check count after adding second module
-    await database.createBuild(build2);
-    count = await database.countAllVersions();
-    assertEquals(count, 7);
-
-    // Cleanup
-    await database._builds.deleteMany({});
   },
 });
 

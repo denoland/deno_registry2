@@ -37,7 +37,7 @@ jobs:
       - name: Run Datastore Emulator
         run: |
           gcloud config set project $GOOGLE_PROJECT_ID
-          gcloud beta emulators datastore start --host-port=0.0.0.0:8081 &
+          gcloud beta emulators datastore start --use-firestore-in-datastore-mode --host-port=0.0.0.0:8081 &
           sleep 5
           echo "DATASTORE_HOST=http://localhost:8081" >> $GITHUB_ENV
 

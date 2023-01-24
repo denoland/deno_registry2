@@ -23,6 +23,7 @@ export { pooledMap } from "https://deno.land/std@0.149.0/async/pool.ts";
 export { readAll } from "https://deno.land/std@0.149.0/streams/conversion.ts";
 export {
   Datastore,
+  datastoreValueToValue,
   entityToObject,
   objectGetKey,
   objectSetKey,
