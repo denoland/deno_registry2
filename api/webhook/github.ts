@@ -144,7 +144,8 @@ async function pingEvent(
     null;
   const subdir = normalizeSubdir(subdirRaw);
 
-  const entry = await database.getModule(moduleName);
+  const entry = (await datastore.getModule(moduleName)) ??
+    await database.getModule(moduleName);
 
   const resp = await checkModuleInfo(
     entry,
@@ -157,7 +158,7 @@ async function pingEvent(
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
-  await database.saveModule({
+  await datastore.saveModule({
     ...entry ??
       {
         name: moduleName,
@@ -344,7 +345,8 @@ async function initiateBuild(
     });
   }
 
-  const entry = await database.getModule(moduleName);
+  const entry = (await datastore.getModule(moduleName)) ??
+    await database.getModule(moduleName);
 
   const resp = await checkModuleInfo(
     entry,
@@ -357,7 +359,7 @@ async function initiateBuild(
   if (resp) return resp;
 
   // Update meta information in MongoDB (registers module if not present yet)
-  await database.saveModule({
+  await datastore.saveModule({
     ...entry ??
       {
         name: moduleName,
@@ -498,7 +500,7 @@ async function checkModulesInRepo(
   repoId: number,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
   if (
-    !entry && await database.countModulesForRepository(repoId) >=
+    !entry && await datastore.countModulesForRepository(repoId) >=
       MAX_MODULES_PER_REPOSITORY
   ) {
     return respondJSON({
@@ -521,7 +523,7 @@ async function hasReachedQuota(
   const maxModuleQuota = ownerQuota?.max_modules ??
     MAX_MODULES_PER_OWNER_DEFAULT;
   if (
-    !entry && await database.countModulesForOwner(owner) >= (maxModuleQuota)
+    !entry && await datastore.countModulesForOwner(owner) >= (maxModuleQuota)
   ) {
     return respondJSON({
       statusCode: 400,

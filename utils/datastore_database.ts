@@ -21,6 +21,22 @@ export interface OwnerQuota {
   note?: string;
 }
 
+export interface Module {
+  name: string;
+  type: string;
+  // deno-lint-ignore camelcase
+  repo_id: number;
+  owner: string;
+  repo: string;
+  description: string;
+  // deno-lint-ignore camelcase
+  star_count: number;
+  // deno-lint-ignore camelcase
+  is_unlisted: boolean;
+  // deno-lint-ignore camelcase
+  created_at: Date;
+}
+
 export type BuildStatus =
   | "queued"
   | "success"
@@ -46,6 +62,7 @@ export interface Build {
 
 export const kinds = {
   /** An object which contains information about the usage of built-in APIs. */
+  LEGACY_MODULES: "legacy_modules",
   LEGACY_OWNER_QUOTAS: "legacy_owner_quotas",
   LEGACY_BUILDS: "legacy_builds",
 };
@@ -137,6 +154,89 @@ export class Database {
     }
   }
 
+  async getModule(name: string): Promise<Module | null> {
+    const result = await this.db.lookup(
+      this.db.key([kinds.LEGACY_MODULES, name]),
+    );
+
+    if (result.found && result.found.length) {
+      return entityToObject<Module>(result.found[0].entity);
+    } else {
+      return null;
+    }
+  }
+
+  async saveModule(module: Module): Promise<void> {
+    const key = this.db.key([kinds.LEGACY_MODULES, module.name]);
+    objectSetKey(module, key);
+
+    for await (
+      const _ of this.db.commit([{ upsert: objectToEntity(module) }], {
+        transactional: false,
+      })
+    ) {
+      // empty
+    }
+  }
+
+  async listAllModules(): Promise<Module[]> {
+    const query = this.db.createQuery(kinds.LEGACY_MODULES).order(
+      "created_at",
+      true,
+    );
+    return await this.db.query<Module>(query);
+  }
+
+  async listAllModuleNames(): Promise<string[]> {
+    const query = this.db.createQuery(kinds.LEGACY_MODULES).select("name")
+      .filter("is_unlisted", true); // TODO
+    const modules = await this.db.query<{ name: string }>(query);
+    return modules.map((module) => module.name);
+  }
+
+  async countModules(): Promise<number> {
+    const query = await this.db.runGqlAggregationQuery({
+      queryString: `SELECT COUNT(*) FROM ${kinds.LEGACY_MODULES}`,
+    });
+    return datastoreValueToValue(
+      query.batch.aggregationResults[0].aggregateProperties.property_1,
+    ) as number;
+  }
+
+  async countModulesForRepository(repoId: number): Promise<number> {
+    const query = await this.db.runGqlAggregationQuery({
+      queryString:
+        `SELECT COUNT(*) FROM ${kinds.LEGACY_MODULES} WHERE repo_id = ${repoId}`,
+      allowLiterals: true,
+    });
+    return datastoreValueToValue(
+      query.batch.aggregationResults[0].aggregateProperties.property_1,
+    ) as number;
+  }
+
+  async countModulesForOwner(owner: string): Promise<number> {
+    const query = await this.db.runGqlAggregationQuery({
+      queryString:
+        `SELECT COUNT(*) FROM ${kinds.LEGACY_MODULES} WHERE owner = '${owner}'`,
+      allowLiterals: true,
+    });
+    return datastoreValueToValue(
+      query.batch.aggregationResults[0].aggregateProperties.property_1,
+    ) as number;
+  }
+
+  async deleteModule(name: string): Promise<void> {
+    const key = this.db.key([kinds.LEGACY_MODULES, name]);
+
+    for await (
+      const _ of this.db.commit([{ delete: key }], {
+        transactional: false,
+      })
+    ) {
+      // empty
+    }
+  }
+
   // tests only
   async countAllBuilds(): Promise<number> {
     const query = await this.db.runGqlAggregationQuery({
@@ -149,12 +249,14 @@ export class Database {
 
   // tests only
   async listAllBuilds(): Promise<Build[]> {
-    const query = this.db.createQuery(kinds.LEGACY_BUILDS);
+    const query = this.db.createQuery(kinds.LEGACY_BUILDS).order(
+      "created_at",
+      true,
+    );
     const builds = await this.db.query<Build>(query);
     for (const build of builds) {
       build.id = objectGetKey(build)!.path[0].name!;
     }
-    builds.sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
     return builds;
   }
 
@@ -191,13 +293,13 @@ export class Database {
     const query = this.db
       .createQuery(kinds.LEGACY_BUILDS)
       .filter("options.moduleName", name)
-      .filter("status", "success");
+      .filter("status", "success")
+      .order("created_at", true);
 
     const builds = await this.db.query<Build>(query);
     for (const build of builds) {
       build.id = objectGetKey(build)!.path[0].name!;
     }
-    builds.sort((a, b) => a.created_at.getTime() - b.created_at.getTime());
     return builds;
   }
 

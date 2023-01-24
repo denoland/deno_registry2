@@ -21,7 +21,9 @@ export async function handler(
 ): Promise<void> {
   const DRYRUN = Deno.env.get("DRYRUN") ?? "1";
   if (DRYRUN) console.log("starting in dryrun mode.");
-  const modules = await database.listAllModules();
+  const modules =
+    (await Promise.all([database.listAllModules(), datastore.listAllModules()]))
+      .flat();
   const now = new Date();
   for (const module of modules.filter((m) => m.is_unlisted === false)) {
     const successfulBuilds = await datastore.listSuccessfulBuilds(module.name);
@@ -35,7 +37,7 @@ export async function handler(
       );
 
       if (!DRYRUN) {
-        await database.deleteModule(module.name);
+        await datastore.deleteModule(module.name);
       }
     }
   }

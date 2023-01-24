@@ -6,18 +6,16 @@ import {
   createContext,
 } from "../../utils/test_utils.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
-import { Database } from "../../utils/database.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
 
 const datastore = new Datastore();
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
   name: "`/modules` success",
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
-        await database.saveModule({
+        await datastore.saveModule({
           name: `ltest${i}`,
           description: "ltest repo",
           repo_id: 274939732,
@@ -106,7 +104,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
     }
   },
 });
@@ -116,7 +114,7 @@ Deno.test({
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
-        await database.saveModule({
+        await datastore.saveModule({
           name: `ltest${i}`,
           description: "ltest repo",
           repo_id: 274939732,
@@ -224,7 +222,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
     }
   },
 });
@@ -234,7 +232,7 @@ Deno.test({
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
-        await database.saveModule({
+        await datastore.saveModule({
           name: `ltest${i}`,
           description: "ltest repo",
           repo_id: 274939732,
@@ -339,7 +337,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
     }
   },
 });
@@ -349,7 +347,7 @@ Deno.test({
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
-        await database.saveModule({
+        await datastore.saveModule({
           name: `ltest${i}`,
           description: "ltest repo",
           repo_id: 274939732,
@@ -402,7 +400,7 @@ Deno.test({
         );
       }
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
     }
   },
 });
@@ -412,7 +410,7 @@ Deno.test({
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
-        await database.saveModule({
+        await datastore.saveModule({
           name: `ltest${i}`,
           description: "ltest repo",
           repo_id: 274939732,
@@ -444,7 +442,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
     }
   },
 });

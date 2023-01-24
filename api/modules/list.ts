@@ -27,8 +27,10 @@ import type {
   APIModuleListResponseSuccess,
   APIModuleListShortResponse,
 } from "../../utils/types.ts";
+import { Database as Datastore } from "../../utils/datastore_database.ts";
 
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+const datastore = new Datastore();
 
 export async function handler(
   event: APIGatewayProxyEventV2,
@@ -36,7 +38,10 @@ export async function handler(
 ): Promise<APIGatewayProxyResultV2> {
   const simple = event.queryStringParameters?.simple === "1";
   if (simple) {
-    const results = await database.listAllModuleNames();
+    const results = (await Promise.all([
+      database.listAllModuleNames(),
+      datastore.listAllModuleNames(),
+    ])).flat();
     return respondJSON({
       statusCode: 200,
       body: JSON.stringify(results as APIModuleListShortResponse),
@@ -82,7 +87,7 @@ export async function handler(
     });
   }
 
-  const [searchResult, count] = await Promise.all([
+  const [searchResult, countMongo, countDatastore] = await Promise.all([
     database.listModules({ limit, page, query, sort: sort as Sort }).then(
       (results: ListModuleResult): [SearchOptions, SearchResult[]] => {
         // Transform the results
@@ -97,6 +102,7 @@ export async function handler(
       },
     ),
     database.countModules(),
+    datastore.countModules(),
   ]);
 
   const [options, results] = searchResult;
@@ -105,7 +111,7 @@ export async function handler(
     statusCode: 200,
     body: JSON.stringify({
       success: true,
-      data: { total_count: count, options, results },
+      data: { total_count: countMongo + countDatastore, options, results },
     } as APIModuleListResponseSuccess),
   });
 }

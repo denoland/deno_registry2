@@ -5,12 +5,13 @@ import {
   createScheduledEvent,
 } from "../../utils/test_utils.ts";
 import { handler } from "./cleanup.ts";
-import { Database, Module } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
+import {
+  Database as Datastore,
+  Module,
+} from "../../utils/datastore_database.ts";
 
 const datastore = new Datastore();
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const ltest: Module = {
   name: "recent",
@@ -64,18 +65,18 @@ Deno.test({
   name: "inactive modules cleanup default",
   async fn() {
     try {
-      await database.saveModule(ltest);
-      await database.saveModule(utest);
+      await datastore.saveModule(ltest);
+      await datastore.saveModule(utest);
 
       await handler(
         createScheduledEvent(),
         createContext(),
       );
 
-      const list = await database.listAllModuleNames();
+      const list = await datastore.listAllModuleNames();
       assert(list.length === 2);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -86,8 +87,8 @@ Deno.test({
   name: "inactive modules cleanup deactivated",
   async fn() {
     try {
-      await database.saveModule(ltest);
-      await database.saveModule(utest);
+      await datastore.saveModule(ltest);
+      await datastore.saveModule(utest);
 
       Deno.env.set("DRYRUN", "1");
 
@@ -96,10 +97,10 @@ Deno.test({
         createContext(),
       );
 
-      const list = await database.listAllModuleNames();
+      const list = await datastore.listAllModuleNames();
       assert(list.length === 2);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -110,8 +111,8 @@ Deno.test({
   name: "inactive modules cleanup activated",
   async fn() {
     try {
-      await database.saveModule(ltest);
-      await database.saveModule(utest);
+      await datastore.saveModule(ltest);
+      await datastore.saveModule(utest);
 
       Deno.env.set("DRYRUN", "");
 
@@ -120,11 +121,11 @@ Deno.test({
         createContext(),
       );
 
-      const list = await database.listAllModuleNames();
+      const list = await datastore.listAllModuleNames();
       assert(list.length === 1);
       assertEquals(list[0], "recent");
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -135,7 +136,7 @@ Deno.test({
   name: "inactive modules cleanup unlisted",
   async fn() {
     try {
-      await database.saveModule(unlistedTest);
+      await datastore.saveModule(unlistedTest);
 
       Deno.env.set("DRYRUN", "");
 
@@ -144,11 +145,11 @@ Deno.test({
         createContext(),
       );
 
-      const list = await database.listAllModules();
+      const list = await datastore.listAllModules();
       assert(list.length === 1);
       assertEquals(list[0].name, "old_unlisted");
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -159,7 +160,7 @@ Deno.test({
   name: "inactive modules cleanup old but published",
   async fn() {
     try {
-      await database.saveModule(utest);
+      await datastore.saveModule(utest);
       await datastore.createBuild({
         options: {
           moduleName: "old",
@@ -180,11 +181,11 @@ Deno.test({
         createContext(),
       );
 
-      const list = await database.listAllModules();
+      const list = await datastore.listAllModules();
       assertEquals(list.length, 1);
       assertEquals(list[0].name, "old");
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }
@@ -195,7 +196,7 @@ Deno.test({
   name: "inactive modules cleanup old with errored build",
   async fn() {
     try {
-      await database.saveModule(utest);
+      await datastore.saveModule(utest);
       await datastore.createBuild({
         options: {
           moduleName: "old",
@@ -216,10 +217,10 @@ Deno.test({
         createContext(),
       );
 
-      const list = await database.listAllModules();
+      const list = await datastore.listAllModules();
       assert(list.length === 0);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
       Deno.env.delete("DRYRUN");
     }

@@ -6,12 +6,13 @@ import {
   createScheduledEvent,
 } from "../../utils/test_utils.ts";
 import { handler } from "./stargazers.ts";
-import { Database, Module } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
+import {
+  Database as Datastore,
+  Module,
+} from "../../utils/datastore_database.ts";
 
 const datastore = new Datastore();
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const ltest: Module = {
   name: "ltest",
@@ -49,19 +50,19 @@ Deno.test({
   name: "crawl stargazers",
   async fn() {
     try {
-      await database.saveModule(ltest);
-      await database.saveModule(utest);
+      await datastore.saveModule(ltest);
+      await datastore.saveModule(utest);
 
       await handler(
         createScheduledEvent(),
         createContext(),
       );
 
-      const updated = await database.getModule(ltest.name);
+      const updated = await datastore.getModule(ltest.name);
       assert(updated?.star_count ?? 0 >= 1);
       assertEquals(updated?.created_at, ltest.created_at);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },

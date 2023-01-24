@@ -103,26 +103,6 @@ export class Database {
     return this._entryToModule(entry);
   }
 
-  async saveModule(module: Module): Promise<void> {
-    await this._modules.updateOne(
-      { _id: module.name },
-      {
-        $set: {
-          _id: module.name,
-          type: module.type,
-          repo_id: module.repo_id,
-          owner: module.owner,
-          repo: module.repo,
-          description: module.description,
-          star_count: module.star_count,
-          is_unlisted: module.is_unlisted,
-          created_at: module.created_at ?? new Date(),
-        },
-      },
-      { upsert: true },
-    );
-  }
-
   async listModules(options: SearchOptions): Promise<ListModuleResult> {
     if (typeof options.limit !== "number") {
       throw new Error("limit must be a number");
@@ -243,24 +223,5 @@ export class Database {
     return this._modules.countDocuments({
       is_unlisted: { $not: { $eq: true } },
     });
-  }
-
-  async countModulesForRepository(
-    repoId: number,
-  ): Promise<number> {
-    return await this._modules.countDocuments({ repo_id: repoId });
-  }
-
-  async countModulesForOwner(owner: string): Promise<number> {
-    return await this._modules.countDocuments({ owner });
-  }
-
-  async deleteModule(name: string): Promise<void> {
-    const resp = await this._modules.deleteOne({ _id: name });
-
-    if (!resp) {
-      throw new Error(`Failed to delete module [ ${name} ]`);
-    }
-    return;
   }
 }

@@ -17,7 +17,9 @@ import type {
   APIErrorResponse,
   APIModuleGetResponse,
 } from "../../utils/types.ts";
+import { Database as Datastore } from "../../utils/datastore_database.ts";
 
+const datastore = new Datastore();
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
@@ -36,7 +38,8 @@ export async function handler(
     });
   }
 
-  const module = await database.getModule(name);
+  const module = (await datastore.getModule(name)) ??
+    await database.getModule(name);
 
   if (module === null) {
     return respondJSON(
