@@ -7,12 +7,10 @@ import {
   createSQSEvent,
 } from "../../utils/test_utils.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
-import { Database } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
 
 const datastore = new Datastore();
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
   name: "publish success",
@@ -196,7 +194,7 @@ Deno.test({
       console.log(new TextDecoder().decode(body));
       assertEquals(body.byteLength, 304);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -304,7 +302,7 @@ Deno.test({
       body = await new Response(readme.body).arrayBuffer();
       assertEquals(body.byteLength, 354);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -357,7 +355,7 @@ Deno.test({
       const readme = await s3.getObject("ltest/versions/0.0.1/raw/README.md");
       assertEquals(readme, undefined);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -417,7 +415,7 @@ Deno.test({
         { latest: "0.0.1", versions: ["0.0.1"] },
       );
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },

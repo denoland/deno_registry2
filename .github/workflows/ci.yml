@@ -13,6 +13,7 @@ jobs:
       AWS_DEFAULT_REGION: us-east-1
       AWS_BACKUP_REGION: eu-central-1
       GOOGLE_PROJECT_ID: test-project
+      CI: true
     steps:
       - name: Setup Deno environment
         uses: denolib/setup-deno@v2.3.0

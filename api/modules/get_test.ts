@@ -6,17 +6,15 @@ import {
   createContext,
 } from "../../utils/test_utils.ts";
 import { assertEquals } from "../../test_deps.ts";
-import { Database } from "../../utils/database.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
 
 const datastore = new Datastore();
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
   name: "`/modules/:name` success",
   async fn() {
     try {
-      await database.saveModule({
+      await datastore.saveModule({
         name: "ltest",
         description: "ltest repo",
         repo_id: 274939732,
@@ -48,11 +46,8 @@ Deno.test({
           statusCode: 200,
         },
       );
-
-      // Cleanup
-      await database._modules.deleteMany({});
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
     }
   },
 });
