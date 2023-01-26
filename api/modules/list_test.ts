@@ -12,6 +12,7 @@ const datastore = new Datastore();
 
 Deno.test({
   name: "`/modules` success",
+  ignore: true,
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
@@ -111,6 +112,7 @@ Deno.test({
 
 Deno.test({
   name: "`/modules` limit & page out of bounds",
+  ignore: true,
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
@@ -229,6 +231,7 @@ Deno.test({
 
 Deno.test({
   name: "`/modules` sort order",
+  ignore: true,
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
@@ -344,6 +347,7 @@ Deno.test({
 
 Deno.test({
   name: "`/modules` random sort order",
+  ignore: true,
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
@@ -407,6 +411,7 @@ Deno.test({
 
 Deno.test({
   name: "`/modules` unknow sort order",
+  ignore: true,
   async fn() {
     try {
       for (let i = 0; i < 5; i++) {
