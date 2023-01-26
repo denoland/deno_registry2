@@ -180,10 +180,7 @@ export class Database {
   }
 
   async listAllModules(): Promise<Module[]> {
-    const query = this.db.createQuery(kinds.LEGACY_MODULES).order(
-      "created_at",
-      true,
-    );
+    const query = this.db.createQuery(kinds.LEGACY_MODULES).order("created_at");
     return await this.db.query<Module>(query);
   }
 
@@ -249,10 +246,7 @@ export class Database {
 
   // tests only
   async listAllBuilds(): Promise<Build[]> {
-    const query = this.db.createQuery(kinds.LEGACY_BUILDS).order(
-      "created_at",
-      true,
-    );
+    const query = this.db.createQuery(kinds.LEGACY_BUILDS).order("created_at");
     const builds = await this.db.query<Build>(query);
     for (const build of builds) {
       build.id = objectGetKey(build)!.path[0].name!;
@@ -294,7 +288,7 @@ export class Database {
       .createQuery(kinds.LEGACY_BUILDS)
       .filter("options.moduleName", name)
       .filter("status", "success")
-      .order("created_at", true);
+      .order("created_at");
 
     const builds = await this.db.query<Build>(query);
     for (const build of builds) {
