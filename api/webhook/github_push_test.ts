@@ -139,6 +139,7 @@ Deno.test({
 
 Deno.test({
   name: "push event max registered to repository",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule({

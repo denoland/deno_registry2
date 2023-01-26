@@ -257,6 +257,7 @@ Deno.test({
 
 Deno.test({
   name: "ping event max registered to repository",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule({

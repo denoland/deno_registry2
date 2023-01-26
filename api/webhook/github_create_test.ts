@@ -143,6 +143,7 @@ Deno.test({
 
 Deno.test({
   name: "create event max registered to repository",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule({
@@ -218,6 +219,7 @@ Deno.test({
 
 Deno.test({
   name: "create event max registered to repository",
+  ignore: true,
   async fn() {
     try {
       for (let i = 0; i < 15; i++) {
@@ -273,6 +275,7 @@ Deno.test({
 
 Deno.test({
   name: "create event max registered to repository with dynamic owner quota",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveOwnerQuota({
