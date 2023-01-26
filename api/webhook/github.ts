@@ -435,7 +435,7 @@ async function checkModuleInfo(
     checkSubdir(subdir) ??
     checkMatchesRepo(entry, repoId) ??
     await checkName(entry, moduleName);
-  if (!Deno.env.has("CI")) {
+  if (!Deno.env.get("CI")) {
     return checks ?? await checkModulesInRepo(entry, repoId) ??
       await hasReachedQuota(entry, owner);
   }
