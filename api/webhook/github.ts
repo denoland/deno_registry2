@@ -15,8 +15,10 @@ import {
   join,
 } from "../../deps.ts";
 import { parseRequestBody, respondJSON } from "../../utils/http.ts";
-import { Database, Module } from "../../utils/database.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
+import {
+  Database as Datastore,
+  Module,
+} from "../../utils/datastore_database.ts";
 import {
   getForbiddenWords,
   getMeta,
@@ -44,7 +46,6 @@ interface WebhookEvent {
 
 const decoder = new TextDecoder();
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 const datastore = new Datastore();
 
 // deno-lint-ignore require-await
@@ -144,8 +145,7 @@ async function pingEvent(
     null;
   const subdir = normalizeSubdir(subdirRaw);
 
-  const entry = (await datastore.getModule(moduleName)) ??
-    await database.getModule(moduleName);
+  const entry = await datastore.getModule(moduleName);
 
   const resp = await checkModuleInfo(
     entry,
@@ -345,8 +345,7 @@ async function initiateBuild(
     });
   }
 
-  const entry = (await datastore.getModule(moduleName)) ??
-    await database.getModule(moduleName);
+  const entry = await datastore.getModule(moduleName);
 
   const resp = await checkModuleInfo(
     entry,
