@@ -184,22 +184,6 @@ export class Database {
     return await this.db.query<Module>(query);
   }
 
-  async listAllModuleNames(): Promise<string[]> {
-    const query = this.db.createQuery(kinds.LEGACY_MODULES).select("name")
-      .filter("is_unlisted", true); // TODO
-    const modules = await this.db.query<{ name: string }>(query);
-    return modules.map((module) => module.name);
-  }
-
-  async countModules(): Promise<number> {
-    const query = await this.db.runGqlAggregationQuery({
-      queryString: `SELECT COUNT(*) FROM ${kinds.LEGACY_MODULES}`,
-    });
-    return datastoreValueToValue(
-      query.batch.aggregationResults[0].aggregateProperties.property_1,
-    ) as number;
-  }
-
   async countModulesForRepository(repoId: number): Promise<number> {
     const query = await this.db.runGqlAggregationQuery({
       queryString:
@@ -220,18 +204,6 @@ export class Database {
     return datastoreValueToValue(
       query.batch.aggregationResults[0].aggregateProperties.property_1,
     ) as number;
-  }
-
-  async deleteModule(name: string): Promise<void> {
-    const key = this.db.key([kinds.LEGACY_MODULES, name]);
-
-    for await (
-      const _ of this.db.commit([{ delete: key }], {
-        transactional: false,
-      })
-    ) {
-      // empty
-    }
   }
 
   // tests only
@@ -281,20 +253,6 @@ export class Database {
     if (builds.length === 0) return null;
     builds[0].id = objectGetKey(builds[0])!.path[0].name!;
     return builds[0];
-  }
-
-  async listSuccessfulBuilds(name: string): Promise<Build[]> {
-    const query = this.db
-      .createQuery(kinds.LEGACY_BUILDS)
-      .filter("options.moduleName", name)
-      .filter("status", "success")
-      .order("created_at");
-
-    const builds = await this.db.query<Build>(query);
-    for (const build of builds) {
-      build.id = objectGetKey(build)!.path[0].name!;
-    }
-    return builds;
   }
 
   async createBuild(build: Omit<Build, "id">): Promise<string> {
