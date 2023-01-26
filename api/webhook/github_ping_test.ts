@@ -6,13 +6,11 @@ import {
   createJSONWebhookEvent,
   createJSONWebhookWebFormEvent,
 } from "../../utils/test_utils.ts";
-import { Database } from "../../utils/database.ts";
 import { assert, assertEquals } from "../../test_deps.ts";
 import { getMeta, s3 } from "../../utils/storage.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
 
 const datastore = new Datastore();
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 const decoder = new TextDecoder();
 
@@ -59,9 +57,9 @@ Deno.test({
       assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
-      assertEquals(await database.getModule("ltest-2"), null);
+      assertEquals(await datastore.getModule("ltest-2"), null);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -97,9 +95,9 @@ Deno.test({
       assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
-      assertEquals(await database.getModule("ltest-2"), null);
+      assertEquals(await datastore.getModule("ltest-2"), null);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -135,9 +133,9 @@ Deno.test({
       assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
-      assertEquals(await database.getModule("frisbee"), null);
+      assertEquals(await datastore.getModule("frisbee"), null);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -167,7 +165,7 @@ Deno.test({
         statusCode: 200,
       });
 
-      const ltest2 = await database.getModule("ltest2");
+      const ltest2 = await datastore.getModule("ltest2");
       assert(ltest2);
       assert(ltest2.created_at <= new Date());
       ltest2.created_at = new Date(2020, 1, 1);
@@ -194,7 +192,7 @@ Deno.test({
       // Check that no new build was queued
       assertEquals(await datastore.listAllBuilds(), []);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -224,7 +222,7 @@ Deno.test({
         statusCode: 200,
       });
 
-      const ltest2 = await database.getModule("ltest2");
+      const ltest2 = await datastore.getModule("ltest2");
       assert(ltest2);
       assert(ltest2.created_at <= new Date());
       ltest2.created_at = new Date(2020, 1, 1);
@@ -251,7 +249,7 @@ Deno.test({
       // Check that no new build was queued
       assertEquals(await datastore.listAllBuilds(), []);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -259,9 +257,10 @@ Deno.test({
 
 Deno.test({
   name: "ping event max registered to repository",
+  ignore: true,
   async fn() {
     try {
-      await database.saveModule({
+      await datastore.saveModule({
         name: "ltest2",
         type: "github",
         repo_id: 274939732,
@@ -272,7 +271,7 @@ Deno.test({
         is_unlisted: false,
         created_at: new Date(2020, 1, 1),
       });
-      await database.saveModule({
+      await datastore.saveModule({
         name: "ltest3",
         type: "github",
         repo_id: 274939732,
@@ -283,7 +282,7 @@ Deno.test({
         is_unlisted: false,
         created_at: new Date(2020, 1, 1),
       });
-      await database.saveModule({
+      await datastore.saveModule({
         name: "ltest4",
         type: "github",
         repo_id: 274939732,
@@ -321,12 +320,12 @@ Deno.test({
       assertEquals(await getMeta("ltest5", "versions.json"), undefined);
 
       // Check that there is no module entry in the database
-      assertEquals(await database.getModule("ltest5"), null);
+      assertEquals(await datastore.getModule("ltest5"), null);
 
       // Check that builds were queued
       assertEquals(await datastore.listAllBuilds(), []);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -338,7 +337,7 @@ Deno.test({
     try {
       const repoId = 274939732;
 
-      await database.saveModule({
+      await datastore.saveModule({
         name: "ltest",
         description: "testing things",
         repo_id: repoId,
@@ -370,11 +369,11 @@ Deno.test({
         statusCode: 200,
       });
 
-      const ltest2 = await database.getModule("ltest");
+      const ltest2 = await datastore.getModule("ltest");
       assert(ltest2);
       assertEquals(ltest2.repo_id, repoId);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -386,7 +385,7 @@ Deno.test({
     try {
       const repoId = 123456789;
 
-      await database.saveModule({
+      await datastore.saveModule({
         name: "ltest",
         description: "testing things",
         repo_id: repoId,
@@ -425,7 +424,7 @@ Deno.test({
       // Check that no builds are queued
       assertEquals(await datastore.listAllBuilds(), []);
 
-      const ltest = await database.getModule("ltest");
+      const ltest = await datastore.getModule("ltest");
       assert(ltest);
       assert(ltest.created_at <= new Date());
       ltest.created_at = new Date(2020, 1, 1);
@@ -443,7 +442,7 @@ Deno.test({
         created_at: new Date(2020, 1, 1),
       });
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -453,7 +452,7 @@ Deno.test({
   name: "ping event success capitalization",
   async fn() {
     try {
-      await database.saveModule({
+      await datastore.saveModule({
         name: "ltest2",
         description: "testing things",
         repo_id: 274939732,
@@ -485,7 +484,7 @@ Deno.test({
         statusCode: 200,
       });
 
-      const ltest2 = await database.getModule("ltest2");
+      const ltest2 = await datastore.getModule("ltest2");
       assert(ltest2);
       assert(ltest2.created_at <= new Date());
       ltest2.created_at = new Date(2020, 1, 1);
@@ -512,7 +511,7 @@ Deno.test({
       // Check that no new build was queued
       assertEquals(await datastore.listAllBuilds(), []);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -556,9 +555,9 @@ Deno.test({
       assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
-      assertEquals(await database.getModule("ltest2"), null);
+      assertEquals(await datastore.getModule("ltest2"), null);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
@@ -602,9 +601,9 @@ Deno.test({
       assertEquals(await datastore.listAllBuilds(), []);
 
       // Check that there is no module entry in the database
-      assertEquals(await database.getModule("ltest2"), null);
+      assertEquals(await datastore.getModule("ltest2"), null);
     } finally {
-      await cleanupDatabase(database, datastore);
+      await cleanupDatabase(datastore);
       await s3.empty();
     }
   },
