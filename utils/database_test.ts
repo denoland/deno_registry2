@@ -1,6 +1,7 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 import { assert, assertEquals } from "../test_deps.ts";
+import { Database, Module } from "./database.ts";
 import {
   Build,
   Database as Datastore,
@@ -9,7 +10,95 @@ import {
 } from "./datastore_database.ts";
 import { cleanupDatabase } from "./test_utils.ts";
 
+const database = await Database.connect(Deno.env.get("MONGO_URI")!);
+
+await database._modules.deleteMany({});
+
 const datastore = new Datastore();
+
+const ltest: Module = {
+  name: "ltest",
+  description: "Testing all the things!",
+  type: "github",
+  // deno-lint-ignore camelcase
+  repo_id: 123,
+  owner: "luca-rand",
+  repo: "testing",
+  // deno-lint-ignore camelcase
+  star_count: 5,
+  // deno-lint-ignore camelcase
+  is_unlisted: false,
+  // deno-lint-ignore camelcase
+  created_at: new Date(2020, 1, 1),
+};
+
+const utest: Module = {
+  name: "unlisted_module",
+  description: "Testing all the things! -- unlisted",
+  type: "github",
+  // deno-lint-ignore camelcase
+  repo_id: 124,
+  owner: "wperron",
+  repo: "testing-unlisted",
+  // deno-lint-ignore camelcase
+  star_count: 5,
+  // deno-lint-ignore camelcase
+  is_unlisted: true,
+  // deno-lint-ignore camelcase
+  created_at: new Date(2020, 1, 1),
+};
+
+Deno.test({
+  name: "add, remove, list and count modules in database",
+  async fn() {
+    assertEquals(
+      await database.listModules({ limit: 10, page: 1 }),
+      [{ limit: 10, page: 1, sort: "stars" }, []],
+    );
+    assertEquals(await database.countModules(), 0);
+
+    await database.saveModule(ltest);
+    await database.saveModule(utest);
+
+    assertEquals(await database.listModules({ limit: 10, page: 1 }), [
+      {
+        limit: 10,
+        page: 1,
+        sort: "stars",
+      },
+      [
+        // @ts-expect-error ignore search_score, because the exact value is not important
+        {
+          _id: "ltest",
+          created_at: new Date("2020-02-01T00:00:00.000Z"),
+          description: "Testing all the things!",
+          is_unlisted: false,
+          repo_id: 123,
+          owner: "luca-rand",
+          repo: "testing",
+          star_count: 5,
+          type: "github",
+        },
+      ],
+    ]);
+    assertEquals(await database.countModules(), 1);
+    assertEquals(await database.getModule(ltest.name), ltest);
+
+    // deno-lint-ignore camelcase
+    const ltestWith6Stars = { ...ltest, star_count: 6 };
+
+    await database.saveModule(ltestWith6Stars);
+    assertEquals(await database.countModules(), 1);
+    assertEquals(
+      await database.getModule(ltest.name),
+      ltestWith6Stars,
+    );
+
+    // Cleanup
+    await database.deleteModule(ltest.name);
+    await database.deleteModule(utest.name);
+  },
+});
 
 const build1: Omit<Build, "id"> = {
   options: {
@@ -56,7 +145,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(datastore);
+      await cleanupDatabase(database, datastore);
     }
   },
 });
@@ -91,7 +180,7 @@ Deno.test({
       count = await datastore.countAllBuilds();
       assertEquals(count, 7);
     } finally {
-      await cleanupDatabase(datastore);
+      await cleanupDatabase(database, datastore);
     }
   },
 });

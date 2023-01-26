@@ -10,7 +10,6 @@ import type { Context, ScheduledEvent } from "../../deps.ts";
 import { SSM } from "../../deps.ts";
 import { Database, Module } from "../../utils/database.ts";
 import { GitHub, GitHubAuth } from "../../utils/github.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
 
 // Declaring outside of the handler so they can be cached between invocations.
 const ssm = new SSM({
@@ -32,22 +31,19 @@ const auth: GitHubAuth | undefined = secret
   : undefined;
 
 const gh = new GitHub(auth);
-const datastore = new Datastore();
 const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 export async function handler(
   _: ScheduledEvent,
   __: Context,
 ): Promise<void> {
-  const modules =
-    (await Promise.all([database.listAllModules(), datastore.listAllModules()]))
-      .flat();
+  const modules = await database.listAllModules();
   for (const module of modules) {
     try {
       const repo = await (await gh.getRepo(module.owner, module.repo)).json();
       if (repo.stargazers_count !== module.star_count) {
         module.star_count = repo.stargazers_count;
-        await datastore.saveModule(module as unknown as Module);
+        await database.saveModule(module as unknown as Module);
       }
     } catch (err) {
       console.log(`failed to fetch repo from github api: ${err}`);
