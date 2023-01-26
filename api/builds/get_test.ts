@@ -6,10 +6,12 @@ import {
   createContext,
 } from "../../utils/test_utils.ts";
 import { assertEquals } from "../../test_deps.ts";
+import { Database } from "../../utils/database.ts";
 import { s3 } from "../../utils/storage.ts";
 import { Database as Datastore } from "../../utils/datastore_database.ts";
 
 const datastore = new Datastore();
+const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 
 Deno.test({
   name: "`/builds/:id` success",
@@ -47,7 +49,7 @@ Deno.test({
         },
       );
     } finally {
-      await cleanupDatabase(datastore);
+      await cleanupDatabase(database, datastore);
       await s3.empty();
     }
   },

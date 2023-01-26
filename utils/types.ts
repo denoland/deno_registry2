@@ -1,5 +1,11 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
+import {
+  RecentlyAddedModuleResult,
+  RecentlyAddedUploadedVersions,
+  SearchOptions,
+  SearchResult,
+} from "./database.ts";
 import { Build } from "./datastore_database.ts";
 
 export type APIResponseBase = {
@@ -13,6 +19,8 @@ export type APIStatsResponse = APIResponseBase & {
   data: {
     total_count: number;
     total_versions: number;
+    recently_added_modules: RecentlyAddedModuleResult[];
+    recently_uploaded_versions: RecentlyAddedUploadedVersions[];
   };
 };
 
@@ -35,6 +43,20 @@ export type APIModuleGetResponse = APIResponseBase & {
     name: string;
     description: string;
     star_count: number;
+  };
+};
+
+export type APIModuleListShortResponse = string[];
+
+export type APIModuleListResponse =
+  | APIErrorResponse
+  | APIModuleListResponseSuccess;
+
+export type APIModuleListResponseSuccess = APIResponseBase & {
+  data: {
+    total_count: number;
+    options: SearchOptions;
+    results: SearchResult[];
   };
 };
 
