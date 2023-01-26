@@ -48,30 +48,6 @@ variable "google_project_id" {
   type        = string
 }
 
-variable "mongodb_atlas_org_id" {
-  description = "Organization ID for MongoDB Atlas"
-  type        = string
-}
-
-variable "mongodb_atlas_private_key" {
-  description = "Private key for MongoDB Atlas"
-  type        = string
-  nullable    = true
-  # If left unspecified, the MongoDB Atlas provider will use the environment
-  # variable MONGODB_ATLAS_PRIVATE_KEY.
-  default = null
-}
-
-variable "mongodb_atlas_public_key" {
-  description = "Public key for MongoDB Atlas"
-  type        = string
-  nullable    = true
-  sensitive   = true
-  # If left unspecified, the MongoDB Atlas provider will use the environment
-  # variable MONGODB_ATLAS_PUBLIC_KEY.
-  default = null
-}
-
 variable "sqs_visibility_delay" {
   description = "SQS delay before messages become visible again"
   type        = number

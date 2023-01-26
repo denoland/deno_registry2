@@ -4,7 +4,7 @@
  * This function is responsible for downloading a modules' source code
  * from an origin repository like GitHub and uploading it to S3. This is
  * triggered by an event in the AWS SQS build queue. It contains the ID
- * of the build, which is stored in MongoDB. The build stored in MongoDB
+ * of the build, which is stored in datastore. The build stored in datastore
  * contain all relevant information that is required to upload the module:
  * the module name, GitHub repository, version, subdirectory ect.
  */
