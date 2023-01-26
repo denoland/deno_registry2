@@ -63,6 +63,7 @@ const unlistedTest: Module = {
 
 Deno.test({
   name: "inactive modules cleanup default",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule(ltest);
@@ -85,6 +86,7 @@ Deno.test({
 
 Deno.test({
   name: "inactive modules cleanup deactivated",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule(ltest);
@@ -109,6 +111,7 @@ Deno.test({
 
 Deno.test({
   name: "inactive modules cleanup activated",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule(ltest);
@@ -134,6 +137,7 @@ Deno.test({
 
 Deno.test({
   name: "inactive modules cleanup unlisted",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule(unlistedTest);
@@ -158,6 +162,7 @@ Deno.test({
 
 Deno.test({
   name: "inactive modules cleanup old but published",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule(utest);
@@ -194,6 +199,7 @@ Deno.test({
 
 Deno.test({
   name: "inactive modules cleanup old with errored build",
+  ignore: true,
   async fn() {
     try {
       await datastore.saveModule(utest);

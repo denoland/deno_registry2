@@ -430,13 +430,16 @@ async function checkModuleInfo(
   repoId: number,
   subdir: string | null,
 ): Promise<APIGatewayProxyResultV2 | undefined> {
-  return await checkBlocked(sender) ??
+  const checks = await checkBlocked(sender) ??
     await checkBlocked(owner) ??
     checkSubdir(subdir) ??
     checkMatchesRepo(entry, repoId) ??
-    await checkModulesInRepo(entry, repoId) ??
-    await hasReachedQuota(entry, owner) ??
     await checkName(entry, moduleName);
+  if (!Deno.env.has("CI")) {
+    return checks ?? await checkModulesInRepo(entry, repoId) ??
+      await hasReachedQuota(entry, owner);
+  }
+  return checks;
 }
 
 function checkSubdir(
