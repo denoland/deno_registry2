@@ -23,12 +23,6 @@ services:
       AWS_SECRET_ACCESS_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
     logging:
       driver: none
-  mongo:
-    image: mongo:latest
-    network_mode: "host"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
   localstack:
     image: localstack/localstack:0.11.5
     network_mode: "host"

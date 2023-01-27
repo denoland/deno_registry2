@@ -14,7 +14,6 @@ resource "aws_lambda_function" "webhook_github" {
   environment {
     variables = {
       "DENO_UNSTABLE"             = "1"
-      "MONGO_URI"                 = local.mongodb_uri
       "STORAGE_BUCKET"            = aws_s3_bucket.storage_bucket.id
       "MODERATION_BUCKET"         = aws_s3_bucket.moderation_bucket.id
       "BUILD_QUEUE"               = aws_sqs_queue.build_queue.id

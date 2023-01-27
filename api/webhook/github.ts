@@ -4,7 +4,7 @@
  * This function receives webhook events from GitHub. When an event is received
  * the service checks if it comes from GitHub, if the module name and repository
  * ID match up, and if this version of the module has been uploaded already. If
- * all of these checks pass a build is created in MongoDB and the ID of this
+ * all of these checks pass a build is created in datastore and the ID of this
  * build is added to the AWS SQS build queue to be processed asynchronously.
  */
 
@@ -15,8 +15,10 @@ import {
   join,
 } from "../../deps.ts";
 import { parseRequestBody, respondJSON } from "../../utils/http.ts";
-import { Database, Module } from "../../utils/database.ts";
-import { Database as Datastore } from "../../utils/datastore_database.ts";
+import {
+  Database as Datastore,
+  Module,
+} from "../../utils/datastore_database.ts";
 import {
   getForbiddenWords,
   getMeta,
@@ -44,7 +46,6 @@ interface WebhookEvent {
 
 const decoder = new TextDecoder();
 
-const database = await Database.connect(Deno.env.get("MONGO_URI")!);
 const datastore = new Datastore();
 
 // deno-lint-ignore require-await
@@ -144,8 +145,7 @@ async function pingEvent(
     null;
   const subdir = normalizeSubdir(subdirRaw);
 
-  const entry = (await datastore.getModule(moduleName)) ??
-    await database.getModule(moduleName);
+  const entry = await datastore.getModule(moduleName);
 
   const resp = await checkModuleInfo(
     entry,
@@ -157,7 +157,7 @@ async function pingEvent(
   );
   if (resp) return resp;
 
-  // Update meta information in MongoDB (registers module if not present yet)
+  // Update meta information in datastore (registers module if not present yet)
   await datastore.saveModule({
     ...entry ??
       {
@@ -345,8 +345,7 @@ async function initiateBuild(
     });
   }
 
-  const entry = (await datastore.getModule(moduleName)) ??
-    await database.getModule(moduleName);
+  const entry = await datastore.getModule(moduleName);
 
   const resp = await checkModuleInfo(
     entry,
@@ -358,7 +357,7 @@ async function initiateBuild(
   );
   if (resp) return resp;
 
-  // Update meta information in MongoDB (registers module if not present yet)
+  // Update meta information in datastore (registers module if not present yet)
   await datastore.saveModule({
     ...entry ??
       {
