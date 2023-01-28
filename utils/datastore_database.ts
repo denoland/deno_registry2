@@ -4,7 +4,6 @@ import {
   Datastore,
   datastoreValueToValue,
   entityToObject,
-  objectGetKey,
   objectSetKey,
   objectToEntity,
   SSM,
@@ -65,6 +64,8 @@ export const kinds = {
   LEGACY_MODULES: "legacy_modules",
   LEGACY_OWNER_QUOTAS: "legacy_owner_quotas",
   LEGACY_BUILDS: "legacy_builds",
+
+  BUILD: "build",
 };
 
 let ssm;
@@ -219,11 +220,7 @@ export class Database {
   // tests only
   async listAllBuilds(): Promise<Build[]> {
     const query = this.db.createQuery(kinds.LEGACY_BUILDS).order("created_at");
-    const builds = await this.db.query<Build>(query);
-    for (const build of builds) {
-      build.id = objectGetKey(build)!.path[0].name!;
-    }
-    return builds;
+    return await this.db.query<Build>(query);
   }
 
   async getBuild(id: string): Promise<Build | null> {
@@ -232,9 +229,7 @@ export class Database {
     );
 
     if (result.found && result.found.length) {
-      const obj = entityToObject<Build>(result.found[0].entity);
-      obj.id = objectGetKey(obj)!.path[0].name!;
-      return obj;
+      return entityToObject<Build>(result.found[0].entity);
     } else {
       return null;
     }
@@ -251,17 +246,36 @@ export class Database {
 
     const builds = await this.db.query<Build>(query);
     if (builds.length === 0) return null;
-    builds[0].id = objectGetKey(builds[0])!.path[0].name!;
     return builds[0];
   }
 
   async createBuild(build: Omit<Build, "id">): Promise<string> {
     const id = crypto.randomUUID();
-    const key = this.db.key([kinds.LEGACY_BUILDS, id]);
-    objectSetKey(build, key);
+    // @ts-ignore temporary solution
+    build.id = id;
+    objectSetKey(build, this.db.key([kinds.LEGACY_BUILDS, id]));
+
+    const newBuild = {
+      id,
+      module: build.options.moduleName,
+      version: build.options.version,
+      status: build.status,
+      message: build.message,
+      created_at: build.created_at,
+      upload_options: {
+        type: build.options.type,
+        repository: build.options.repository,
+        ref: build.options.ref,
+        subdir: build.options.subdir,
+      },
+    };
+
+    objectSetKey(newBuild, this.db.key([kinds.BUILD, id]));
 
     for await (
-      const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
+      const _ of this.db.commit([{ upsert: objectToEntity(build) }, {
+        upsert: objectToEntity(newBuild),
+      }], {
         transactional: false,
       })
     ) {
@@ -272,11 +286,29 @@ export class Database {
   }
 
   async saveBuild(build: Build) {
-    const key = this.db.key([kinds.LEGACY_BUILDS, build.id]);
-    objectSetKey(build, key);
+    objectSetKey(build, this.db.key([kinds.LEGACY_BUILDS, build.id]));
+
+    const newBuild = {
+      id: build.id,
+      module: build.options.moduleName,
+      version: build.options.version,
+      status: build.status,
+      message: build.message,
+      created_at: build.created_at,
+      upload_options: {
+        type: build.options.type,
+        repository: build.options.repository,
+        ref: build.options.ref,
+        subdir: build.options.subdir,
+      },
+    };
+
+    objectSetKey(newBuild, this.db.key([kinds.BUILD, build.id]));
 
     for await (
-      const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
+      const _ of this.db.commit([{ upsert: objectToEntity(build) }, {
+        upsert: objectToEntity(newBuild),
+      }], {
         transactional: false,
       })
     ) {
