@@ -245,6 +245,7 @@ export class Database {
       .filter("options.version", version);
 
     const builds = await this.db.query<Build>(query);
+    if (builds.length === 0) return null;
     return builds[0];
   }
 
