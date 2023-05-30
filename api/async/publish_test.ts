@@ -29,6 +29,8 @@ Deno.test({
         created_at: new Date(),
       });
 
+      console.log(Deno.env.get("APILAND_URL")!);
+
       await handler(
         createSQSEvent({ buildID: id }),
         createContext(),
