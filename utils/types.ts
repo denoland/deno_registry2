@@ -1,7 +1,5 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
-import { NewBuild } from "./datastore_database.ts";
-
 export type APIResponseBase = {
   success: boolean;
 };
@@ -15,12 +13,6 @@ export type APIWebhookResponseSuccess = APIResponseBase & {
     repository: string;
     version?: string;
     status_url?: string;
-  };
-};
-
-export type APIBuildGetResponseSuccess = APIResponseBase & {
-  data: {
-    build: NewBuild;
   };
 };
 
