@@ -269,9 +269,7 @@ export class Database {
     objectSetKey(build, this.db.key([kinds.BUILD, build.id]));
 
     for await (
-      const _ of this.db.commit([{ upsert: objectToEntity(build) }, {
-        upsert: objectToEntity(build),
-      }], {
+      const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
         transactional: false,
       })
     ) {
