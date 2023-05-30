@@ -73,7 +73,7 @@ export async function handler(
 
     // send a webhook request to apiland to do further indexing of the module
     // this is temporary until apiland subsumes the functionality of registry2
-    const res = await fetch(apilandURL, {
+    const res = await fetch(apilandURL + "/publish", {
       method: "POST",
       body: JSON.stringify({
         event: "create",

@@ -185,47 +185,19 @@ export class Database {
     return await this.db.query<Module>(query);
   }
 
-  async countModulesForRepository(repoId: number): Promise<number> {
-    const query = await this.db.runGqlAggregationQuery({
-      queryString:
-        `SELECT COUNT(*) FROM ${kinds.LEGACY_MODULES} WHERE repo_id = ${repoId}`,
-      allowLiterals: true,
-    });
-    return datastoreValueToValue(
-      query.batch.aggregationResults[0].aggregateProperties.property_1,
-    ) as number;
-  }
-
-  async countModulesForOwner(owner: string): Promise<number> {
-    const query = await this.db.runGqlAggregationQuery({
-      queryString:
-        `SELECT COUNT(*) FROM ${kinds.LEGACY_MODULES} WHERE owner = '${owner}'`,
-      allowLiterals: true,
-    });
-    return datastoreValueToValue(
-      query.batch.aggregationResults[0].aggregateProperties.property_1,
-    ) as number;
-  }
-
   // tests only
   async countAllBuilds(): Promise<number> {
     const query = await this.db.runGqlAggregationQuery({
-      queryString: `SELECT COUNT(*) FROM ${kinds.LEGACY_BUILDS}`,
+      queryString: `SELECT COUNT(*) FROM ${kinds.BUILD}`,
     });
     return datastoreValueToValue(
       query.batch.aggregationResults[0].aggregateProperties.property_1,
     ) as number;
-  }
-
-  // tests only
-  async listAllBuilds(): Promise<Build[]> {
-    const query = this.db.createQuery(kinds.LEGACY_BUILDS).order("created_at");
-    return await this.db.query<Build>(query);
   }
 
   async getBuild(id: string): Promise<Build | null> {
     const result = await this.db.lookup(
-      this.db.key([kinds.LEGACY_BUILDS, id]),
+      this.db.key([kinds.BUILD, id]),
     );
 
     if (result.found && result.found.length) {
@@ -235,25 +207,10 @@ export class Database {
     }
   }
 
-  async getBuildForVersion(
-    name: string,
-    version: string,
-  ): Promise<Build | null> {
-    const query = this.db
-      .createQuery(kinds.LEGACY_BUILDS)
-      .filter("options.moduleName", name)
-      .filter("options.version", version);
-
-    const builds = await this.db.query<Build>(query);
-    if (builds.length === 0) return null;
-    return builds[0];
-  }
-
   async createBuild(build: Omit<Build, "id">): Promise<string> {
     const id = crypto.randomUUID();
     // @ts-ignore temporary solution
     build.id = id;
-    objectSetKey(build, this.db.key([kinds.LEGACY_BUILDS, id]));
 
     const newBuild = {
       id,
@@ -273,9 +230,7 @@ export class Database {
     objectSetKey(newBuild, this.db.key([kinds.BUILD, id]));
 
     for await (
-      const _ of this.db.commit([{ upsert: objectToEntity(build) }, {
-        upsert: objectToEntity(newBuild),
-      }], {
+      const _ of this.db.commit([{ upsert: objectToEntity(newBuild) }], {
         transactional: false,
       })
     ) {
@@ -286,8 +241,6 @@ export class Database {
   }
 
   async saveBuild(build: Build) {
-    objectSetKey(build, this.db.key([kinds.LEGACY_BUILDS, build.id]));
-
     const newBuild = {
       id: build.id,
       module: build.options.moduleName,
@@ -306,9 +259,7 @@ export class Database {
     objectSetKey(newBuild, this.db.key([kinds.BUILD, build.id]));
 
     for await (
-      const _ of this.db.commit([{ upsert: objectToEntity(build) }, {
-        upsert: objectToEntity(newBuild),
-      }], {
+      const _ of this.db.commit([{ upsert: objectToEntity(newBuild) }], {
         transactional: false,
       })
     ) {
