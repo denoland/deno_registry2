@@ -2,22 +2,22 @@
 
 import { assert, assertEquals } from "../test_deps.ts";
 import {
-  Build,
   Database as Datastore,
   kinds,
+  NewBuild,
   OwnerQuota,
 } from "./datastore_database.ts";
 import { cleanupDatabase } from "./test_utils.ts";
 
 const datastore = new Datastore();
 
-const build1: Omit<Build, "id"> = {
-  options: {
-    moduleName: "ltest",
+const build1: Omit<NewBuild, "id"> = {
+  module: "ltest",
+  version: "0.4.0",
+  upload_options: {
     type: "github",
     repository: "luca-rand/testing",
     ref: "v0.4.0",
-    version: "0.4.0",
     subdir: "subdir1/",
   },
   status: "success",
@@ -25,13 +25,13 @@ const build1: Omit<Build, "id"> = {
   created_at: new Date(),
 };
 
-const build2: Omit<Build, "id"> = {
-  options: {
-    moduleName: "wtest",
+const build2: Omit<NewBuild, "id"> = {
+  module: "wtest",
+  version: "0.4.0",
+  upload_options: {
     type: "github",
     repository: "wperron-rand/testing",
     ref: "v0.4.0",
-    version: "0.4.0",
     subdir: "subdir1/",
   },
   status: "success",
@@ -72,14 +72,14 @@ Deno.test({
 
       // check count after adding 1 build
       const id = await datastore.createBuild(build1);
-      const build = await datastore.getBuild(id) as Build;
+      const build = (await datastore.getBuild(id))!;
       count = await datastore.countAllBuilds();
       assertEquals(count, 1);
 
       // check count after adding 5 new versions
       for (let i = 5; i < 10; i++) {
-        build.options.ref = `v.0.${i}.0`;
-        build.options.version = `0.${i}.0`;
+        build.upload_options.ref = `v.0.${i}.0`;
+        build.version = `0.${i}.0`;
         await datastore.createBuild(build);
       }
 

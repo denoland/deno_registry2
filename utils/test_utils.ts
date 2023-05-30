@@ -236,7 +236,7 @@ export async function cleanupDatabase(
     })(),
     (async () => {
       const query = await datastore.db.query(
-        datastore.db.createQuery(kinds.LEGACY_BUILDS),
+        datastore.db.createQuery(kinds.BUILD),
       );
       const mutations = query.map((entry) => ({
         delete: objectGetKey(entry)!,

@@ -378,12 +378,12 @@ async function initiateBuild(
   if (invalidVersion) return invalidVersion;
 
   const buildID = await datastore.createBuild({
-    options: {
+    module: moduleName,
+    version,
+    upload_options: {
       type: "github",
-      moduleName,
       repository: `${owner}/${repo}`,
       ref,
-      version,
       subdir: subdir ?? undefined,
     },
     status: "queued",

@@ -18,8 +18,8 @@ import {
   walk,
 } from "../../deps.ts";
 import {
-  Build,
   Database as Datastore,
+  NewBuild,
 } from "../../utils/datastore_database.ts";
 import { clone } from "../../utils/git.ts";
 import {
@@ -51,12 +51,12 @@ export async function handler(
       throw new Error("Build does not exist!");
     }
 
-    switch (build.options.type) {
+    switch (build.upload_options.type) {
       case "github":
         try {
           await publishGithub(build);
         } catch (err) {
-          console.log("error", err, err?.response);
+          console.log("error", err, err?.response, build);
           await datastore.saveBuild({
             ...build,
             status: "error",
@@ -66,7 +66,7 @@ export async function handler(
         }
         break;
       default:
-        throw new Error(`Unknown build type: ${build.options.type}`);
+        throw new Error(`Unknown build type: ${build.upload_options.type}`);
     }
 
     let message = "Published module.";
@@ -77,8 +77,8 @@ export async function handler(
       method: "POST",
       body: JSON.stringify({
         event: "create",
-        module: build.options.moduleName,
-        version: build.options.version,
+        module: build.module,
+        version: build.version,
       }),
       headers: {
         "authorization": `bearer ${apilandAuthToken}`,
@@ -107,19 +107,20 @@ export async function handler(
   }
 }
 
-async function publishGithub(build: Build) {
+async function publishGithub(build: NewBuild) {
   console.log(
-    `Publishing ${build.options.moduleName} at ${build.options.ref} from GitHub`,
+    `Publishing ${build.module} at ${build.upload_options.ref} from GitHub`,
   );
   const quota = await datastore.getOwnerQuota(
-    build.options.repository.split("/")[0] as string,
+    build.upload_options.repository.split("/")[0] as string,
   );
   await datastore.saveBuild({
     ...build,
     status: "publishing",
   });
 
-  const { options: { moduleName, repository, ref, version, subdir } } = build;
+  const { module, version, upload_options: { repository, ref, subdir } } =
+    build;
 
   // Clone the repository from GitHub
   const cloneURL = `https://github.com/${repository}`;
@@ -181,7 +182,7 @@ async function publishGithub(build: Build) {
         const file = await Deno.open(join(path, entry.path));
         const body = await readAll(file);
         await uploadVersionRaw(
-          moduleName,
+          module,
           version,
           entry.path,
           body,
@@ -190,19 +191,19 @@ async function publishGithub(build: Build) {
       }
     }));
 
-    const versionsBody = await getMeta(moduleName, "versions.json");
+    const versionsBody = await getMeta(module, "versions.json");
     const versions = versionsBody
       ? JSON.parse(decoder.decode(versionsBody))
       : { versions: [] };
     await uploadMetaJson(
-      moduleName,
+      module,
       "versions.json",
       { latest: version, versions: [version, ...versions.versions] },
     );
 
     // Upload directory listing to S3
     await uploadVersionMetaJson(
-      moduleName,
+      module,
       version,
       {
         directory_listing: directory.sort((a, b) =>
