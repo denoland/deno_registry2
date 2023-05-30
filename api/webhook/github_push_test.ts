@@ -238,12 +238,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "ltest2",
+          module: "ltest2",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing",
             ref: "0.0.7",
-            version: "0.0.7",
           },
           status: "queued",
         },
@@ -389,12 +389,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "ltest2",
+          module: "ltest2",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing",
             ref: "v0.0.7",
-            version: "0.0.7",
           },
           status: "queued",
         },
@@ -504,12 +504,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "ltest2",
+          module: "ltest2",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing",
             ref: "0.0.7",
-            version: "0.0.7",
             subdir: "asd/",
           },
           status: "queued",
@@ -579,12 +579,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "ltest2",
+          module: "ltest2",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing",
             ref: "0.0.7",
-            version: "0.0.7",
             subdir: "asd/",
           },
           status: "queued",
@@ -654,12 +654,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "ltest2",
+          module: "ltest2",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing",
             ref: "0.0.7",
-            version: "0.0.7",
             subdir: "foo/",
           },
           status: "queued",
@@ -771,12 +771,12 @@ Deno.test({
   async fn() {
     try {
       await datastore.createBuild({
-        options: {
-          moduleName: "ltest2",
+        module: "ltest2",
+        version: "0.0.7",
+        upload_options: {
           ref: "0.0.7",
           repository: "luca-rand/testing",
           type: "github",
-          version: "0.0.7",
         },
         status: "queued",
         created_at: new Date(),
@@ -832,12 +832,12 @@ Deno.test({
   async fn() {
     try {
       await datastore.createBuild({
-        options: {
-          moduleName: "ltest2",
+        module: "ltest2",
+        version: "0.0.7",
+        upload_options: {
           ref: "0.0.7",
           repository: "luca-rand/testing",
           type: "github",
-          version: "0.0.7",
         },
         status: "error",
         created_at: new Date(),
@@ -864,12 +864,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "ltest2",
+          module: "ltest2",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing",
             ref: "0.0.7",
-            version: "0.0.7",
           },
           status: "error",
         },
@@ -879,12 +879,12 @@ Deno.test({
         {
           id: builds[1].id,
           created_at: builds[1].created_at,
-          options: {
-            moduleName: "ltest2",
+          module: "ltest2",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing",
             ref: "0.0.7",
-            version: "0.0.7",
           },
           status: "queued",
         },
@@ -965,12 +965,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "ltest",
+          module: "ltest",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing", // <- new name
             ref: "0.0.7",
-            version: "0.0.7",
           },
           status: "queued",
         },
@@ -1075,12 +1075,12 @@ Deno.test({
   async fn() {
     try {
       await datastore.createBuild({
-        options: {
-          moduleName: "ltest",
+        module: "ltest",
+        version: "0.0.7",
+        upload_options: {
           ref: "0.0.7",
           repository: "luca-rand/testing",
           type: "github",
-          version: "0.0.7",
         },
         status: "queued",
         created_at: new Date(),
@@ -1204,12 +1204,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "ltest4",
+          module: "ltest4",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/testing",
             ref: "0.0.7",
-            version: "0.0.7",
           },
           status: "queued",
         },
@@ -1274,12 +1274,12 @@ Deno.test({
         {
           id: builds[0].id,
           created_at: builds[0].created_at,
-          options: {
-            moduleName: "frisbee",
+          module: "frisbee",
+          version: "0.0.7",
+          upload_options: {
             type: "github",
             repository: "luca-rand/frisbee",
             ref: "0.0.7",
-            version: "0.0.7",
           },
           status: "queued",
         },
