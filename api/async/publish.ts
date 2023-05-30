@@ -56,7 +56,7 @@ export async function handler(
         try {
           await publishGithub(build);
         } catch (err) {
-          console.log("error", err, err?.response);
+          console.log("error", err, err?.response, build);
           await datastore.saveBuild({
             ...build,
             status: "error",
