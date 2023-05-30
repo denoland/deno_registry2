@@ -43,27 +43,25 @@ export type BuildStatus =
   | "publishing"
   | "analyzing_dependencies";
 
-export interface Build {
+export interface NewBuild {
   id: string;
-  // deno-lint-ignore camelcase
+  module: string;
+  version: string;
+  status: BuildStatus;
+  message?: string;
   created_at: Date;
-  options: {
-    moduleName: string;
+  upload_options: {
     type: string;
     repository: string;
     ref: string;
-    version: string;
     subdir?: string;
   };
-  status: BuildStatus;
-  message?: string;
 }
 
 export const kinds = {
   /** An object which contains information about the usage of built-in APIs. */
   LEGACY_MODULES: "legacy_modules",
   LEGACY_OWNER_QUOTAS: "legacy_owner_quotas",
-  LEGACY_BUILDS: "legacy_builds",
 
   BUILD: "build",
 };
@@ -195,42 +193,27 @@ export class Database {
     ) as number;
   }
 
-  async getBuild(id: string): Promise<Build | null> {
+  async getBuild(id: string): Promise<NewBuild | null> {
     const result = await this.db.lookup(
       this.db.key([kinds.BUILD, id]),
     );
 
     if (result.found && result.found.length) {
-      return entityToObject<Build>(result.found[0].entity);
+      return entityToObject<NewBuild>(result.found[0].entity);
     } else {
       return null;
     }
   }
 
-  async createBuild(build: Omit<Build, "id">): Promise<string> {
+  async createBuild(build: Omit<NewBuild, "id">): Promise<string> {
     const id = crypto.randomUUID();
     // @ts-ignore temporary solution
     build.id = id;
 
-    const newBuild = {
-      id,
-      module: build.options.moduleName,
-      version: build.options.version,
-      status: build.status,
-      message: build.message,
-      created_at: build.created_at,
-      upload_options: {
-        type: build.options.type,
-        repository: build.options.repository,
-        ref: build.options.ref,
-        subdir: build.options.subdir,
-      },
-    };
-
-    objectSetKey(newBuild, this.db.key([kinds.BUILD, id]));
+    objectSetKey(build, this.db.key([kinds.BUILD, id]));
 
     for await (
-      const _ of this.db.commit([{ upsert: objectToEntity(newBuild) }], {
+      const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
         transactional: false,
       })
     ) {
@@ -240,26 +223,11 @@ export class Database {
     return id;
   }
 
-  async saveBuild(build: Build) {
-    const newBuild = {
-      id: build.id,
-      module: build.options.moduleName,
-      version: build.options.version,
-      status: build.status,
-      message: build.message,
-      created_at: build.created_at,
-      upload_options: {
-        type: build.options.type,
-        repository: build.options.repository,
-        ref: build.options.ref,
-        subdir: build.options.subdir,
-      },
-    };
-
-    objectSetKey(newBuild, this.db.key([kinds.BUILD, build.id]));
+  async saveBuild(build: NewBuild) {
+    objectSetKey(build, this.db.key([kinds.BUILD, build.id]));
 
     for await (
-      const _ of this.db.commit([{ upsert: objectToEntity(newBuild) }], {
+      const _ of this.db.commit([{ upsert: objectToEntity(build) }], {
         transactional: false,
       })
     ) {

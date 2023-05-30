@@ -16,12 +16,12 @@ Deno.test({
   async fn() {
     try {
       const id = await datastore.createBuild({
-        options: {
-          moduleName: "ltest",
+        module: "ltest",
+        version: "0.0.7",
+        upload_options: {
           ref: "0.0.7",
           repository: "luca-rand/testing",
           type: "github",
-          version: "0.0.7",
         },
         status: "queued",
         created_at: new Date(),

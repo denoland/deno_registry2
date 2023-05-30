@@ -1,6 +1,6 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
-import { Build } from "./datastore_database.ts";
+import { NewBuild } from "./datastore_database.ts";
 
 export type APIResponseBase = {
   success: boolean;
@@ -18,7 +18,7 @@ export type APIModuleGetResponse = APIResponseBase & {
 
 export type APIBuildGetResponseSuccess = APIResponseBase & {
   data: {
-    build: Build;
+    build: NewBuild;
   };
 };
 

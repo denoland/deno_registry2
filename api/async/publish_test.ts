@@ -18,12 +18,12 @@ Deno.test({
     try {
       createApiLandMock();
       const id = await datastore.createBuild({
-        options: {
-          moduleName: "ltest",
+        module: "ltest",
+        version: "0.0.9",
+        upload_options: {
           ref: "0.0.9",
           repository: "luca-rand/testing",
           type: "github",
-          version: "0.0.9",
         },
         status: "queued",
         created_at: new Date(),
@@ -39,12 +39,12 @@ Deno.test({
       assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
-        options: {
-          moduleName: "ltest",
+        module: "ltest",
+        version: "0.0.9",
+        upload_options: {
           ref: "0.0.9",
           repository: "luca-rand/testing",
           type: "github",
-          version: "0.0.9",
         },
         status: "success",
         message: "Published module.",
@@ -208,12 +208,12 @@ Deno.test({
     try {
       createApiLandMock();
       const id = await datastore.createBuild({
-        options: {
-          moduleName: "ltest",
+        module: "ltest",
+        version: "0.0.7",
+        upload_options: {
           ref: "0.0.7",
           repository: "luca-rand/testing",
           type: "github",
-          version: "0.0.7",
           subdir: "subproject/",
         },
         status: "queued",
@@ -228,12 +228,12 @@ Deno.test({
       assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
-        options: {
-          moduleName: "ltest",
+        module: "ltest",
+        version: "0.0.7",
+        upload_options: {
           ref: "0.0.7",
           repository: "luca-rand/testing",
           type: "github",
-          version: "0.0.7",
           subdir: "subproject/",
         },
         status: "success",
@@ -315,12 +315,12 @@ Deno.test({
   async fn() {
     try {
       const id = await datastore.createBuild({
-        options: {
-          moduleName: "ltest_big",
+        module: "ltest_big",
+        version: "0.0.1",
+        upload_options: {
           ref: "0.0.1",
           repository: "luca-rand/testing_big",
           type: "github",
-          version: "0.0.1",
         },
         status: "queued",
         created_at: new Date(),
@@ -334,12 +334,12 @@ Deno.test({
       assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
-        options: {
-          moduleName: "ltest_big",
+        module: "ltest_big",
+        version: "0.0.1",
+        upload_options: {
           ref: "0.0.1",
           repository: "luca-rand/testing_big",
           type: "github",
-          version: "0.0.1",
         },
         status: "error",
         message:
@@ -377,12 +377,12 @@ Deno.test({
       });
 
       const id = await datastore.createBuild({
-        options: {
-          moduleName: "ltest_big",
+        module: "ltest_big",
+        version: "0.0.1",
+        upload_options: {
           ref: "0.0.1",
           repository: "luca-rand/testing_big",
           type: "github",
-          version: "0.0.1",
         },
         status: "queued",
         created_at: new Date(),
@@ -396,12 +396,12 @@ Deno.test({
       assertEquals({ ...await datastore.getBuild(id), created_at: undefined }, {
         created_at: undefined,
         id,
-        options: {
-          moduleName: "ltest_big",
+        module: "ltest_big",
+        version: "0.0.1",
+        upload_options: {
           ref: "0.0.1",
           repository: "luca-rand/testing_big",
           type: "github",
-          version: "0.0.1",
         },
         status: "success",
         message: "Published module.",
