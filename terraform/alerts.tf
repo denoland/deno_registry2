@@ -29,7 +29,6 @@ resource "aws_cloudwatch_metric_alarm" "publish_lambda_errors" {
 
 resource "aws_cloudwatch_metric_alarm" "data_lambda_errors" {
   for_each = {
-    get    = aws_lambda_function.modules_get.function_name,
     builds = aws_lambda_function.builds_get.function_name,
   }
 
