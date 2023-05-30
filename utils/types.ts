@@ -9,18 +9,6 @@ export type APIResponseBase = {
 export type APIErrorResponse = APIResponseBase & { error: string };
 export type APIInfoResponse = APIResponseBase & { info: string };
 
-export type APIStatsResponse = APIResponseBase & {
-  data: {
-    total_count: number;
-    total_versions: number;
-  };
-};
-
-export type APIWebhookResponse =
-  | APIWebhookResponseSuccess
-  | APIInfoResponse
-  | APIErrorResponse;
-
 export type APIWebhookResponseSuccess = APIResponseBase & {
   data: {
     module: string;
@@ -29,18 +17,6 @@ export type APIWebhookResponseSuccess = APIResponseBase & {
     status_url?: string;
   };
 };
-
-export type APIModuleGetResponse = APIResponseBase & {
-  data: {
-    name: string;
-    description: string;
-    star_count: number;
-  };
-};
-
-export type APIBuildGetResponse =
-  | APIErrorResponse
-  | APIBuildGetResponseSuccess;
 
 export type APIBuildGetResponseSuccess = APIResponseBase & {
   data: {
