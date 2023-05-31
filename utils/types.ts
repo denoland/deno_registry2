@@ -16,6 +16,14 @@ export type APIWebhookResponseSuccess = APIResponseBase & {
   };
 };
 
+export type APIModuleGetResponse = APIResponseBase & {
+  data: {
+    name: string;
+    description: string;
+    star_count: number;
+  };
+};
+
 export interface DirectoryListingFile {
   path: string;
   size: number | undefined;
