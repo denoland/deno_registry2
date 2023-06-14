@@ -2,7 +2,7 @@
 
 ## POST /webhook/gh/:module
 
-This API endpoint receives webhooks from GitHub. The `module` parameter in the
+This API endpoint recieves webhooks from GitHub. The `module` parameter in the
 URL is the name of the module. Both `application/json` and
 `application/x-www-url-formencoded` content types are accepted.
 
@@ -71,7 +71,221 @@ OR
 }
 ```
 
-## Other endpoints
+## GET /modules
 
-For any other endpoints, please reference the
-[documentation for apiland.deno.dev](https://redocly.github.io/redoc/?url=https://apiland.deno.dev/~/spec)
+This API endpoint can be used to get a list of all the modules in the registry.
+
+### Request
+
+There are some query parameters that change the request:
+
+- `limit` is the amount of results to display per page of the response
+  (default 20)
+- `page` is the page to display (default 1)
+- `query` is a query to use for filtering the list (not set by default)
+- `sort` orders the results in a specific order. The accepted values are
+  `oldest`, `newest`, `stars` and `random`. If a query is present in the
+  request, this parameter is ignored and defaults to the strongest match. The
+  `random` option invalidates the `query` and a `page` parameters.
+- `simple` toggles the result payload to a simpler output. Invalidates all other
+  parameters.
+
+### Response
+
+#### Headers
+
+`content-type`: `application/json`
+
+#### Body
+
+##### 200 OK
+
+```json
+{
+  "success": true,
+  "data": {
+    "total_count": 763,
+    "results": [
+      {
+        "name": "oak",
+        "description": "A middleware framework for Deno's http server, including a router middleware.",
+        "star_count": 400
+      },
+      {
+        "name": "oak_middleware",
+        "description": "A collection of middleware for the oak middleware framework.",
+        "star_count": 30
+      }
+    ]
+  }
+}
+```
+
+##### 200 OK -- simple
+
+```json
+["amq","atenas","atenas_cli","auto_bind", ...]
+```
+
+##### 400 Bad Request
+
+```json
+{
+  "success": false,
+  "info": "internal server error"
+}
+```
+
+## GET /modules/:name
+
+This API endpoint can be used to get a specific module by name.
+
+### Request
+
+The `name` parameter in the URL is the name of the module.
+
+### Response
+
+#### Headers
+
+`content-type`: `application/json`
+
+#### Body
+
+##### 200 OK
+
+```json
+{
+  "success": true,
+  "data": {
+    "name": "oak",
+    "description": "A middleware framework for Deno's http server, including a router middleware.",
+    "star_count": 400
+  }
+}
+```
+
+##### 400 Bad Request
+
+```json
+{
+  "success": false,
+  "error": "no module name specified"
+}
+```
+
+##### 404 Not Found
+
+```json
+{
+  "success": false,
+  "error": "module not found"
+}
+```
+
+## GET /builds/:id
+
+This API endpoint can be used to get the status for a module build status. You
+can find the build ID in the `status_url` from the webhook execution response.
+
+### Request
+
+The `id` parameter URL is the build id in the database generate after the
+webhook is successfully executed.
+
+### Response
+
+#### Headers
+
+`content-type`: `application/json`
+
+#### Body
+
+##### 200 OK
+
+```json
+{
+  "success": true,
+  "data": {
+    "build": {
+      "id": "5f7e25960063be5000264881",
+      "created_at": "2020-10-07T20:31:18.986Z",
+      "options": {
+        "type": "github",
+        "moduleName": "wperron_test",
+        "repository": "wperron-rand/testing",
+        "ref": "v0.6.0",
+        "version": "v0.6.0"
+      },
+      "status": "success",
+      "message": "Published module.",
+      "stats": {
+        "total_files": 2,
+        "skipped_due_to_size": [],
+        "total_size": 300
+      }
+    }
+  }
+}
+```
+
+##### 400 Bad Request
+
+```json
+{
+  "success": false,
+  "error": "no build id provided"
+}
+```
+
+##### 404 Not Found
+
+```json
+{
+  "success": false,
+  "error": "build not found"
+}
+```
+
+## GET /stats
+
+This API endpoint can be used to get the general stats from the registry.
+
+### Request
+
+### Response
+
+#### Headers
+
+`content-type`: `application/json`
+
+#### Body
+
+##### 200 OK
+
+```json
+{
+  "success": true,
+  "data": {
+    "total_count": 1226,
+    "total_versions": 8359,
+    "recently_added_modules": [
+      {
+        "name": "postcss_import",
+        "description": "postcss-import plugin for Deno",
+        "star_count": 0,
+        "created_at": "2020-11-06T14:39:50.187Z"
+      },
+      ...
+    ],
+    "recently_uploaded_versions": [
+      {
+        "name": "nkeys",
+        "version": "v1.0.0-8",
+        "created_at": "2020-11-06T16:24:08.619Z"
+      },
+      ...
+    ]
+  }
+}
+```
