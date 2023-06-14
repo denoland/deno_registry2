@@ -178,28 +178,6 @@ export class Database {
     }
   }
 
-  async countModulesForRepository(repoId: number): Promise<number> {
-    const query = await this.db.runGqlAggregationQuery({
-      queryString:
-        `SELECT COUNT(*) FROM ${kinds.LEGACY_MODULES} WHERE repo_id = ${repoId}`,
-      allowLiterals: true,
-    });
-    return datastoreValueToValue(
-      query.batch.aggregationResults[0].aggregateProperties.property_1,
-    ) as number;
-  }
-
-  async countModulesForOwner(owner: string): Promise<number> {
-    const query = await this.db.runGqlAggregationQuery({
-      queryString:
-        `SELECT COUNT(*) FROM ${kinds.LEGACY_MODULES} WHERE owner = '${owner}'`,
-      allowLiterals: true,
-    });
-    return datastoreValueToValue(
-      query.batch.aggregationResults[0].aggregateProperties.property_1,
-    ) as number;
-  }
-
   // tests only
   async countAllBuilds(): Promise<number> {
     const query = await this.db.runGqlAggregationQuery({
@@ -208,12 +186,6 @@ export class Database {
     return datastoreValueToValue(
       query.batch.aggregationResults[0].aggregateProperties.property_1,
     ) as number;
-  }
-
-  // tests only
-  async listAllBuilds(): Promise<NewBuild[]> {
-    const query = this.db.createQuery(kinds.BUILD).order("created_at");
-    return await this.db.query<NewBuild>(query);
   }
 
   async getBuild(id: string): Promise<NewBuild | null> {
@@ -226,20 +198,6 @@ export class Database {
     } else {
       return null;
     }
-  }
-
-  async getBuildForVersion(
-    name: string,
-    version: string,
-  ): Promise<NewBuild | null> {
-    const query = this.db
-      .createQuery(kinds.BUILD)
-      .filter("module", name)
-      .filter("version", version);
-
-    const builds = await this.db.query<NewBuild>(query);
-    if (builds.length === 0) return null;
-    return builds[0];
   }
 
   async createBuild(build: Omit<NewBuild, "id">): Promise<string> {

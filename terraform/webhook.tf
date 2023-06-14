@@ -16,6 +16,8 @@ resource "aws_lambda_function" "webhook_github" {
       "DENO_UNSTABLE"             = "1"
       "STORAGE_BUCKET"            = aws_s3_bucket.storage_bucket.id
       "MODERATION_BUCKET"         = aws_s3_bucket.moderation_bucket.id
+      "APILAND_URL"               = "https://apiland.deno.dev/webhook"
+      "APILAND_AUTH_TOKEN"        = var.apiland_auth_token
       "BUILD_QUEUE"               = aws_sqs_queue.build_queue.id
       "GOOGLE_PRIVATE_KEY_SSM"    = aws_ssm_parameter.google_private_key.name
       "GOOGLE_CLIENT_EMAIL_SSM"   = aws_ssm_parameter.google_client_email.name

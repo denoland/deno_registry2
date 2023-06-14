@@ -115,27 +115,6 @@ export function createAPIGatewayProxyEventV2(
   };
 }
 
-export function createJSONWebhookEvent(
-  event: string,
-  path: string,
-  payload: unknown,
-  pathParameters: KV,
-  queryStringParameters: KV,
-): APIGatewayProxyEventV2 {
-  return createAPIGatewayProxyEventV2("POST", path, {
-    headers: {
-      "Accept": "*/*",
-      "content-type": "application/json",
-      "User-Agent": "GitHub-Hookshot/f1aa6e4",
-      "X-GitHub-Delivery": "01b06e5c-d65c-11ea-9409-7e8b4a054eac",
-      "X-GitHub-Event": event,
-    },
-    data: payload,
-    pathParameters,
-    queryStringParameters,
-  });
-}
-
 export function createSQSEvent(body: unknown): SQSEvent {
   return {
     Records: [
@@ -173,28 +152,6 @@ export function createScheduledEvent(): ScheduledEvent {
     ],
     detail: {},
   };
-}
-
-export function createJSONWebhookWebFormEvent(
-  event: string,
-  path: string,
-  payload: unknown,
-  pathParameters: KV,
-  queryStringParameters: KV,
-): APIGatewayProxyEventV2 {
-  return createAPIGatewayProxyEventV2("POST", path, {
-    headers: {
-      "Accept": "*/*",
-      "content-type": "application/x-www-form-urlencoded",
-      "User-Agent": "GitHub-Hookshot/f1aa6e4",
-      "X-GitHub-Delivery": "01b06e5c-d65c-11ea-9409-7e8b4a054eac",
-      "X-GitHub-Event": event,
-    },
-    data: payload,
-    pathParameters,
-    queryStringParameters,
-    isBase64Encoded: true,
-  });
 }
 
 export function createContext(): Context {
