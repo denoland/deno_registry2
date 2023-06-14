@@ -178,11 +178,6 @@ export class Database {
     }
   }
 
-  async listAllModules(): Promise<Module[]> {
-    const query = this.db.createQuery(kinds.LEGACY_MODULES).order("created_at");
-    return await this.db.query<Module>(query);
-  }
-
   // tests only
   async countAllBuilds(): Promise<number> {
     const query = await this.db.runGqlAggregationQuery({
