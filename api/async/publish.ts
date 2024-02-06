@@ -12,6 +12,7 @@
 import {
   Context,
   join,
+  jsoncParse,
   pooledMap,
   readAll,
   SQSEvent,
@@ -158,6 +159,27 @@ async function publishGithub(build: NewBuild) {
 
       // If this is a file in the .git folder, ignore it
       if (filename.startsWith("/.git/") || filename === "/.git") return;
+
+      if (filename === "deno.json" || filename === "deno.jsonc") {
+        const file = await Deno.open(join(path, entry.path));
+        const body = await readAll(file);
+        const bodyText = new TextDecoder().decode(body);
+        try {
+          const bodyJSON = jsoncParse(bodyText);
+          if ("name" in bodyJSON) {
+            throw new TypeError(
+              "This module is meant for JSR publishing, and as such cannot be published to /x/",
+            );
+          }
+        } catch (e) {
+          if (
+            e.message ===
+              "This module is meant for JSR publishing, and as such cannot be published to /x/"
+          ) {
+            throw e;
+          }
+        }
+      }
 
       if (entry.isFile) {
         const stat = await Deno.stat(entry.path);

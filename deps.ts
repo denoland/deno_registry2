@@ -1,6 +1,7 @@
 // Copyright 2020-2021 the Deno authors. All rights reserved. MIT license.
 
 export { expandGlob, walk } from "https://deno.land/std@0.149.0/fs/mod.ts";
+export { parse as jsoncParse } from "https://deno.land/std@0.214.0/jsonc/mod.ts";
 export { join } from "https://deno.land/std@0.149.0/path/mod.ts";
 export type {
   APIGatewayProxyEventV2,
