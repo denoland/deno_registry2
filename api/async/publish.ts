@@ -165,7 +165,7 @@ async function publishGithub(build: NewBuild) {
         const body = await readAll(file);
         const bodyText = new TextDecoder().decode(body);
         try {
-          const bodyJSON = jsoncParse(bodyText);
+          const bodyJSON: Record<string, unknown> = jsoncParse(bodyText);
           if ("name" in bodyJSON) {
             throw new TypeError(
               "This module is meant for JSR publishing, and as such cannot be published to /x/",
